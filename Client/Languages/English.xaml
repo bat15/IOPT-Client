@@ -1,0 +1,58 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Client"
+                     xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <v:String x:Key="Sid1">Server address</v:String>
+    <v:String x:Key="Sid2">Connect</v:String>
+    <v:String x:Key="Sid3">Login</v:String>
+    <v:String x:Key="Sid4">Password</v:String>
+    <v:String x:Key="Sid5">Certificate</v:String>
+
+    <v:String x:Key="Errid1">Unable connect to server, check the address or try again later.</v:String>
+    <v:String x:Key="Errid2">Choose parent value in listbox.</v:String>
+    <v:String x:Key="Errid3">Minimum must be less than maximum.</v:String>
+
+    <v:String x:Key="Setid1">Theme</v:String>
+    <v:String x:Key="Setid2">Language</v:String>
+    <v:String x:Key="Setid3">Settings</v:String>
+    <v:String x:Key="Setid4">Autoupdate interval</v:String>
+
+    <v:String x:Key="Mainid1">Create</v:String>
+    <v:String x:Key="Mainid2">Table</v:String>
+    <v:String x:Key="Mainid3">Autoupdate</v:String>
+
+    <v:String x:Key="Viewid1">Model</v:String>
+    <v:String x:Key="Viewid2">Object</v:String>
+    <v:String x:Key="Viewid3">Property</v:String>
+    <v:String x:Key="Viewid4">Value</v:String>
+    <v:String x:Key="Viewid5">Script</v:String>
+
+    <v:String x:Key="Editid1">Add</v:String>
+    <v:String x:Key="Editid2">Name</v:String>
+    <v:String x:Key="Editid3">Type</v:String>
+    <v:String x:Key="Editid4">Models</v:String>
+    <v:String x:Key="Editid5">Objects</v:String>
+    <v:String x:Key="Editid6">Properties</v:String>
+    <v:String x:Key="Editid7">Scripts</v:String>
+    <v:String x:Key="Editid8">Script</v:String>
+    <v:String x:Key="Editid9">Save</v:String>
+
+    <v:String x:Key="Dialogid1">Do you really want to delete this?</v:String>
+    <v:String x:Key="Dialogid2">Do you really want to log out?</v:String>
+    <v:String x:Key="Dialogid3">Deletion</v:String>
+    <v:String x:Key="Dialogid4">Log out</v:String>
+    <v:String x:Key="Dialogid5">Error</v:String>
+    <v:String x:Key="Dialogid6">Please, select the object</v:String>
+    <v:String x:Key="Dialogid7">Cannot update from server</v:String>
+    <v:String x:Key="Dialogid8">Cannot send data to server server</v:String>
+    <v:String x:Key="Dialogid9">Cannot create </v:String>
+
+
+    <v:String x:Key="MDialogid1">Yes</v:String>
+    <v:String x:Key="MDialogid2">No</v:String>
+    <v:String x:Key="MDialogid3">Ok</v:String>
+
+    <v:String x:Key="WDCid1">Editable</v:String>
+    <v:String x:Key="WDCid2">Min</v:String>
+    <v:String x:Key="WDCid3">Max</v:String>
+</ResourceDictionary>

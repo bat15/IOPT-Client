@@ -1,0 +1,167 @@
+﻿<Window x:Class="Client.Editor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Editor" Height="457" Width="962" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/wind-grasp-acid-3.png" WindowStartupLocation="CenterScreen">
+    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}" >
+        <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" Margin="0,0,-2,0">
+            <Button x:Name="BBack" Width="40" Style="{DynamicResource TranspButton}" Margin="0,3,8,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="BBack_Click">
+                <Border>
+                    <Path Data="{StaticResource Back}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <Grid x:Name="editOptions" HorizontalAlignment="Left" Width="266" Background="#BFF7941D" Margin="-268,0,0,0" Panel.ZIndex="40">
+                <TextBox x:Name="TBName" Height="23" Margin="32,77,33,0" Text="" VerticalAlignment="Top"/>
+                <Label x:Name="labelName" Content="{DynamicResource Editid2}" Margin="60,46,60,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Label x:Name="labelScript" Content="{DynamicResource Editid8}" Margin="55,105,55,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}" Visibility="Hidden"/>
+                <ComboBox x:Name="CBType" Margin="33,131,32,0" VerticalAlignment="Top" DataContext="{Binding}" BorderThickness="1" BorderBrush="{DynamicResource OnLightFontColor}"/>
+                <Label x:Name="labelType" Content="{DynamicResource Editid3}" Margin="60,105,60,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="BSave" Content="{DynamicResource Editid9}" HorizontalAlignment="Stretch" Margin="55,334,55,0" VerticalAlignment="Top" Click="button1_Click"/>
+                <Label x:Name="labelValue" Content="{DynamicResource Viewid4}" Margin="87,158,86,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <TextBox x:Name="TBValue" Height="23" Margin="33,189,32,0" Text="" VerticalAlignment="Top"/>
+                <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Name="TBScript" FontFamily="Consolas" SyntaxHighlighting="JavaScript" FontSize="10pt" Margin="10,131,10,132" Foreground="{DynamicResource OnLightFontColor}" Background="{DynamicResource BackgroundColor}" LineNumbersForeground="{DynamicResource ButtonOverColor}"/>
+            </Grid>
+            <Grid Margin="10,52,0,10" HorizontalAlignment="Left" Width="247">
+                <ListBox x:Name="Lmodels" Margin="0,26,0,25" DataContext="{Binding}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="145"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
+                                    <Border>
+                                        <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="CopyEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2">
+                                    <Border>
+                                        <Path Data="{StaticResource Copy}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="DeleteEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3">
+                                    <Border>
+                                        <Path Data="{StaticResource Delete}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Label x:Name="label3" Content="{DynamicResource Editid4}" Margin="24,0,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="button1" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="13,0,12,0" VerticalAlignment="Bottom" Click="button1_Click_1" Height="20"/>
+            </Grid>
+            <Grid Margin="0,52,458,10" HorizontalAlignment="Right" Width="240">
+                <ListBox x:Name="Lobjects" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Objects, ElementName=Lmodels}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="144"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
+                                    <Border>
+                                        <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="CopyEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2">
+                                    <Border>
+                                        <Path Data="{StaticResource Copy}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="DeleteEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3">
+                                    <Border>
+                                        <Path Data="{StaticResource Delete}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="button2" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button2_Click" Height="20"/>
+            </Grid>
+            <Grid Margin="0,52,226,10" HorizontalAlignment="Right" Width="227">
+                <ListBox x:Name="Lproperties" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Properties, ElementName=Lobjects}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="133"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
+                                    <Border>
+                                        <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="CopyEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2">
+                                    <Border>
+                                        <Path Data="{StaticResource Copy}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="DeleteEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3">
+                                    <Border>
+                                        <Path Data="{StaticResource Delete}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Label x:Name="label5" Content="{DynamicResource Editid6}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="button3" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button3_Click" Height="20"/>
+            </Grid>
+            <Grid Margin="0,52,8,10" HorizontalAlignment="Right" Width="213">
+                <ListBox x:Name="Lscripts" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Scripts, ElementName=Lproperties}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
+                                    <Border>
+                                        <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="CopyEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2">
+                                    <Border>
+                                        <Path Data="{StaticResource Copy}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                                <Button Tag="{Binding}" Click="DeleteEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3">
+                                    <Border>
+                                        <Path Data="{StaticResource Delete}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Label x:Name="label6" Content="{DynamicResource Editid7}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="button4" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button4_Click"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
+

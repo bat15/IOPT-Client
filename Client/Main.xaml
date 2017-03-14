@@ -1,0 +1,86 @@
+﻿<Window x:Class="Client.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+            Title="Client" Height="520" Width="872" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/wind-grasp-acid-3.png" Closed="Window_Closed" WindowStartupLocation="CenterScreen">
+    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}" >
+        <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+            <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
+                <Border>
+                    <Path Data="{StaticResource Settings}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <Button x:Name="BLogout" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,83,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="BLogout_Click">
+                <Border>
+                    <Path Data="{StaticResource Logout}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,3,8,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Click="Exit_Click">
+                <Border>
+                    <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <Button x:Name="button" Content="{DynamicResource Mainid1}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="99" Click="button_Click" Height="28"/>
+            <DataGrid x:Name="DGProp" Margin="10,69,10,12" DataContext="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="OnAutoGeneratingColumn" Visibility="Hidden"/>
+            <Button x:Name="BUpdate" Width="35" Style="{DynamicResource TranspButton}" Margin="124,8,0,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Left" Click="BUpdate_Click">
+                <Border>
+                    <Path Data="{StaticResource Update}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <Button x:Name="BUpload" Width="35" Style="{DynamicResource TranspButton}" Margin="178,8,0,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Left" Click="BUpload_Click">
+                <Border>
+                    <Path Data="{StaticResource Upload}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <CheckBox x:Name="checkBox" Content="{DynamicResource Mainid2}" HorizontalAlignment="Left" Margin="401,14,0,0" VerticalAlignment="Top" Height="21" Width="94" Checked="checkBox_Checked" Unchecked="checkBox_Checked"/>
+            <Grid x:Name="lmgrid" Margin="10,52,0,10" HorizontalAlignment="Left" Width="192">
+                <ComboBox x:Name="Lmodels" Margin="10,26,10,0" VerticalAlignment="Top" DataContext="{Binding}" BorderThickness="1" BorderBrush="{DynamicResource OnLightFontColor}"/>
+                <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.Objects, ElementName=Lmodels}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="145"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                <Button Tag="{Binding}" Width="25" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Click="BAdd_Click" Margin="-5,0,0,0">
+                                    <Border>
+                                        <Path Data="{StaticResource Add}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"></Path>
+                                    </Border>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <!--<TreeView x:Name="TreeObjects" Margin="0,26,0,0" ItemsSource="{Binding Source={x:Static local:Model.Models}}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Path=Objects}">
+                            <TextBlock Text="{Binding Path=Name}"/>
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                                </DataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>-->
+                <Label x:Name="label3" Content="{DynamicResource Editid4}" Margin="24,0,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="24,49,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
+            </Grid>
+            <ScrollViewer x:Name="stackscroll" Margin="207,91,10,12"/>
+            <Label x:Name="label" Content="{Binding SelectedItem.Name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
+            <Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14"/>
+            <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="checkBox1" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="239,15,0,0" VerticalAlignment="Top"/>
+        </Grid>
+    </Border>
+</Window>

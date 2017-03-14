@@ -1,0 +1,26 @@
+﻿<Window x:Class="Client.WSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Settings" Height="249.619" Width="181.402" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png">
+    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}" >
+        <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+            <Button x:Name="Exit" Width="29" Style="{DynamicResource TranspButton}" Margin="0,3,3,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Click="Exit_Click">
+                <Border>
+                    <Path Data="{StaticResource Back}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                    </Path>
+                </Border>
+            </Button>
+            <ComboBox x:Name="styleBox" Margin="10,69,0,0" HorizontalAlignment="Center" Width="133" Height="25" VerticalAlignment="Top" DataContext="{Binding}"/>
+            <ComboBox x:Name="langBox" Margin="10,128,0,0" HorizontalAlignment="Center" Width="133" Height="25" VerticalAlignment="Top" DataContext="{Binding}"/>
+            <Label x:Name="label" Content="{DynamicResource Setid1}" Margin="0,38,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Label x:Name="label1" Content="{DynamicResource Setid2}" Margin="0,99,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Label x:Name="label2" Content="{DynamicResource Setid3}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Foreground="{DynamicResource OnLightFontColor}" VerticalContentAlignment="Center" FontSize="16"/>
+            <Label x:Name="label3" Content="{DynamicResource Setid4}" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" VerticalContentAlignment="Center" Margin="0,163,0,0" HorizontalContentAlignment="Center" SnapsToDevicePixels="True"/>
+            <ComboBox x:Name="uintBox" HorizontalAlignment="Center" Margin="27,194,16,0" VerticalAlignment="Top" Width="134" DataContext="{Binding}"/>
+        </Grid>
+    </Border>
+</Window>

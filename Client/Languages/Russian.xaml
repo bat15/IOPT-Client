@@ -1,0 +1,58 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Client"
+                     xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <v:String x:Key="Sid1">Адрес сервера</v:String>
+    <v:String x:Key="Sid2">Подключиться</v:String>
+    <v:String x:Key="Sid3">Логин</v:String>
+    <v:String x:Key="Sid4">Пароль</v:String>
+    <v:String x:Key="Sid5">Сертификат</v:String>
+
+    <v:String x:Key="Errid1">Не удалось подключиться к серверу, проверте его адресс или попробуйте снова через некоторое время.</v:String>
+    <v:String x:Key="Errid2">Выберите родительский элемент в списке.</v:String>
+    <v:String x:Key="Errid3">Минимум должен быть меньше максимума.</v:String>
+
+
+    <v:String x:Key="Setid1">Тема</v:String>
+    <v:String x:Key="Setid2">Язык</v:String>
+    <v:String x:Key="Setid3">Настройки</v:String>
+    <v:String x:Key="Setid4">Интервал автообновления</v:String>
+
+    <v:String x:Key="Mainid1">Создать</v:String>
+    <v:String x:Key="Mainid2">Таблица</v:String>
+    <v:String x:Key="Mainid3">Автообновление</v:String>
+
+    <v:String x:Key="Viewid1">Модель</v:String>
+    <v:String x:Key="Viewid2">Объект</v:String>
+    <v:String x:Key="Viewid3">Свойство</v:String>
+    <v:String x:Key="Viewid4">Значение</v:String>
+    <v:String x:Key="Viewid5">Скрипт</v:String>
+
+    <v:String x:Key="Editid1">Добавить</v:String>
+    <v:String x:Key="Editid2">Имя</v:String>
+    <v:String x:Key="Editid3">Тип</v:String>
+    <v:String x:Key="Editid4">Модели</v:String>
+    <v:String x:Key="Editid5">Объекты</v:String>
+    <v:String x:Key="Editid6">Свойства</v:String>
+    <v:String x:Key="Editid7">Скрипты</v:String>
+    <v:String x:Key="Editid8">Скрипт</v:String>
+    <v:String x:Key="Editid9">Сохранить</v:String>
+
+    <v:String x:Key="Dialogid1">Вы действительно хотите удалить?</v:String>
+    <v:String x:Key="Dialogid2">Вы действительно хотите выйти?</v:String>
+    <v:String x:Key="Dialogid3">Удаление</v:String>
+    <v:String x:Key="Dialogid4">Выход</v:String>
+    <v:String x:Key="Dialogid5">Ошибка</v:String>
+    <v:String x:Key="Dialogid6">Пожалуйста, выберите объект</v:String>
+    <v:String x:Key="Dialogid7">Не получилось обновить модель</v:String>
+    <v:String x:Key="Dialogid8">Не получилось отправить данные на сервер</v:String>
+    <v:String x:Key="Dialogid9">Не удалось создать </v:String>
+
+    <v:String x:Key="MDialogid1">Да</v:String>
+    <v:String x:Key="MDialogid2">Нет</v:String>
+    <v:String x:Key="MDialogid3">Ок</v:String>
+
+    <v:String x:Key="WDCid1">Управляющее</v:String>
+    <v:String x:Key="WDCid2">Мин</v:String>
+    <v:String x:Key="WDCid3">Макс</v:String>
+</ResourceDictionary>
