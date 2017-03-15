@@ -64,16 +64,22 @@ namespace Client
 
         public static void GenerateTestData()
         {
+            var scripts = new ObservableCollection<Script>()
+            {
+                new Script(-1,"Name","Name","Some code",-1),
+                new Script(-2,"Name1","Name1","Some other code",-1)
+            };
             var props = new ObservableCollection<Property>()
             {
-                new Property(0,"LED","LED",(int)TypeCode.Boolean,0,null,"false"),
-                new Property(1,"XPosition","XPosition",(int)TypeCode.Int32,0,null,"0"),
-                new Property(2,"ButtonState","ButtonState",(int)TypeCode.Boolean,0,null,"false")
+                new Property(-1,"LED","LED",(int)TypeCode.Boolean,-1,scripts,"false"),
+                new Property(-2,"XPosition","XPosition",(int)TypeCode.Int32,-1,null,"0"),
+                new Property(-3,"ButtonState","ButtonState",(int)TypeCode.Boolean,-1,null,"false")
             };
 
-            var obj = new ObservableCollection<Object>() { new Object(0, "TestObject", "TestObject", 0, props) };
+            var obj = new ObservableCollection<Object>() { new Object(-1, "TestObject", "TestObject", -1, props) };
 
-            var model = new Model(0, "TestModel", "TestModel", obj);
+            var model = new Model(-1, "TestModel", "TestModel", obj);
+            Snapshot.current.models.Add(model);
         }
 
 

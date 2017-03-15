@@ -94,3 +94,5 @@ D:\Client\Client\obj\Debug\Themes\MainDictionary.baml
 D:\Client\Client\obj\Debug\IOPT-Client.g.resources
 D:\Client\Client\obj\Debug\Client.Properties.Resources.resources
 D:\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
+D:\Client\Client\obj\Debug\wSlider.g.cs
+D:\Client\Client\obj\Debug\wSlider.baml

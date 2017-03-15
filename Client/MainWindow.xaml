@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Client" Height="350" Width="525" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/wind-grasp-acid-3.png" WindowStartupLocation="CenterScreen">
-    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}" SnapsToDevicePixels="True" >
+        Title="Client" Height="370" Width="545" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/wind-grasp-acid-3.png" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="0"/>
+    </Window.Background>
+    <Grid Margin="10" UseLayoutRounding="True">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+        </Grid.Effect>
+        <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
         <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
             <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="26" Margin="181,189,177,131" Text="193.32.20.242:8080/IOPT-Server-Tester-1-2/service" VerticalAlignment="Center" Width="163" VerticalContentAlignment="Center"/>
             <Label x:Name="label" Content="{DynamicResource Sid1}" Margin="181,156,177,161" Foreground="{DynamicResource OnLightFontColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="163" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
@@ -37,4 +44,5 @@
             <Label x:Name="label4" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColor}" FontFamily="Consolas" FontWeight="Bold" FontSize="10"/>
         </Grid>
     </Border>
+    </Grid>
 </Window>

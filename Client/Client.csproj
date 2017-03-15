@@ -102,6 +102,9 @@
       <DependentUpon>WSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\View.cs" />
+    <Compile Include="wSlider.xaml.cs">
+      <DependentUpon>wSlider.xaml</DependentUpon>
+    </Compile>
     <Page Include="Editor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,6 +154,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\MainDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="wSlider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

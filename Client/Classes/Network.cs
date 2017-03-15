@@ -79,7 +79,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get().Server + "/snapshot";
+                string url = "http://" + Settings.Get().Server + "/snapshot?user=" + Settings.Get().Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
@@ -119,7 +119,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get().Server + "/snapshot";
+                string url = "http://" + Settings.Get().Server + "/snapshot?user="+Settings.Get().Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.CookieContainer = cookies;
