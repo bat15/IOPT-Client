@@ -19,10 +19,10 @@ namespace Client
     {
         public static IEnumerable<ModelView> ModelToView()
         {
-            string LastM = null;
-            Func<string, string> ch1 = (a) => { if (a == LastM) return null; else { LastM = a; return a; } };
-            string LastO = null;
-            Func<string, string> ch2 = (a) => { if (a == LastO) return null; else { LastO = a; return a; } };
+            string lastM = null;
+            Func<string, string> ch1 = (a) => { if (a == lastM) return null; else { lastM = a; return a; } };
+            string lastO = null;
+            Func<string, string> ch2 = (a) => { if (a == lastO) return null; else { lastO = a; return a; } };
             return from m in Snapshot.current.models from o in m.objects from p in o.properties select new ModelView() { ModelName = ch1(m.name), ObjectName = ch2(o.name), PropertyName = p.name, Value = p.value, Type =  ((TypeCode)p.type).ToString(), Listeners = string.Join(", ", (from t in p.scripts select t.name).ToArray()) };
         }
 
@@ -94,12 +94,12 @@ namespace Client
 
         public static UIElement GetDashboard(Object obj)
         {
-            var Result = new StackPanel() { Orientation = Orientation.Vertical };
+            var result = new StackPanel() { Orientation = Orientation.Vertical };
 
-            if (obj == null) return Result;
-            var tmp = (from t in Snapshot.current.dashboards where t.objectId == obj.id select t);
-            if (tmp.Count() == 0) return Result;
-            foreach (var dash in tmp)
+            if (obj == null) return result;
+            var dashboards = (from t in Snapshot.current.dashboards where t.objectId == obj.id select t);
+            if (!dashboards.Any()) return result;
+            foreach (var dash in dashboards)
             {
                 DropShadowEffect shadow = new DropShadowEffect() { BlurRadius = 6, ShadowDepth = 6 };
                
@@ -126,9 +126,9 @@ namespace Client
                         n.Children.Add(GetPropertyView(t.property,t));
                     }
                 }
-                Result.Children.Add(temp);
+                result.Children.Add(temp);
             }
-            return Result;
+            return result;
         }
 
         private static UIElement GetPropertyView(Property prop, Dashboard.PropertyMap plink)
@@ -140,20 +140,22 @@ namespace Client
             switch (prop.type)
             {
                 case 3:
-                    if (bool.Parse(prop.value))
+                    var yes = new Path() { Fill = (System.Windows.Media.Brush)new BrushConverter().ConvertFromString("#8bc34a") };
+                    yes.SetResourceReference(Path.DataProperty, "Yes");
+                    var no = new Path() { Fill = System.Windows.Media.Brushes.Red };
+                    no.SetResourceReference(Path.DataProperty, "No");
+                    bool check;
+                    bool.TryParse(prop.value, out check);
+                       
+                    var checker = new Border() { Padding = new Thickness(0, 10, 0, 10),Child= check ? yes:no,Height=54 };
+                    checker.IsEnabledChanged += (s,e) =>
                     {
-                        var yes = new Path() { Fill = System.Windows.Media.Brushes.LightGreen };
-                        yes.SetResourceReference(Path.DataProperty, "Yes");
-                        var IYes = new Border() { Child = yes, Padding = new Thickness(0, 10, 0, 10) };
-                        child.Children.Add(IYes);
-                    }
-                    else
-                    {
-                        var no = new Path() { Fill = System.Windows.Media.Brushes.Red };
-                        no.SetResourceReference(Path.DataProperty, "No");
-                        var INo = new Border() { Child = no, Padding = new Thickness(0, 10, 0, 10) };
-                        child.Children.Add(INo);
-                    }
+                        var border = s as Border;
+                        if(border != null)
+                        border.Child =  border.IsEnabled ? yes : no;
+                    };
+                    checker.SetBinding(UIElement.IsEnabledProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    child.Children.Add(checker);
                     break;
                 case 9:
                 case 7:
@@ -165,17 +167,18 @@ namespace Client
                 case 15:
                 case 13:
                     var pb = new ProgressBar() { Width = 150, Minimum = (long)plink.min, Maximum = (long)plink.max,IsIndeterminate=false };
-                    pb.SetBinding(ProgressBar.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    pb.SetResourceReference(ProgressBar.ForegroundProperty,"MainColor");
+                    pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    pb.SetResourceReference(Control.ForegroundProperty, "MainColor");
                     l = new Label() { Content = double.Parse(prop.value), HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 20, FontFamily = new System.Windows.Media.FontFamily("Consolas") };
                     l.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    l.SetBinding(Label.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
                     child.Children.Add(pb);
+                    child.Children.Add(l);
                     break;
                 case 18:
                     l = new Label() { Content = "\""+prop.value+ "\"", HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12,FontFamily=new System.Windows.Media.FontFamily("Consolas") };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    l.SetBinding(Label.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
                     child.Children.Add(l);
                     break;
             }
@@ -192,7 +195,7 @@ namespace Client
             {
                 case TypeCode.Boolean:
                     var tmp = new CheckBox() { Margin=new Thickness(0,5,0,5)};
-                    tmp.SetBinding(CheckBox.IsCheckedProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    tmp.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
                     //tmp.Checked += (s,e) => { Network.IoTFactory.UpdateProperty(prop); };
                     //tmp.Unchecked += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
                     child.Children.Add(tmp);
@@ -207,8 +210,8 @@ namespace Client
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l); 
                      var sl = new Slider() { Minimum = (long)plink.min, Maximum = (long)plink.max, Width = 150, TickFrequency = 1, IsSnapToTickEnabled = true };
-                    sl.SetBinding(Control.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
-                    sl.SetBinding(Slider.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    sl.SetBinding(FrameworkElement.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
+                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
                     //sl.ValueChanged+=(s,e)=> { Network.IoTFactory.UpdateProperty(prop); };
                     child.Children.Add(sl);
                     l = new Label() { Content = plink.max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10,Margin=new Thickness(-15,0,0,0) };
@@ -216,7 +219,7 @@ namespace Client
                     child.Children.Add(l);
                     l = new Label() {  HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12};
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    l.SetBinding(Label.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
                     child.Children.Add(l);   
                     break;
                 case TypeCode.Double:
@@ -226,8 +229,8 @@ namespace Client
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l);
                      sl = new Slider() { Minimum = (double)plink.min, Maximum = (double)plink.max ,Width=150,TickFrequency= (double)(plink.max-plink.min)/100.0, IsSnapToTickEnabled =true};
-                    sl.SetBinding(Control.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
-                    sl.SetBinding(Slider.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    sl.SetBinding(FrameworkElement.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
+                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
                     //sl.ValueChanged += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
                     child.Children.Add(sl); 
                      l = new Label() { Content = plink.max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10, Margin = new Thickness(-15, 0, 0, 0) };
@@ -235,7 +238,7 @@ namespace Client
                     child.Children.Add(l);
                     l = new Label() { HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12 };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    l.SetBinding(Label.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
                     child.Children.Add(l); 
                     break;
                 case TypeCode.String:

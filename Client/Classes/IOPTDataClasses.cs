@@ -92,12 +92,12 @@ namespace Client
         }
     }
 
-    public class Object : IoT
+    public sealed class Object : IoT
     {
         long _modelId;
         ObservableCollection<Property> _properties;
         public long modelId { get { return _modelId; } set { _modelId = value; } }
-        public virtual ObservableCollection<Property> properties
+        public ObservableCollection<Property> properties
         {
             get { return _properties ?? (_properties = new ObservableCollection<Property>()); }
             set { _properties = value; }
@@ -134,13 +134,15 @@ namespace Client
         {
             if (Snapshot.current.models.Count == 0) return true;
             bool res = true;
-            foreach (var o in (from m in Snapshot.current.models where m.id == modelId select m).First().objects)
+            var objects= (from m in Snapshot.current.models where m.id == modelId select m).FirstOrDefault()?.objects;
+            if(objects!=null)
+            foreach (var o in objects)
                 if (o.pathUnit.Equals(val)) res = false;
             return res;
         }
     }
 
-    public class Property : IoT
+    public sealed class Property : IoT
     {
         int _type;
         long _objectId;
@@ -161,7 +163,7 @@ namespace Client
         public int type { get { return _type; } set { _type = value; } }
         public long objectId { get { return _objectId; } set { _objectId = value; } }
 
-        public virtual ObservableCollection<Script> scripts
+        public ObservableCollection<Script> scripts
         {
             get { return _scripts ?? (_scripts = new ObservableCollection<Script>()); }
             set { _scripts = value; }
@@ -213,7 +215,9 @@ namespace Client
         {
             if (Snapshot.current.models.Count == 0) return true;
             bool res = true;
-            foreach (var p in (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == objectId select o).First().properties)
+            var props = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == objectId select o).FirstOrDefault()?.properties;
+            if(props!=null)
+            foreach (var p in props)
                 if (p.pathUnit.Equals(val)) res = false;
             return res;
         }
@@ -254,7 +258,9 @@ namespace Client
         {
             if (Snapshot.current.models.Count == 0) return true;
             bool res = true;
-            foreach (var s in (from o in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where o.id == _propertyId select o).First().scripts)
+            var scripts = (from o in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where o.id == _propertyId select o).FirstOrDefault()?.scripts;
+            if(scripts!=null)
+            foreach (var s in scripts)
                 if (s.pathUnit.Equals(val)) res = false;
             ////if (!R(o, val)) res = false;
             return res;

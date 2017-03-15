@@ -21,13 +21,13 @@ namespace Client
     public partial class Editor : Window
     {
         const int SHAnimationTime = 300;
-        bool EIsOpen = false;
+        bool EIsOpen;
         int editmode = -1;
         Property iop;
         Script ios;
         Object ioo;
         Model iom;
-        Dictionary<string, TypeCode> types = new Dictionary<string, TypeCode>() { { "Boolean", TypeCode.Boolean }, { "String", TypeCode.String }, { "Double", TypeCode.Double }, { "Integer", TypeCode.Int32 } };
+        readonly Dictionary<string, TypeCode> types = new Dictionary<string, TypeCode>() { { "Boolean", TypeCode.Boolean }, { "String", TypeCode.String }, { "Double", TypeCode.Double }, { "Integer", TypeCode.Int32 } };
         Dictionary<TypeCode, int> tid = new Dictionary<TypeCode, int>() { { TypeCode.Boolean, 0 }, { TypeCode.String, 1 }, { TypeCode.Double, 2 }, { TypeCode.Int32, 3 } };
 
         static Editor instance;
@@ -100,7 +100,7 @@ namespace Client
                         try
                         {
                             obj = new Object(name, (long)(Lmodels.SelectedItem as Model).id);
-                            obj.id= Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x=>x.objects).Min(i => i.id) - 1;
+                            obj.id = Snapshot.current.models.Count == 0||Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x=>x.objects).Min(i => i.id) - 1;
                             //obj = Network.IoTFactory.CreateObject(new Object(name, (long)(Lmodels.SelectedItem as Model).id));
                         }
                         catch
@@ -124,7 +124,7 @@ namespace Client
                                 try
                                 {
                                     prop = new Property(name, (long)(Lobjects.SelectedItem as Object).id, (int)type, TBValue.Text);
-                                    prop.id= Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y=>y.properties).Min(i => i.id) - 1;
+                                    prop.id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.objects).Count() == 0||Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y=>y.properties).Min(i => i.id) - 1;
                                     //prop = Network.IoTFactory.CreateProperty(new Property(name, (long)(Lobjects.SelectedItem as Object).id, (int)type, TBValue.Text));
                                 }
                                 catch
@@ -146,7 +146,7 @@ namespace Client
                         try
                         {
                             script = new Script(name, (long)(Lproperties.SelectedItem as Property).id, TBScript.Text);
-                            script.id= Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z => z.scripts).Count() == 0 ? -1 :Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z=>z.scripts).Min(i => i.id) - 1;
+                            script.id= Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0||Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z => z.scripts).Count() == 0 ? -1 :Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z=>z.scripts).Min(i => i.id) - 1;
                             //script = Network.IoTFactory.CreateScript(new Script(name, (long)(Lproperties.SelectedItem as Property).id, TBScript.Text));
                         }
                         catch
@@ -387,18 +387,19 @@ namespace Client
             }
         }
         private void DeleteEvent(object sender, RoutedEventArgs e)
-        {          
-            if ((sender as Button).Tag is Model)
+        {
+            if (!(sender is Button)) return;   
+            if (((Button) sender).Tag is Model)
             {
                 if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                 { 
                     //if(Network.IoTFactory.DeleteModel((sender as Button).Tag as Model))
-                    Snapshot.current.models.Remove((sender as Button).Tag as Model);
+                    Snapshot.current.models.Remove(((Button) sender).Tag as Model);
                 }
             }
-            if ((sender as Button).Tag is Object)
+            if (((Button) sender).Tag is Object)
             {
-                Lobjects.SelectedItem = (sender as Button).Tag;
+                Lobjects.SelectedItem = ((Button) sender).Tag;
                 if (Lmodels.SelectedItem != null)
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
@@ -406,19 +407,19 @@ namespace Client
                             (Lmodels.SelectedItem as Model).objects.Remove((sender as Button).Tag as Object);
                     }
             }
-            if ((sender as Button).Tag is Property)
+            if (((Button) sender).Tag is Property)
             {
-                Lproperties.SelectedItem = (sender as Button).Tag;
+                Lproperties.SelectedItem = ((Button) sender).Tag;
                 if (Lobjects.SelectedItem != null)
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
                         //if (Network.IoTFactory.DeleteProperty((sender as Button).Tag as Property))
-                            (Lobjects.SelectedItem as Object).properties.Remove((sender as Button).Tag as Property);
+                            (Lobjects.SelectedItem as Object)?.properties.Remove(((Button) sender).Tag as Property);
                     }
             }
-            if ((sender as Button).Tag is Script)
+            if (((Button) sender).Tag is Script)
             {
-                Lscripts.SelectedItem = (sender as Button).Tag;
+                Lscripts.SelectedItem = ((Button) sender).Tag;
                 if (Lproperties.SelectedItem != null)
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
@@ -430,15 +431,17 @@ namespace Client
         }
 
         private void CopyEvent(object sender, RoutedEventArgs e)
-        { 
-            
-            if ((sender as Button).Tag is Model)
+        {
+            if ((sender as Button) == null) return;
+            if (((Button) sender).Tag is Model)
             {
                 Model model;
                 try
                 {
-                    model = new Model((sender as Button).Tag as Model);
-                    model.id= Snapshot.current.models.Count == 0 ? -1 : Snapshot.current.models.Min(i => i.id) - 1;
+                    model = new Model((sender as Button).Tag as Model)
+                    {
+                        id = !Snapshot.current.models.Any()? -1 : Snapshot.current.models.Min(i => i.id) - 1
+                    };
                     //model = Network.IoTFactory.CreateModel(new Model((sender as Button).Tag as Model));
                 }
                 catch
@@ -451,15 +454,20 @@ namespace Client
                 }
                 Snapshot.current.models.Add(model);
             }
-            if ((sender as Button).Tag is Object)
+            if (((Button) sender).Tag is Object)
             {
                 if (Lmodels.SelectedItem != null)
                 {
                     Object obj;
                     try
                     {
-                        obj = new Object((sender as Button).Tag as Object);
-                        obj.id = Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x=>x.objects).Min(i => i.id) - 1;
+                        obj = new Object(((Button) sender).Tag as Object)
+                        {
+                            id =
+                                !Snapshot.current.models.SelectMany(x => x.objects).Any()
+                                    ? -1
+                                    : Snapshot.current.models.SelectMany(x => x.objects).Min(i => i.id) - 1
+                        };
                         //obj = Network.IoTFactory.CreateObject(new Object((sender as Button).Tag as Object));
                     }
                     catch
@@ -473,15 +481,22 @@ namespace Client
                         (Lmodels.SelectedItem as Model)?.objects.Add(obj);
                 }
             }
-            if ((sender as Button).Tag is Property)
+            if (((Button) sender).Tag is Property)
             {
                 if (Lobjects.SelectedItem != null)
                 {
                     Property prop;
                     try
                     {
-                        prop = new Property((sender as Button).Tag as Property);
-                        prop.id= Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y=>y.properties).Min(i => i.id) - 1;
+                        prop = new Property(((Button) sender).Tag as Property)
+                        {
+                            id =
+                                !Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Any()
+                                    ? -1
+                                    : Snapshot.current.models.SelectMany(x => x.objects)
+                                          .SelectMany(y => y.properties)
+                                          .Min(i => i.id) - 1
+                        };
                         //prop = Network.IoTFactory.CreateProperty(new Property((sender as Button).Tag as Property));
                     }
                     catch
@@ -492,18 +507,29 @@ namespace Client
                     {
                         Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid2"], (string)Application.Current.Resources["Dialogid5"]); return;
                     }
-                                (Lobjects.SelectedItem as Object).properties.Add(prop);
+                                (Lobjects.SelectedItem as Object)?.properties.Add(prop);
                 }
             }
-            if ((sender as Button).Tag is Script)
+            if (((Button) sender).Tag is Script)
             {
                 if (Lproperties.SelectedItem != null)
                 {
                     Script script;
                     try
                     {
-                        script = new Script((sender as Button).Tag as Script);
-                        script.id = Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z => z.scripts).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z=>z.scripts).Min(i => i.id) - 1;
+                        script = new Script((sender as Button).Tag as Script)
+                        {
+                            id =
+                                !Snapshot.current.models.SelectMany(x => x.objects)
+                                    .SelectMany(y => y.properties)
+                                    .SelectMany(z => z.scripts)
+                                    .Any()
+                                    ? -1
+                                    : Snapshot.current.models.SelectMany(x => x.objects)
+                                          .SelectMany(y => y.properties)
+                                          .SelectMany(z => z.scripts)
+                                          .Min(i => i.id) - 1
+                        };
                         //script = Network.IoTFactory.CreateScript(new Script((sender as Button).Tag as Script));
                     }
                     catch
