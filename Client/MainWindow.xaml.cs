@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,14 +12,14 @@ namespace Client
         public static MainWindow instance;
         public MainWindow()
         {
-            Application.Current.Exit += (s, e) => { Settings.Get().Save(); };
+            Application.Current.Exit += (s, e) => { Settings.Get.Save(); };
             Closed += (s, e) => { Controller.Close(); };
             InitializeComponent();
             Settings.Load();
-            if (!string.IsNullOrEmpty(Settings.Get().Login) && !string.IsNullOrEmpty(Settings.Get().Password) && !string.IsNullOrEmpty(Settings.Get().Server) && Settings.Get().Server != null)
-                if (true)//Network.Connect(Settings.Get().Server, Settings.Get().Login, Settings.Get().Password))
+            if (!string.IsNullOrEmpty(Settings.Get.Login) && !string.IsNullOrEmpty(Settings.Get.Password) && !string.IsNullOrEmpty(Settings.Get.Server) && Settings.Get.Server != null)
+                if (Network.Connect(Settings.Get.Server, Settings.Get.Login, Settings.Get.Password))
                 {
-                    Main.GetMainWindow().label1.Content = Settings.Get().Login + '@' + Settings.Get().Server;
+                    Main.GetMainWindow().label1.Content = Settings.Get.Login + '@' + Settings.Get.Server;
                     Main.GetMainWindow().Show();
                     Hide();
                 }
@@ -59,17 +56,17 @@ namespace Client
             Cursor = Cursors.Wait;
                 try
                 {
-                    if (true)//Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
+                    if (Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
                 {
                         Cursor = Cursors.Arrow;
                         Main.GetMainWindow().label1.Content = TBLogin.Text + '@' + textBox.Text;
                         Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
                         Main.GetMainWindow().Show();
                         Hide();
-                        Settings.Get().Login = TBLogin.Text;
-                        Settings.Get().Password = TBPass.Text;
-                        Settings.Get().Server = textBox.Text;
-                        Settings.Get().Save();
+                        Settings.Get.Login = TBLogin.Text;
+                        Settings.Get.Password = TBPass.Text;
+                        Settings.Get.Server = textBox.Text;
+                        Settings.Get.Save();
                     }
                     else
                     {

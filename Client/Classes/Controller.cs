@@ -21,21 +21,21 @@ namespace Client
 {
     static class Controller
     {
-        private static readonly string key = "Q1e3@3e344";
-        private static readonly byte[] salt = new byte[] { 0x15, 0xdc, 0xf5, 0x40, 0xad, 0x5d, 0x7a, 0x0e, 0xc5, 0xae, 0x89, 0xaf, 0x4d, 0xaa, 0xc2, 0x3c };
+        private const string Key = "Q1e3@3e344";
+        private static readonly byte[] Salt = { 0x15, 0xdc, 0xf5, 0x40, 0xad, 0x5d, 0x7a, 0x0e, 0xc5, 0xae, 0x89, 0xaf, 0x4d, 0xaa, 0xc2, 0x3c };
 
         public static void Close()
         {
-            Settings.Get().Save();
+            Settings.Get.Save();
             Application.Current.Shutdown();
         }
 
         public static void SaveToFile(string data)
         {
-            if (key.Length == 0) return;
+            if (Key.Length == 0) return;
             using (var myAes = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt);
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(Key, Salt);
                 myAes.Key = pdb.GetBytes(32);
                 myAes.IV = pdb.GetBytes(16);
                 using (StreamWriter sw = new StreamWriter("user.data", false, Encoding.Default))
@@ -50,7 +50,7 @@ namespace Client
             if (!File.Exists("user.data")) return null;
             using (var myAes = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt);
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(Key, Salt);
                 myAes.Key = pdb.GetBytes(32);
                 myAes.IV = pdb.GetBytes(16);
                 byte[] data;
@@ -76,7 +76,7 @@ namespace Client
                 new Property(-3,"ButtonState","ButtonState",(int)TypeCode.Boolean,-1,null,"false")
             };
 
-            var obj = new ObservableCollection<Object>() { new Object(-1, "TestObject", "TestObject", -1, props) };
+            var obj = new ObservableCollection<Object> { new Object(-1, "TestObject", "TestObject", -1, props) };
 
             var model = new Model(-1, "TestModel", "TestModel", obj);
             Snapshot.current.models.Add(model);
@@ -86,11 +86,11 @@ namespace Client
         static byte[] EncryptStringToBytesAes(string plainText, byte[] Key, byte[] IV)
         {
             if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException("plainText");
+                throw new ArgumentNullException(nameof(plainText));
             if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException(nameof(Key));
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
+                throw new ArgumentNullException(nameof(IV));
             byte[] encrypted;
             // Создаем объект класса AES
             // с определенным ключом и IV.
@@ -122,11 +122,11 @@ namespace Client
         static string DecryptStringFromBytesAes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException("cipherText");
+                throw new ArgumentNullException(nameof(cipherText));
             if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
+                throw new ArgumentNullException(nameof(Key));
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
+                throw new ArgumentNullException(nameof(IV));
             string plaintext;
             // Создаем объект класса AES,
             // Ключ и IV

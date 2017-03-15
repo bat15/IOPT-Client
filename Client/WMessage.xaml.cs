@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Client
 {
@@ -65,26 +54,30 @@ namespace Client
 
     public static class Message
     {
-        public static bool? Show(string Message, string Caption, bool isYesNo)
+        public static bool? Show(string message, string caption, bool isYesNo)
         {
-            if (!isYesNo) { Show(Message, Caption); return false; }
-            var a = new WMessage();
-            a.Yes.Visibility = Visibility.Visible;
-            a.No.Visibility = Visibility.Visible;
-            a.Ok.Visibility = Visibility.Hidden;
-            a.textBox.Text = Message;
-            a.label.Content = Caption;
+            if (!isYesNo) { Show(message, caption); return false; }
+            var a = new WMessage
+            {
+                Yes = {Visibility = Visibility.Visible},
+                No = {Visibility = Visibility.Visible},
+                Ok = {Visibility = Visibility.Hidden},
+                textBox = {Text = message},
+                label = {Content = caption}
+            };
             return a.ShowDialog();
         }
 
-        public static void Show(string Message, string Caption)
+        public static void Show(string message, string caption)
         {
-            var a = new WMessage();
-            a.Yes.Visibility = Visibility.Hidden;
-            a.No.Visibility = Visibility.Hidden;
-            a.Ok.Visibility = Visibility.Visible;
-            a.textBox.Text = Message;
-            a.label.Content = Caption;
+            var a = new WMessage
+            {
+                Yes = {Visibility = Visibility.Hidden},
+                No = {Visibility = Visibility.Hidden},
+                Ok = {Visibility = Visibility.Visible},
+                textBox = {Text = message},
+                label = {Content = caption}
+            };
             a.ShowDialog();
         }
     }

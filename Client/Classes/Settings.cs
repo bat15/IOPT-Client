@@ -12,10 +12,10 @@ namespace Client
     {
         static Settings instance;
 
-        public static Settings Get()
+        public static Settings Get
         {
-            if (instance == null) instance = new Settings();
-            return instance;
+            get { return instance ?? (instance = new Settings()); }
+            set { instance = value; }
         }
         private Settings() { }
 
@@ -24,7 +24,7 @@ namespace Client
         private volatile string _server;
         private volatile string _language;
         private volatile string _theme;
-        private volatile bool _autoupdate = false;
+        private volatile bool _autoupdate;
         private volatile uint _autoupdateinterval = 1;
 
         public static List<string> Themes = new List<string> { "Light", "Dark" };

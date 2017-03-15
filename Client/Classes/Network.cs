@@ -35,33 +35,33 @@ namespace Client
                
                 var httpResponse = (HttpWebResponse)request.GetResponse();
 
-                var coc = new CookieCollection();
-                for (int i = 0; i < httpResponse.Headers.Count; i++)
-                {
-                    string name = httpResponse.Headers.GetKey(i);
-                    if (name != "Set-Cookie")
-                        continue;
-                    string value = httpResponse.Headers.Get(i);
-                    foreach (var singleCookie in value.Split(','))
-                    {
-                        Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
-                        if (match.Captures.Count == 0)
-                            continue;
-                        coc.Add(
-                            new Cookie(
-                                match.Groups[1].ToString(),
-                                match.Groups[2].ToString(),
-                                "/",
-                                request.Host.Split(':')[0]));
+                //var coc = new CookieCollection();
+                //for (int i = 0; i < httpResponse.Headers.Count; i++)
+                //{
+                //    string name = httpResponse.Headers.GetKey(i);
+                //    if (name != "Set-Cookie")
+                //        continue;
+                //    string value = httpResponse.Headers.Get(i);
+                //    foreach (var singleCookie in value.Split(','))
+                //    {
+                //        Match match = Regex.Match(singleCookie, "(.+?)=(.+?);");
+                //        if (match.Captures.Count == 0)
+                //            continue;
+                //        coc.Add(
+                //            new Cookie(
+                //                match.Groups[1].ToString(),
+                //                match.Groups[2].ToString(),
+                //                "/",
+                //                request.Host.Split(':')[0]));
 
-                        Message.Show("Name: " + match.Groups[1].ToString() +
-                                "\nValue: " + match.Groups[2].ToString() +
-                                "\nPath: " + "/IOPT-Server-Tester-1-2/service/"+
-                                "\nHost: " + request.Host.Split(':')[0],"");
-                    }
-                }
+                //        Message.Show("Name: " + match.Groups[1].ToString() +
+                //                "\nValue: " + match.Groups[2].ToString() +
+                //                "\nPath: " + "/IOPT-Server-Tester-1-2/service/"+
+                //                "\nHost: " + request.Host.Split(':')[0],"");
+                //    }
+                //}
                 cookies = new CookieContainer();
-                cookies.Add(coc);
+                cookies.Add(httpResponse.Cookies);
                 //Message.Show(coc.Count.ToString(), "");
                 //Message.Show(new StreamReader(request.GetRequestStream()).ReadToEnd(), "address");
                 //string s = "";
@@ -79,11 +79,11 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get().Server + "/snapshot?user=" + Settings.Get().Login;
+                string url = "http://" + Settings.Get.Server + "/snapshot";//?user=" + Settings.Get.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
-                request.Method = "POST";
+                request.Method = "PUT"; //"POST";
                 request.CookieContainer = cookies;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
@@ -93,10 +93,42 @@ namespace Client
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var responseText = streamReader.ReadToEnd();
-                    //Message.Show(responseText,"");
+                    Message.Show(responseText,"");
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        public static async void GetDataFromServer()
+        {
+            try
+            {
+                string url = "http://" + Settings.Get.Server + "/snapshot";//?user="+Settings.Get.Login;
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.CookieContainer = cookies;
+                request.Method = "GET";
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream resStream = response.GetResponseStream();
+                string resp = null;
+                if (resStream != null)
+                    using (StreamReader reader = new StreamReader(resStream, Encoding.UTF8))
+                    {
+                        resp = await reader.ReadToEndAsync();
+                        resp = WebUtility.HtmlDecode(resp);
+                    }
+                //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, ""); }));
+                if (string.IsNullOrWhiteSpace(resp)) throw new Exception("Can't get data from server");
+                //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate { Message.Show(resp, response.ResponseUri.AbsolutePath); }));
+                Snapshot.current = JsonConvert.DeserializeObject<Snapshot>(resp);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public static async void AutoUpdate()
@@ -107,40 +139,14 @@ namespace Client
                 {
                     try
                     {
-                        if (Settings.Get().AutoUpdate) GetDataFromServer();
-                        Thread.Sleep((int)Settings.Get().AutoUpdateInterval * 1000);
+                        if (Settings.Get.AutoUpdate) GetDataFromServer();
+                        Thread.Sleep((int)Settings.Get.AutoUpdateInterval * 1000);
                     }
                     catch { }
                 }
             });
         }
 
-        public static async void GetDataFromServer()
-        {
-            try
-            {
-                string url = "http://" + Settings.Get().Server + "/snapshot?user="+Settings.Get().Login;
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.CookieContainer = cookies;
-                request.Method = "GET";
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream resStream = response.GetResponseStream();
-                string resp;
-                using (StreamReader reader = new StreamReader(resStream, Encoding.UTF8))
-                {
-                    resp = await reader.ReadToEndAsync();
-                }
-
-                //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, ""); }));
-                resp = WebUtility.HtmlDecode(resp);
-                if (string.IsNullOrWhiteSpace(resp)) throw new Exception("Can't get data from server");
-                await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(resp, ""); }));
-                Snapshot.current = JsonConvert.DeserializeObject<Snapshot>(resp);
-            }
-            catch { }
-
-        }
         //"http://"+snapshot
         /*
         public class IoTFactory

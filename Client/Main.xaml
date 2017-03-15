@@ -16,13 +16,13 @@
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
 
-            <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
+            <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
                 <Border>
                     <Path Data="{StaticResource Settings}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
                     </Path>
                 </Border>
             </Button>
-            <Button x:Name="BLogout" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,83,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="BLogout_Click">
+            <Button x:Name="BLogout" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,83,0" Height="40" HorizontalAlignment="Right" Click="BLogout_Click">
                 <Border>
                     <Path Data="{StaticResource Logout}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
                     </Path>
@@ -62,7 +62,7 @@
                                 <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding name}" HorizontalAlignment="Left" Grid.Column="0"/>
                                 <Button Tag="{Binding}" Width="25" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Click="BAdd_Click" Margin="-5,0,0,0">
                                     <Border>
-                                        <Path Data="{StaticResource Add}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"></Path>
+                                            <Path Data="{StaticResource DashAdd}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"></Path>
                                     </Border>
                                 </Button>
                             </Grid>
@@ -85,11 +85,15 @@
                 <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="24,49,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
             </Grid>
             <ScrollViewer x:Name="stackscroll" Margin="207,91,10,12"/>
-            <Label x:Name="label" Content="{Binding SelectedItem.Name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
-            <!--Delete--><Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14" Visibility="Hidden"/>
+            <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
+            <!--Delete--><Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14"/>
             <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
-            <CheckBox x:Name="checkBox1" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="239,15,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-        </Grid>
+            <CheckBox x:Name="checkBox1" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="239,15,0,0" VerticalAlignment="Top" IsEnabled="False" Opacity="0.08">
+                    <CheckBox.Background>
+                        <SolidColorBrush Color="White"/>
+                    </CheckBox.Background>
+                </CheckBox>
+            </Grid>
     </Border>
     </Grid>
 </Window>
