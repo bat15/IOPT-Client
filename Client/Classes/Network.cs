@@ -32,7 +32,7 @@ namespace Client
                 {
                     streamWriter.Write(JsonConvert.SerializeObject(new { login = login, password = password }));
                 }
-               
+
                 var httpResponse = (HttpWebResponse)request.GetResponse();
 
                 //var coc = new CookieCollection();
@@ -75,15 +75,15 @@ namespace Client
             catch { return false; }
         }
 
-        public static void SendDataToServer()
+        public static async void SendDataToServer()
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//?user=" + Settings.Get.Login;
+                string url = "http://" + Settings.Get.Server + "/snapshot";//"?user= " + Settings.Get.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
-                request.Method = "PUT"; //"POST";
+                request.Method = "PUT";//"POST"; 
                 request.CookieContainer = cookies;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
@@ -93,7 +93,7 @@ namespace Client
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var responseText = streamReader.ReadToEnd();
-                    Message.Show(responseText,"");
+                    //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(responseText, ""); }));
                 }
             }
             catch
@@ -106,7 +106,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//?user="+Settings.Get.Login;
+                string url = "http://" + Settings.Get.Server + "/snapshot";//"?user="+Settings.Get.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.CookieContainer = cookies;
@@ -137,26 +137,79 @@ namespace Client
             {
                 while (true)
                 {
-                    try
+                    Thread.Sleep((int)Settings.Get.AutoUpdateInterval * 1000);
+                    var props = Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties);
+                    if (props.Any())
                     {
-                        if (Settings.Get.AutoUpdate) GetDataFromServer();
-                        Thread.Sleep((int)Settings.Get.AutoUpdateInterval * 1000);
+                        foreach (var p in props)
+                        {
+                            try
+                            {
+                                var newp = IoTFactory.GetProperty(p);
+                                if (newp != null)
+                                {
+                                    p.value=newp.value;
+                                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(p.value, ""); }));
+                                }
+                            }
+                            catch
+                            {
+                                // ignored
+                            }
+                        }
+                        Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Main.GetMainWindow().stackscroll.Content = View.GetDashboard(Main.GetMainWindow().Lobjects.SelectedItem as Object); }));
+                        
                     }
-                    catch { }
                 }
             });
         }
 
         //"http://"+snapshot
-        /*
+
         public class IoTFactory
         {
+            #region Get
+            public static Property GetProperty(Property prop)
+            {
+                if (string.IsNullOrWhiteSpace(prop.pathUnit)) return null;
+                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
+                if (obj == null) return null;
+                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                if (modPath == null) return null;
+                return (Property)Get(modPath + "/" + obj.pathUnit + "/" + prop.pathUnit);
+            }
+
+            private static IoT Get(string path)
+            {
+                try
+                {
+                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
+                    //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "GET";
+                    request.CookieContainer = cookies;
+                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    if (httpResponse.StatusCode != HttpStatusCode.OK) return null;
+                    string responseText;
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        responseText = streamReader.ReadToEnd();
+                        responseText = WebUtility.HtmlDecode(responseText);
+                    }
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(responseText,""); }));
+                    return JsonConvert.DeserializeObject<Property>(responseText);
+                }
+                catch { return null; }
+            }
+            #endregion
+
             #region Create
             public static Model CreateModel(Model newModel)
             {
                 if (string.IsNullOrWhiteSpace(newModel.pathUnit)) return null;
                 newModel.id = null;
-                return (Model)Register(newModel,"");
+                return (Model)Register(newModel, "");
             }
 
             public static Object CreateObject(Object newObject)
@@ -173,9 +226,9 @@ namespace Client
                 newProperty.id = null;
                 var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == newProperty.objectId select o).First();
                 if (obj == null) return null;
-                var modPath= (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
                 if (modPath == null) return null;
-                return (Property)Register(newProperty,modPath+"/"+obj.pathUnit);
+                return (Property)Register(newProperty, modPath + "/" + obj.pathUnit);
             }
             public static Script CreateScript(Script newScript)
             {
@@ -204,7 +257,7 @@ namespace Client
             {
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/"+path;
+                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "POST";
@@ -246,7 +299,7 @@ namespace Client
                 if (string.IsNullOrWhiteSpace(newObject.pathUnit)) return false;
                 var modPath = (from m in Snapshot.current.models where m.id == newObject.modelId select m.pathUnit).First();
                 if (modPath == null) return false;
-                return Change(newObject, modPath+"/"+newObject.pathUnit);
+                return Change(newObject, modPath + "/" + newObject.pathUnit);
             }
             public static bool UpdateProperty(Property newProperty)
             {
@@ -276,15 +329,15 @@ namespace Client
             {
                 return false;
             }
-            private static bool Change(IoT obj,string path)
+            private static bool Change(IoT obj, string path)
             {
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/" + path;
+                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
-                    request.Method = "PATCH";
+                    request.Method = "POST";//"PATCH"
                     request.CookieContainer = cookies;
                     using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                     {
@@ -349,7 +402,7 @@ namespace Client
             {
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/" + path;
+                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
@@ -368,6 +421,6 @@ namespace Client
             }
             #endregion
         }
-        */
+
     }
 }

@@ -196,8 +196,8 @@ namespace Client
                 case TypeCode.Boolean:
                     var tmp = new CheckBox() { Margin=new Thickness(0,5,0,5)};
                     tmp.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    //tmp.Checked += (s,e) => { Network.IoTFactory.UpdateProperty(prop); };
-                    //tmp.Unchecked += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
+                    tmp.Checked += (s,e) => { Network.IoTFactory.UpdateProperty(prop); };
+                    tmp.Unchecked += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
                     child.Children.Add(tmp);
                     break;
                 case TypeCode.Int32:

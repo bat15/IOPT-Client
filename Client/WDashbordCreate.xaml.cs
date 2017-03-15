@@ -82,14 +82,14 @@ namespace Client
                 if ((bool)(pair.Value[0] as CheckBox).IsChecked)
                 {
                     if (pair.Key.type < 7 || pair.Key.type > 15)
-                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property,d.id, (bool)(pair.Value[1] as CheckBox).IsChecked,null,null));
+                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property,(long)d.id, (bool)(pair.Value[1] as CheckBox).IsChecked,null,null));
                     else
                     {
                         double min, max;
                         double.TryParse((pair.Value[2] as TextBox).Text,out min);
                         double.TryParse((pair.Value[3] as TextBox).Text, out max);
                         if (min >= max) { Message.Show((string)Application.Current.Resources["Errid3"], (string)Application.Current.Resources["Dialogid5"]); return; }
-                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property, d.id, (bool)(pair.Value[1] as CheckBox).IsChecked, min, max));
+                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property, (long)d.id, (bool)(pair.Value[1] as CheckBox).IsChecked, min, max));
                     }
                 }
             Snapshot.current.dashboards.Add(d);

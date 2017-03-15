@@ -114,7 +114,7 @@ namespace Client
                 try
                 {
                     Network.GetDataFromServer();
-                    Snapshot.current.lastUpdate = DateTimeOffset.Now;
+                    Snapshot.current.lastUpdate = DateTimeOffset.Now.ToString();
                     await Dispatcher.BeginInvoke(new Action(delegate ()
                     {
                         DGProp.ItemsSource = View.ModelToView();
@@ -204,7 +204,7 @@ namespace Client
             if (sender != null)
             {
                 var path = new System.Windows.Shapes.Path() { };
-                path.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "Update");
+                path.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "Upload");
                 path.SetResourceReference(Shape.FillProperty, "MainColor");
                 var but = new Border() { Child = path };
                 (sender as Button).Content = but;

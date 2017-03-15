@@ -10,7 +10,7 @@ namespace Client
 {
     public abstract class IoT
     {
-        protected long _id;
+        protected long? _id;
         protected string _pathUnit;
         protected string _name;
         //генерирует ид по имени
@@ -23,7 +23,7 @@ namespace Client
             return tmpid + i.ToString();
         }
 
-        public long id { get { return _id; } set { _id = value; } }
+        public long? id { get { return _id; } set { _id = value; } }
         public string pathUnit { get { return _pathUnit; } set { _pathUnit = value; } }
         public string name { get { return _name; } set { _name = value; pathUnit = GenerateId(value); } }
         public override string ToString() { return name; }
@@ -33,10 +33,10 @@ namespace Client
 
     public class Snapshot
     {
-        long _id;
+        long? _id;
         static Snapshot _instance;
 
-        public long id { get { return _id; } set { _id = value; } }
+        public long? id { get { return _id; } set { _id = value; } }
         public static Snapshot current { get { return _instance ?? (_instance = new Snapshot()); } set { _instance = value; } }
 
         Snapshot() { }
@@ -44,8 +44,8 @@ namespace Client
         public ObservableCollection<Model> models { get; } = new ObservableCollection<Model>();
 
         public ObservableCollection<Dashboard> dashboards { get; } = new ObservableCollection<Dashboard>();
-
-        public DateTimeOffset lastUpdate { get; set; }
+        //[JsonIgnore]
+        public string lastUpdate { get; set; }
     }
 
     public class Model : IoT
@@ -94,9 +94,9 @@ namespace Client
 
     public sealed class Object : IoT
     {
-        long _modelId;
+        long? _modelId;
         ObservableCollection<Property> _properties;
-        public long modelId { get { return _modelId; } set { _modelId = value; } }
+        public long? modelId { get { return _modelId; } set { _modelId = value; } }
         public ObservableCollection<Property> properties
         {
             get { return _properties ?? (_properties = new ObservableCollection<Property>()); }
@@ -145,7 +145,7 @@ namespace Client
     public sealed class Property : IoT
     {
         int _type;
-        long _objectId;
+        long? _objectId;
         ObservableCollection<Script> _scripts;
         string _value;
         public string value
@@ -161,7 +161,7 @@ namespace Client
             }
         }
         public int type { get { return _type; } set { _type = value; } }
-        public long objectId { get { return _objectId; } set { _objectId = value; } }
+        public long? objectId { get { return _objectId; } set { _objectId = value; } }
 
         public ObservableCollection<Script> scripts
         {
@@ -226,8 +226,8 @@ namespace Client
     public class Script : IoT
     {
         string _value;
-        long _propertyId;
-        public long propertyId { get { return _propertyId; } set { _propertyId = value; } }
+        long? _propertyId;
+        public long? propertyId { get { return _propertyId; } set { _propertyId = value; } }
         public string value { get { return _value; } set { _value = value; } }
         public Script() { }
         [JsonConstructor]
@@ -284,11 +284,11 @@ namespace Client
 
     public class Dashboard
     {
-        long _id;
-        long _objectId;
-        public long id { get { return _id; } set { _id = value; } }
+        long? _id;
+        long? _objectId;
+        public long? id { get { return _id; } set { _id = value; } }
 
-        public long objectId { get { return _objectId; } set { _objectId = value; } }
+        public long? objectId { get { return _objectId; } set { _objectId = value; } }
 
         public List<PropertyMap> view { get; } = new List<PropertyMap>();
 
@@ -302,14 +302,14 @@ namespace Client
         public Dashboard(Object parent)
         {
             _id = Snapshot.current.dashboards.Count == 0 ? 0 : Snapshot.current.dashboards.MaxBy(x => x.id).id + 1;
-            objectId = parent.id;
+            objectId = (long)parent.id;
         }
 
         public class PropertyMap
         {
-            public long id { get; set; }
+            public long? id { get; set; }
             public Property property { get; set; }
-            public long dashboardId { get; set; }
+            public long? dashboardId { get; set; }
 
             public bool isControl { get; set; }
 
