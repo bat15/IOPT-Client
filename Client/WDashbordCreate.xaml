@@ -5,25 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="" Height="319.703" Width="545.34" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png" WindowStartupLocation="CenterScreen">
-    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}" >
-        <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
-            <Button x:Name="Exit" Width="29" Style="{DynamicResource TranspButton}" Margin="0,3,3,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Click="Exit_Click">
-                <Border>
-                    <Path Data="{StaticResource Back}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
-                    </Path>
-                </Border>
-            </Button>
+        Title="" Height="339.703" Width="565.34" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="0"/>
+    </Window.Background>
+    <Grid Margin="10" UseLayoutRounding="True">
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+        </Grid.Effect>
+        <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
+            <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+                <Button x:Name="Exit" Width="29" Style="{DynamicResource TranspButton}" Margin="0,3,3,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Click="Exit_Click">
+                    <Border>
+                        <Path Data="{StaticResource Back}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                        </Path>
+                    </Border>
+                </Button>
 
-            <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="16" Foreground="{DynamicResource OnLightFontColor}"/>
-            <Button x:Name="Create" Content="{StaticResource Editid1}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Click="Create_Click" Height="22" Width="76"/>
-            <ScrollViewer Height="219" Margin="10,60,10,0" VerticalAlignment="Top">
-                <StackPanel x:Name="sw"/>
-            </ScrollViewer>
-            <Label x:Name="label1" Content="{DynamicResource Editid1}" HorizontalAlignment="Left" Margin="145,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold" Width="67"/>
-            <Label x:Name="label2" Content="{DynamicResource WDCid1}" HorizontalAlignment="Left" Margin="236,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
-            <Label x:Name="label3" Content="{DynamicResource WDCid2}" HorizontalAlignment="Left" Margin="364,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
-            <Label x:Name="label4" Content="{DynamicResource WDCid3}" HorizontalAlignment="Left" Margin="455,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
-        </Grid>
-    </Border>
+                <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Black" FontSize="16" Foreground="{DynamicResource OnLightFontColor}"/>
+                <Button x:Name="Create" Content="{StaticResource Editid1}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Click="Create_Click" Height="22" Width="76"/>
+                <ScrollViewer Height="219" Margin="10,60,10,0" VerticalAlignment="Top">
+                    <StackPanel x:Name="sw"/>
+                </ScrollViewer>
+                <Label x:Name="label1" Content="{DynamicResource Editid1}" HorizontalAlignment="Left" Margin="145,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold" Width="67"/>
+                <Label x:Name="label2" Content="{DynamicResource WDCid1}" HorizontalAlignment="Left" Margin="236,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
+                <Label x:Name="label3" Content="{DynamicResource WDCid2}" HorizontalAlignment="Left" Margin="364,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
+                <Label x:Name="label4" Content="{DynamicResource WDCid3}" HorizontalAlignment="Left" Margin="455,34,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" FontWeight="Bold"/>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

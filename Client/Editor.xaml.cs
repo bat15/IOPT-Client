@@ -91,7 +91,6 @@ namespace Client
                         {
                             int t = Lmodels.SelectedIndex == -1 ? 0 : Lmodels.SelectedIndex;
                             Lmodels.SelectedIndex = -1;
-                            Lmodels.ItemsSource = Snapshot.current.models;
                             Lmodels.SelectedItem = Lmodels.Items[t];
                         }
                         catch { }
@@ -280,14 +279,15 @@ namespace Client
 
         private async void OPShowHide()
         {
+            
             BSave.IsEnabled = false;
             await Task.Run(async () =>
             {
                 if (EIsOpen)
                 {
-                    for (double i = 0; i >= -268; i -= 4)
+                    for (double i = 0; i >= -290; i -= 4)
                     {
-                        Thread.Sleep(SHAnimationTime / 67);
+                        Thread.Sleep(SHAnimationTime * 4 / 290);
                         await Dispatcher.BeginInvoke(new Action(delegate ()
                         {
                             editOptions.Margin = new Thickness(i, 0, 0, 0);
@@ -296,9 +296,9 @@ namespace Client
                 }
                 else
                 {
-                    for (double i = -268; i <= 0; i += 4)
+                    for (double i = -290; i <= 0; i += 4)
                     {
-                        Thread.Sleep(SHAnimationTime / 67);
+                        Thread.Sleep(SHAnimationTime * 4 / 290);
                         await Dispatcher.BeginInvoke(new Action(delegate ()
                         {
                             editOptions.Margin = new Thickness(i, 0, 0, 0);
@@ -307,7 +307,7 @@ namespace Client
                 }
 
             });
-            EIsOpen = editOptions.Margin.Left == 0;
+            EIsOpen = editOptions.Margin.Left > -100;
             BSave.IsEnabled = true;
         }
 

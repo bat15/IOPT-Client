@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 
 namespace Client
@@ -71,24 +72,24 @@ namespace Client
             return res;
         }
 
-        public static UIElement GetElemetsPanels(Model model)
-        {
-            var Result = new StackPanel() { Orientation = Orientation.Vertical };
-            if (model==null) return Result;
-            foreach (var obj in model.objects)
-            {
-                var WP = new StackPanel() { Orientation = Orientation.Horizontal };
-                var l = new Label() { Content = obj.name, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 16 };
-                l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                WP.Children.Add(l);
-                Result.Children.Add(WP);
-                foreach (var prop in obj.properties)
-                {
-                    Result.Children.Add(GetPropertyView(prop));
-                }
-            }
-            return Result;
-        }
+        //public static UIElement GetElemetsPanels(Model model)
+        //{
+        //    var Result = new StackPanel() { Orientation = Orientation.Vertical };
+        //    if (model==null) return Result;
+        //    foreach (var obj in model.objects)
+        //    {
+        //        var WP = new StackPanel() { Orientation = Orientation.Horizontal };
+        //        var l = new Label() { Content = obj.name, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 16 };
+        //        l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
+        //        WP.Children.Add(l);
+        //        Result.Children.Add(WP);
+        //        foreach (var prop in obj.properties)
+        //        {
+        //            Result.Children.Add(GetPropertyView(prop, Dashboard.PropertyMap plink));
+        //        }
+        //    }
+        //    return Result;
+        //}
 
 
         public static UIElement GetDashboard(Object obj)
@@ -100,12 +101,18 @@ namespace Client
             if (tmp.Count() == 0) return Result;
             foreach (var dash in tmp)
             {
+                DropShadowEffect shadow = new DropShadowEffect() { BlurRadius = 6, ShadowDepth = 6 };
+               
+
                 //добавить тень вместто бордера
-                var dashboard = new StackPanel() { Orientation = Orientation.Horizontal };
-                var border = new Border() { Child = dashboard, BorderThickness = new Thickness(1), Margin = new Thickness(0, 10, 0, 0), Padding = new Thickness(0,2,0,2) };
+                var dashboard = new StackPanel() { Orientation = Orientation.Horizontal, SnapsToDevicePixels = true };
+                dashboard.SetResourceReference(Control.BackgroundProperty,"BackgroundColor");
+                var border = new Border() { Child = dashboard, BorderThickness = new Thickness(1), SnapsToDevicePixels = true };
+                var temp = new Grid() { Effect = shadow, Margin = new Thickness(6, 16, 6, 6),SnapsToDevicePixels=true };
+                temp.Children.Add(border);
                 border.SetResourceReference(Control.BorderBrushProperty, "MainColor");
-                var e = new StackPanel() { Orientation = Orientation.Vertical };
-                var n = new StackPanel() { Orientation = Orientation.Vertical };
+                var e = new StackPanel() { Orientation = Orientation.Vertical,UseLayoutRounding=true };
+                var n = new StackPanel() { Orientation = Orientation.Vertical, UseLayoutRounding = true };
                 dashboard.Children.Add(e);
                 dashboard.Children.Add(n);
                 foreach (var t in dash.view)
@@ -116,15 +123,15 @@ namespace Client
                     }
                     else
                     {
-                        n.Children.Add(GetPropertyView(t.property));
+                        n.Children.Add(GetPropertyView(t.property,t));
                     }
                 }
-                Result.Children.Add(border);
+                Result.Children.Add(temp);
             }
             return Result;
         }
 
-        private static UIElement GetPropertyView(Property prop)
+        private static UIElement GetPropertyView(Property prop, Dashboard.PropertyMap plink)
         {
             var child = new StackPanel() { Orientation = Orientation.Horizontal };
             var l = new Label() { Content = prop.name, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 200 };
@@ -157,14 +164,18 @@ namespace Client
                 case 14:
                 case 15:
                 case 13:
-
+                    var pb = new ProgressBar() { Width = 150, Minimum = (long)plink.min, Maximum = (long)plink.max,IsIndeterminate=false };
+                    pb.SetBinding(ProgressBar.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    pb.SetResourceReference(ProgressBar.ForegroundProperty,"MainColor");
                     l = new Label() { Content = double.Parse(prop.value), HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 20, FontFamily = new System.Windows.Media.FontFamily("Consolas") };
                     l.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    child.Children.Add(l);
+                    l.SetBinding(Label.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    child.Children.Add(pb);
                     break;
                 case 18:
                     l = new Label() { Content = "\""+prop.value+ "\"", HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12,FontFamily=new System.Windows.Media.FontFamily("Consolas") };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
+                    l.SetBinding(Label.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
                     child.Children.Add(l);
                     break;
             }

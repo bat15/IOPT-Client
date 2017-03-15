@@ -52,7 +52,7 @@
     <v:String x:Key="MDialogid2">Нет</v:String>
     <v:String x:Key="MDialogid3">Ок</v:String>
 
-    <v:String x:Key="WDCid1">Управляющее</v:String>
+    <v:String x:Key="WDCid1">Управляемое</v:String>
     <v:String x:Key="WDCid2">Мин</v:String>
     <v:String x:Key="WDCid3">Макс</v:String>
 </ResourceDictionary>

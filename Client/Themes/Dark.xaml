@@ -14,7 +14,8 @@
     <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3fff5722" />
     <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="Transparent" />
 
-    <Color x:Key="ShadowColor" R="236" G="239" B="241" />
+    <!--<Color x:Key="ShadowColor" R="236" G="239" B="241" />-->
+    <Color x:Key="ShadowColor" R="139" G="195" B="74" />
 
     <SolidColorBrush x:Key="OnLightFontColor" Color="#eceff1" />
     <SolidColorBrush x:Key="OnDarkFontColor" Color="#eceff1" />
