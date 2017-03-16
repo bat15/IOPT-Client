@@ -79,11 +79,11 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//"?user= " + Settings.Get.Login;
+                string url = "http://" + Settings.Get.Server + "/snapshot?user=" + Settings.Get.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
-                request.Method = "PUT";//"POST"; 
+                request.Method ="POST"; // "PUT";
                 request.CookieContainer = cookies;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
@@ -106,7 +106,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//"?user="+Settings.Get.Login;
+                string url = "http://" + Settings.Get.Server + "/snapshot?user="+Settings.Get.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.CookieContainer = cookies;
@@ -148,7 +148,7 @@ namespace Client
                                 var newp = IoTFactory.GetProperty(p);
                                 if (newp != null)
                                 {
-                                    p.value=newp.value;
+                                    p.value=newp;
                                     //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(p.value, ""); }));
                                 }
                             }
@@ -163,42 +163,51 @@ namespace Client
                 }
             });
         }
-
+        public class TmpProperty
+        {
+            public string name { get; set; }
+            public int type { get; set; }
+            public string value { get; set; }
+        }
         //"http://"+snapshot
 
         public class IoTFactory
         {
             #region Get
-            public static Property GetProperty(Property prop)
+            public static string GetProperty(Property prop)
             {
                 if (string.IsNullOrWhiteSpace(prop.pathUnit)) return null;
                 var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
                 if (obj == null) return null;
                 var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
                 if (modPath == null) return null;
-                return (Property)Get(modPath + "/" + obj.pathUnit + "/" + prop.pathUnit);
+                return Get(modPath + "/" + obj.pathUnit + "/" + prop.pathUnit);
             }
 
-            private static IoT Get(string path)
+
+            private static string Get(string path)
             {
                 try
                 {
-                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
+                    string url = "http://" + Settings.Get.Server + "/models/" + path + "?user=" + Settings.Get.Login;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "GET";
                     request.CookieContainer = cookies;
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                    if (httpResponse.StatusCode != HttpStatusCode.OK) return null;
+                    request.Timeout = 1000;
+                    var httpResponse =(HttpWebResponse)request.GetResponseAsync().Result;
+                    if (httpResponse.StatusCode != HttpStatusCode.OK|| httpResponse.StatusCode != HttpStatusCode.Found) return null;
                     string responseText;
                     using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                     {
                         responseText = streamReader.ReadToEnd();
                         responseText = WebUtility.HtmlDecode(responseText);
                     }
-                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(responseText,""); }));
-                    return JsonConvert.DeserializeObject<Property>(responseText);
+                    responseText=responseText.Substring(responseText.IndexOf("value") + 6);
+                    responseText = responseText.Substring(0, responseText.IndexOf('\"'));
+                    Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(responseText,""); }));
+                    return responseText;
                 }
                 catch { return null; }
             }
@@ -333,17 +342,22 @@ namespace Client
             {
                 try
                 {
-                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
+                    var tmp = new TmpProperty {name = obj.name,type = ((Property)obj).type,value = ((Property)obj).value };
+                    string url = "http://" + Settings.Get.Server + "/models/" + path+"?user="+Settings.Get.Login;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "POST";//"PATCH"
                     request.CookieContainer = cookies;
+                    //request.Timeout = 3000;
                     using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                     {
-                        streamWriter.Write(JsonConvert.SerializeObject(obj));
+                        //streamWriter.Write("{\"value\":" + ((Property)obj).value + "}");
+                        streamWriter.Write("{\"value\":" + ((Property)obj).value + "}");
                     }
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show("{\"value\":" + ((Property)obj).value + "}", url); }));
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, url); }));
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
                     if (httpResponse.StatusCode == HttpStatusCode.OK) return true;
                     else return false;
                     //using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))

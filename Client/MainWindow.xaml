@@ -14,36 +14,36 @@
             <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
-        <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
-            <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="26" Margin="181,189,177,131" Text="192.168.43.6:1025" VerticalAlignment="Center" Width="163" VerticalContentAlignment="Center"/>
-            <Label x:Name="label" Content="{DynamicResource Sid1}" Margin="181,156,177,161" Foreground="{DynamicResource OnLightFontColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="163" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
-            <Button x:Name="Connect" Content="{DynamicResource Sid2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="Connect_Click" Height="30" Margin="209,271,210,45" />
-            <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
-                <Border>
-                    <Path Data="{StaticResource Settings}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
-                    </Path>
-                </Border>
-            </Button>
-            <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,3,8,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Click="Exit_Click">
-                <Border>
-                    <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
-                    </Path>
-                </Border>
-            </Button>
-            <Button x:Name="BGetCert" Style="{DynamicResource TranspButton}" Margin="304,223,0,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Left" Click="BGetCert_Click" Width="40">
-                <Border>
-                    <Path Data="{StaticResource GetCert}" Fill="{DynamicResource MainColor}" Stretch="Uniform" Visibility="Hidden">
-                    </Path>
-                </Border>
-            </Button>
-            
-            <TextBox x:Name="TBPass" Height="23" Margin="181,128,177,0" Text="123" VerticalAlignment="Top"/>
-            <TextBox x:Name="TBLogin" HorizontalAlignment="Left" Height="23" Margin="181,65,0,0" Text="iks" VerticalAlignment="Top" Width="163"/>
-            <Label x:Name="label1" FontSize="14" Content="{DynamicResource Sid3}" Margin="181,36,177,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            <Label x:Name="label2" FontSize="14" Content="{DynamicResource Sid4}" Margin="181,97,177,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            <Label x:Name="label3" FontSize="14" Content="{DynamicResource Sid5}" Margin="181,226,217,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden"/>
-            <Label x:Name="label4" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColor}" FontFamily="Consolas" FontWeight="Bold" FontSize="10"/>
-        </Grid>
-    </Border>
+            <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+                <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="47" Margin="153,190,150,109" Text="193.32.20.242:8080/IOPT-Server-Prod-1/service" VerticalAlignment="Center" Width="218" VerticalContentAlignment="Center"/>
+                <Label x:Name="label" Content="{DynamicResource Sid1}" Margin="181,156,177,161" Foreground="{DynamicResource OnLightFontColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="163" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
+                <Button x:Name="Connect" Content="{DynamicResource Sid2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="Connect_Click" Height="30" Margin="209,271,210,45" />
+                <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
+                    <Border>
+                        <Path Data="{StaticResource Settings}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                        </Path>
+                    </Border>
+                </Button>
+                <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,3,8,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Click="Exit_Click">
+                    <Border>
+                        <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
+                        </Path>
+                    </Border>
+                </Button>
+                <Button x:Name="BGetCert" Style="{DynamicResource TranspButton}" Margin="304,223,0,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Left" Click="BGetCert_Click" Width="40">
+                    <Border>
+                        <Path Data="{StaticResource GetCert}" Fill="{DynamicResource MainColor}" Stretch="Uniform" Visibility="Hidden">
+                        </Path>
+                    </Border>
+                </Button>
+
+                <TextBox x:Name="TBPass" Height="23" Margin="181,128,177,0" Text="123" VerticalAlignment="Top"/>
+                <TextBox x:Name="TBLogin" HorizontalAlignment="Left" Height="23" Margin="181,65,0,0" Text="iks" VerticalAlignment="Top" Width="163"/>
+                <Label x:Name="label1" FontSize="14" Content="{DynamicResource Sid3}" Margin="181,36,177,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <Label x:Name="label2" FontSize="14" Content="{DynamicResource Sid4}" Margin="181,97,177,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <Label x:Name="label3" FontSize="14" Content="{DynamicResource Sid5}" Margin="181,226,217,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden"/>
+                <Label x:Name="label4" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColor}" FontFamily="Consolas" FontWeight="Bold" FontSize="10"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

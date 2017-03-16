@@ -86,7 +86,7 @@
             </Grid>
             <ScrollViewer x:Name="stackscroll" Margin="207,91,10,12"/>
             <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
-            <!--Delete--><Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14"/>
+            <!--Delete--><Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14" Visibility="Hidden"/>
             <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
             <CheckBox x:Name="checkBox1" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="239,15,0,0" VerticalAlignment="Top" IsEnabled="False" Opacity="0.08">
                     <CheckBox.Background>

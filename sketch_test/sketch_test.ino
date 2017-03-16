@@ -61,10 +61,10 @@ void loop() {
   Serial.print(" | Button: ");
   Serial.println(buttonState);
   String bs=buttonState==0?String("true"):String("false");
-  String json= String("{\"value\":\"") +xPosition+"\",\"type\":9,\"objectId\":-1,\"scripts\":[],\"id\":-2,\"pathUnit\":\"XPosition\",\"name\":\"XPosition\"}";
+  String json= String("{\"value\":\"") +xPosition+"\"}";
   sendData(json,url_xcontroller);
-
-  json= String("{\"value\":\"") +bs+"\",\"type\":3,\"objectId\":-1,\"scripts\":[],\"id\":-3,\"pathUnit\":\"ButtonState\",\"name\":\"ButtonState\"}";
+//{"name":"XPosition","type":9,"value":"0"}
+  json= String("{\"value\":\"") +bs+"\"}";
   sendData(json,url_button);
   getData();
   times=millis();
@@ -101,7 +101,7 @@ void getData()
     String line = client.readStringUntil('\r');
      //Serial.println(line);
     line = line.substring(line.indexOf("value"));
-    line = line.substring(10);
+    //line = line.substring(10);
     //line = line.substring(0, line.indexOf('"'));
     line.toLowerCase();
      //Serial.println(line);
