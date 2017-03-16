@@ -9,3 +9,6 @@ C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\bin\Debug\Newto
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.csprojResolveAssemblyReference.cache
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.dll
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.pdb
+D:\Client\UTests\obj\Debug\UTests.csprojResolveAssemblyReference.cache
+D:\Client\UTests\obj\Debug\UTests.dll
+D:\Client\UTests\obj\Debug\UTests.pdb

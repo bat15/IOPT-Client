@@ -15,7 +15,7 @@
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
         <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
-            <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="26" Margin="181,189,177,131" Text="193.32.20.242:8080/IOPT-Server-Tester-1-2/service" VerticalAlignment="Center" Width="163" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="26" Margin="181,189,177,131" Text="192.168.43.6:1025" VerticalAlignment="Center" Width="163" VerticalContentAlignment="Center"/>
             <Label x:Name="label" Content="{DynamicResource Sid1}" Margin="181,156,177,161" Foreground="{DynamicResource OnLightFontColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="163" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
             <Button x:Name="Connect" Content="{DynamicResource Sid2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="Connect_Click" Height="30" Margin="209,271,210,45" />
             <Button x:Name="BSettings" Width="40" Style="{DynamicResource TranspButton}" Margin="0,0,43,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" Click="Settings_Click">
