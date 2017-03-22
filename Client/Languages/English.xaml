@@ -7,6 +7,9 @@
     <v:String x:Key="Sid3">Login</v:String>
     <v:String x:Key="Sid4">Password</v:String>
     <v:String x:Key="Sid5">Certificate</v:String>
+    <v:String x:Key="Sid6">Add</v:String>
+    <v:String x:Key="Sid7">Edit</v:String>
+    <v:String x:Key="Sid8">Select a connection</v:String>
 
     <v:String x:Key="Errid1">Unable connect to server, check the address or try again later.</v:String>
     <v:String x:Key="Errid2">Choose parent value in listbox.</v:String>

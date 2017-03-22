@@ -23,7 +23,7 @@
                     </Button>
                     <Label x:Name="label" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="242" VerticalContentAlignment="Center" Foreground="{DynamicResource OnDarkFontColor}" FontSize="14"/>
                 </Grid>
-                <TextBox x:Name="textBox" Margin="10,35,10,0" BorderThickness="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="Sitka Heading" FontSize="20" VerticalScrollBarVisibility="Visible" Height="116" VerticalAlignment="Top"/>
+                <TextBox x:Name="textBox" Margin="10,35,10,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="Sitka Heading" FontSize="20" VerticalScrollBarVisibility="Visible" Height="116" VerticalAlignment="Top" BorderBrush="#008BC34A"/>
                 <Button x:Name="Yes" Width="45" Style="{DynamicResource TranspButton}" VerticalAlignment="Bottom" Height="45" HorizontalAlignment="Left" Click="Yes_Click" Margin="10,0,0,4">
                     <Border>
                         <Path Data="{StaticResource Yes}" Fill="{DynamicResource MainColor}" Stretch="Uniform">

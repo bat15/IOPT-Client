@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +11,14 @@ namespace Client
 {
     public class Settings
     {
+        public static ObservableCollection<Settings> AccountsSettings { get; set; } = new ObservableCollection<Settings>();
         static Settings instance;
 
-        public static Settings Get
+        public static Settings Current
         {
             get { return instance ?? (instance = new Settings()); }
             set { instance = value; }
         }
-        private Settings() { }
 
         private volatile string _login;
         private volatile string _password;
@@ -67,18 +68,18 @@ namespace Client
             set { _autoupdate = value; }
         } 
         public uint AutoUpdateInterval { get { return _autoupdateinterval; } set { _autoupdateinterval = value < 1 ? 1 : value; } }
-        public void Save()
+        public static void Save()
         {
             try
             {
-                Controller.SaveToFile(JsonConvert.SerializeObject(instance));
+                Controller.SaveToFile(JsonConvert.SerializeObject(AccountsSettings));
             }
             catch { }
         }
 
         public static void Load()
         {
-            instance = JsonConvert.DeserializeObject<Settings>(Controller.LoadFromFile() ?? "");
+            AccountsSettings = JsonConvert.DeserializeObject<ObservableCollection<Settings>>(Controller.LoadFromFile() ?? "");
             //MessageBox.Show(Get().Login + " " + Get().Password + " " + Get().Server + " " + Get().Language + " " + Get().Theme);
         }
     }

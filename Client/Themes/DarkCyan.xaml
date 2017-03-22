@@ -11,7 +11,7 @@
     <SolidColorBrush x:Key="DisabledColor" Color="#af4dd0e1" />
     <SolidColorBrush x:Key="SelectionColor" Color="#4dd0e1" />
 
-    <SolidColorBrush x:Key="RowBackgroundColor" Color="#757575" />
+    <SolidColorBrush x:Key="RowBackgroundColor" Color="Transparent" />
     <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3f4dd0e1" />
     <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="Transparent" />
 

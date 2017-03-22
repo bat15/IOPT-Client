@@ -84,9 +84,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Controller.cs" />
-    <Compile Include="Editor.xaml.cs">
-      <DependentUpon>Editor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Classes\IOPTDataClasses.cs" />
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
@@ -99,14 +96,7 @@
     <Compile Include="WMessage.xaml.cs">
       <DependentUpon>WMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WSettings.xaml.cs">
-      <DependentUpon>WSettings.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Classes\View.cs" />
-    <Page Include="Editor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Languages\English.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,10 +138,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WMessage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

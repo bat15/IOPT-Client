@@ -26,7 +26,7 @@ namespace Client
 
         public static void Close()
         {
-            Settings.Get.Save();
+            Settings.Save();
             Application.Current.Shutdown();
         }
 

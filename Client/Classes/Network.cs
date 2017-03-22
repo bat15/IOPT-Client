@@ -79,7 +79,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot?user=" + Settings.Get.Login;
+                string url = "http://" + Settings.Current.Server + "/snapshot?user=" + Settings.Current.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
@@ -106,7 +106,7 @@ namespace Client
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot?user="+Settings.Get.Login;
+                string url = "http://" + Settings.Current.Server + "/snapshot?user="+Settings.Current.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.CookieContainer = cookies;
@@ -137,7 +137,7 @@ namespace Client
             {
                 while (true)
                 {
-                    Thread.Sleep((int)Settings.Get.AutoUpdateInterval * 1000);
+                    Thread.Sleep((int)Settings.Current.AutoUpdateInterval * 1000);
                     var props = Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties);
                     if (props.Any())
                     {
@@ -182,7 +182,7 @@ namespace Client
             {
                 try
                 {
-                    string url = "http://" + Settings.Get.Server + "/models/" + path + "?user=" + Settings.Get.Login;
+                    string url = "http://" + Settings.Current.Server + "/models/" + path + "?user=" + Settings.Current.Login;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
@@ -259,7 +259,7 @@ namespace Client
             {
                 try
                 {
-                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
+                    string url = "http://" + Settings.Current.Server + "/snapshot/" + path;
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "POST";
@@ -335,8 +335,8 @@ namespace Client
             {
                 try
                 {
-                    var tmp = new TmpProperty {name = obj.name,type = ((Property)obj).type,value = ((Property)obj).value };
-                    string url = "http://" + Settings.Get.Server + "/models/" + path+"?user="+Settings.Get.Login;
+                    //var tmp = new TmpProperty {name = obj.name,type = ((Property)obj).type,value = ((Property)obj).value };
+                    string url = "http://" + Settings.Current.Server + "/models/" + path+"?user="+Settings.Current.Login;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
@@ -391,8 +391,8 @@ namespace Client
             {
                 try
                 {
-                    var tmp = new TmpProperty { name = obj.name, type = ((Property)obj).type, value = ((Property)obj).value };
-                    string url = "http://" + Settings.Get.Server + "/models/" + path + "?user=" + Settings.Get.Login;
+                    //var tmp = new TmpProperty { name = obj.name, type = ((Property)obj).type, value = ((Property)obj).value };
+                    string url = "http://" + Settings.Current.Server + "/models/" + path + "?user=" + Settings.Current.Login;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
@@ -466,7 +466,7 @@ namespace Client
             {
                 try
                 {
-                    string url = "http://" + Settings.Get.Server + "/snapshot/" + path;
+                    string url = "http://" + Settings.Current.Server + "/snapshot/" + path;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";

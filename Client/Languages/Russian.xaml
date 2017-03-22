@@ -7,6 +7,9 @@
     <v:String x:Key="Sid3">Логин</v:String>
     <v:String x:Key="Sid4">Пароль</v:String>
     <v:String x:Key="Sid5">Сертификат</v:String>
+    <v:String x:Key="Sid6">Добавить</v:String>
+    <v:String x:Key="Sid7">Изменить</v:String>
+    <v:String x:Key="Sid8">Выберите подключение</v:String>
 
     <v:String x:Key="Errid1">Не удалось подключиться к серверу, проверте его адресс или попробуйте снова через некоторое время.</v:String>
     <v:String x:Key="Errid2">Выберите родительский элемент в списке.</v:String>
