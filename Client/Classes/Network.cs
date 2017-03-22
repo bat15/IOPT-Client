@@ -163,13 +163,6 @@ namespace Client
                 }
             });
         }
-        public class TmpProperty
-        {
-            public string name { get; set; }
-            public int type { get; set; }
-            public string value { get; set; }
-        }
-        //"http://"+snapshot
 
         public class IoTFactory
         {
@@ -181,7 +174,7 @@ namespace Client
                 if (obj == null) return null;
                 var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
                 if (modPath == null) return null;
-                return Get(modPath + "/" + obj.pathUnit + "/" + prop.pathUnit);
+                return Get(modPath + "/Objects/" + obj.pathUnit + "/Properties/" + prop.pathUnit);
             }
 
 
@@ -368,6 +361,63 @@ namespace Client
                 }
                 catch { return false; }
             }
+            #endregion
+
+            #region Modify
+
+            public static bool ModifyProperty(Property newProperty)
+            {
+                if (string.IsNullOrWhiteSpace(newProperty.pathUnit)) return false;
+                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == newProperty.objectId select o).First();
+                if (obj == null) return false;
+                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                if (modPath == null) return false;
+                return Modify(newProperty, modPath + "/" + obj.pathUnit + "/" + newProperty.pathUnit);
+            }
+
+            public static bool ModifyScript(Script newScript)
+            {
+                if (string.IsNullOrWhiteSpace(newScript.pathUnit)) return false;
+                var prop = (from p in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where p.id == newScript.id select p).First();
+                if (prop == null) return false;
+                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
+                if (obj == null) return false;
+                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                if (modPath == null) return false;
+                return Modify(newScript, modPath + "/" + obj.pathUnit + "/" + prop.pathUnit + "/" + newScript.pathUnit);
+            }
+
+            private static bool Modify(IoT obj, string path)
+            {
+                try
+                {
+                    var tmp = new TmpProperty { name = obj.name, type = ((Property)obj).type, value = ((Property)obj).value };
+                    string url = "http://" + Settings.Get.Server + "/models/" + path + "?user=" + Settings.Get.Login;
+                    //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "POST";//"PATCH"
+                    request.CookieContainer = cookies;
+                    //request.Timeout = 3000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        //streamWriter.Write("{\"value\":" + ((Property)obj).value + "}");
+                        streamWriter.Write("{\"value\":" + ((Property)obj).value + "}");
+                    }
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show("{\"value\":" + ((Property)obj).value + "}", url); }));
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, url); }));
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                    if (httpResponse.StatusCode == HttpStatusCode.OK) return true;
+                    else return false;
+                    //using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    //{
+                    //    var responseText = await streamReader.ReadToEndAsync();
+                    //    await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(httpResponse.StatusCode.ToString(), ""); }));
+                    //}
+                }
+                catch { return false; }
+            }
+
             #endregion
 
             #region Delete

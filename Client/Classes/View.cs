@@ -106,9 +106,9 @@ namespace Client
 
                 //добавить тень вместто бордера
                 var dashboard = new StackPanel() { Orientation = Orientation.Horizontal, SnapsToDevicePixels = true };
-                dashboard.SetResourceReference(Control.BackgroundProperty,"BackgroundColor");
+                dashboard.SetResourceReference(Control.BackgroundProperty,"AlternativeBackgroundColor");
                 var border = new Border() { Child = dashboard, BorderThickness = new Thickness(1), SnapsToDevicePixels = true };
-                var temp = new Grid() { Effect = shadow, Margin = new Thickness(6, 16, 6, 6),SnapsToDevicePixels=true };
+                var temp = new Grid() { Margin = new Thickness(6, 16, 6, 6),SnapsToDevicePixels=true};
                 temp.Children.Add(border);
                 border.SetResourceReference(Control.BorderBrushProperty, "MainColor");
                 var e = new StackPanel() { Orientation = Orientation.Vertical,UseLayoutRounding=true };
@@ -140,22 +140,15 @@ namespace Client
             switch (prop.type)
             {
                 case 3:
-                    var yes = new Path() { Fill = (System.Windows.Media.Brush)new BrushConverter().ConvertFromString("#8bc34a") };
-                    yes.SetResourceReference(Path.DataProperty, "Yes");
-                    var no = new Path() { Fill = System.Windows.Media.Brushes.Red };
-                    no.SetResourceReference(Path.DataProperty, "No");
-                    bool check;
-                    bool.TryParse(prop.value, out check);
-                       
-                    var checker = new Border() { Padding = new Thickness(0, 10, 0, 10),Child= check ? yes:no,Height=54 };
-                    checker.IsEnabledChanged += (s,e) =>
+                    var checkBox = new CheckBox
                     {
-                        var border = s as Border;
-                        if(border != null)
-                        border.Child =  border.IsEnabled ? yes : no;
+                        Style = Application.Current.FindResource("StaticCheckBox") as Style,
+                        Width = 20,
+                        Margin = new Thickness(0,8,0,8)
                     };
-                    checker.SetBinding(UIElement.IsEnabledProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
-                    child.Children.Add(checker);
+                    checkBox.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
+                        new Binding() {Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay});
+                    child.Children.Add(checkBox);
                     break;
                 case 9:
                 case 7:
@@ -166,19 +159,42 @@ namespace Client
                 case 14:
                 case 15:
                 case 13:
-                    var pb = new ProgressBar() { Width = 150, Minimum = (long)plink.min, Maximum = (long)plink.max,IsIndeterminate=false };
-                    pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    var pb = new ProgressBar()
+                    {
+                        Width = 150,
+                        Minimum = (long) plink.min,
+                        Maximum = (long) plink.max,
+                        IsIndeterminate = false
+                    };
+                    pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty,
+                        new Binding() {Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay});
                     pb.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    l = new Label() { Content = double.Parse(prop.value), HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 20, FontFamily = new System.Windows.Media.FontFamily("Consolas") };
+                    l = new Label()
+                    {
+                        Content = double.Parse(prop.value),
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        VerticalContentAlignment = VerticalAlignment.Center,
+                        FontSize = 20,
+                        FontFamily = new System.Windows.Media.FontFamily("Consolas")
+                    };
                     l.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty,
+                        new Binding() {Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay});
                     child.Children.Add(pb);
                     child.Children.Add(l);
                     break;
                 case 18:
-                    l = new Label() { Content = "\""+prop.value+ "\"", HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12,FontFamily=new System.Windows.Media.FontFamily("Consolas") };
+                    l = new Label()
+                    {
+                        Content = "\"" + prop.value + "\"",
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        VerticalContentAlignment = VerticalAlignment.Center,
+                        FontSize = 12,
+                        FontFamily = new System.Windows.Media.FontFamily("Consolas")
+                    };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty,
+                        new Binding() {Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay});
                     child.Children.Add(l);
                     break;
             }

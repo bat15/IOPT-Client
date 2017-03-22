@@ -31,7 +31,6 @@ namespace Client
             };
             Snapshot.current.models.CollectionChanged += Notified;
             BUpdate_Click(null, null);
-            checkBox1.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding() { Source = Settings.Get, Path = new PropertyPath("AutoUpdate"), Mode = BindingMode.TwoWay });
             Network.AutoUpdate();
         }
 
@@ -91,7 +90,7 @@ namespace Client
 
         private async void BUpdate_Click(object sender, RoutedEventArgs e)
         {
-            //Controller.GenerateTestData();
+            Controller.GenerateTestData();
             //Snapshot.Current.LastUpdate = DateTimeOffset.Now;
             //Message.Show(Controller.Serialize(), "");
             //Message.Show(JsonConvert.SerializeObject(Snapshot.Current.Models.First().Objects.First().Properties[3]), "");
@@ -113,7 +112,7 @@ namespace Client
             {
                 try
                 {
-                    Network.GetDataFromServer();
+                    //Network.GetDataFromServer();
                     Snapshot.current.lastUpdate = DateTimeOffset.Now.ToString();
                     await Dispatcher.BeginInvoke(new Action(delegate ()
                     {

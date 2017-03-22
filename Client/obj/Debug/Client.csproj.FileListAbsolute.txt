@@ -89,10 +89,11 @@ D:\Client\Client\obj\Debug\WDashbordCreate.baml
 D:\Client\Client\obj\Debug\WMessage.baml
 D:\Client\Client\obj\Debug\WSettings.baml
 D:\Client\Client\obj\Debug\Themes\Dark.baml
-D:\Client\Client\obj\Debug\Themes\Light.baml
 D:\Client\Client\obj\Debug\Themes\MainDictionary.baml
 D:\Client\Client\obj\Debug\IOPT-Client.g.resources
 D:\Client\Client\obj\Debug\Client.Properties.Resources.resources
 D:\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
-D:\Client\Client\obj\Debug\wSlider.g.cs
-D:\Client\Client\obj\Debug\wSlider.baml
+D:\Client\Client\obj\Debug\Themes\Metal.baml
+D:\Client\Client\obj\Debug\Themes\Purple.baml
+D:\Client\Client\obj\Debug\Themes\DarkCyan.baml
+D:\Client\Client\obj\Debug\Themes\LightGreen.baml

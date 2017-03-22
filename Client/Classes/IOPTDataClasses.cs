@@ -48,6 +48,8 @@ namespace Client
         public string lastUpdate { get; set; }
     }
 
+
+
     public class Model : IoT
     {
         ObservableCollection<Object> _objects;

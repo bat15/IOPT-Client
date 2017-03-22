@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Analysis_module"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    
+    <!--#region Settings-->
+    <SolidColorBrush x:Key="MainColor" Color="#ab47bc" />
+    <SolidColorBrush x:Key="BackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="AlternativeBackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="ButtonOverColor" Color="#ba68c8" />
+    <SolidColorBrush x:Key="ButtonClickColor" Color="#6a1b9a" />
+    <SolidColorBrush x:Key="DisabledColor" Color="#7F9c27b0" />
+    <SolidColorBrush x:Key="SelectionColor" Color="#58bc47" />
+
+    <SolidColorBrush x:Key="OnLightFontColor" Color="Black" />
+    <SolidColorBrush x:Key="OnDarkFontColor" Color="White" />
+
+    <SolidColorBrush x:Key="RowBackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#7f9c27b0" />
+    <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="#ab47bc" />
+
+    <SolidColorBrush x:Key="CheckedColor" Color="#8bc34a" />
+    <SolidColorBrush x:Key="UncheckedColor" Color="Red" />
+
+    <Color x:Key="ShadowColor" R="97" G="97" B="97" />
+
+    <!--не работает-->
+    <sys:Double x:Key="ShadowSize">3</sys:Double>
+
+    <FontFamily x:Key="FontFamilyMain">Segoe UI</FontFamily>
+    <FontFamily x:Key="FontFamilyHighlight">Impact</FontFamily>
+    <sys:Double x:Key="FontSizeSmall">10</sys:Double>
+    <sys:Double x:Key="FontSizeNormal">12</sys:Double>
+    <sys:Double x:Key="FontSizeBig">16</sys:Double>
+
+    <sys:Double x:Key="ScrollWidth">8</sys:Double>
+    <!--#endregion-->
+    
+</ResourceDictionary>

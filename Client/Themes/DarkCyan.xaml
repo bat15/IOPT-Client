@@ -3,16 +3,16 @@
                     xmlns:local="clr-namespace:Client"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <!--#region Settings-->
-    <SolidColorBrush x:Key="MainColor" Color="#ff5722" />
-    <SolidColorBrush x:Key="BackgroundColor" Color="#1A1A1D" />
-    <SolidColorBrush x:Key="AlternativeBackgroundColor" Color="#1A1A1D" />
-    <SolidColorBrush x:Key="ButtonOverColor" Color="#f57c00" />
-    <SolidColorBrush x:Key="ButtonClickColor" Color="#ffcc80" />
-    <SolidColorBrush x:Key="DisabledColor" Color="#afff5722" />
-    <SolidColorBrush x:Key="SelectionColor" Color="#ff5722" />
+    <SolidColorBrush x:Key="MainColor" Color="#4dd0e1" />
+    <SolidColorBrush x:Key="BackgroundColor" Color="#757575" />
+    <SolidColorBrush x:Key="AlternativeBackgroundColor" Color="#9e9e9e" />
+    <SolidColorBrush x:Key="ButtonOverColor" Color="#80deea" />
+    <SolidColorBrush x:Key="ButtonClickColor" Color="#006064" />
+    <SolidColorBrush x:Key="DisabledColor" Color="#af4dd0e1" />
+    <SolidColorBrush x:Key="SelectionColor" Color="#4dd0e1" />
 
-    <SolidColorBrush x:Key="RowBackgroundColor" Color="#1A1A1D" />
-    <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3fff5722" />
+    <SolidColorBrush x:Key="RowBackgroundColor" Color="#757575" />
+    <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3f4dd0e1" />
     <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="Transparent" />
 
     <SolidColorBrush x:Key="CheckedColor" Color="#8bc34a" />

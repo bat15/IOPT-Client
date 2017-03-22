@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -22,12 +24,12 @@ namespace Client
             InitializeComponent();
            
             styleBox.SelectionChanged += ThemeChange;
-            styleBox.ItemsSource = Settings.Themes;
-            styleBox.SelectedItem = Settings.Get.Theme ?? "Light";
+            styleBox.ItemsSource = Enum.GetValues(typeof(Settings.Themes)).Cast<Settings.Themes>();
+            styleBox.SelectedItem = Settings.Get.Theme;
 
             langBox.SelectionChanged += LanguageChange;
-            langBox.ItemsSource = Settings.Languages;
-            langBox.SelectedItem = Settings.Get.Language ?? "Russian";
+            langBox.ItemsSource = Enum.GetValues(typeof(Settings.Languages)).Cast<Settings.Languages>();
+            langBox.SelectedItem = Settings.Get.Language;
 
 
             uintBox.ItemsSource = new string[] {"1","5","30","60","600","1800","3600"};
@@ -55,12 +57,12 @@ namespace Client
 
         private void ThemeChange(object sender, SelectionChangedEventArgs e)
         {
-            Settings.Get.Theme = (styleBox.SelectedItem as string);
+            Settings.Get.Theme = (Settings.Themes)styleBox.SelectedItem;
         }
 
         private void LanguageChange(object sender, SelectionChangedEventArgs e)
         {
-            Settings.Get.Language = (langBox.SelectedItem as string);
+            Settings.Get.Language = (Settings.Languages)langBox.SelectedItem;
         }
     }
 }

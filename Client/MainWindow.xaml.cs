@@ -53,28 +53,31 @@ namespace Client
 
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            Cursor = Cursors.Wait;
-                try
+            SplashScreen splashScreen = new SplashScreen("IOPT_Splash.png");
+            splashScreen.Show(false);
+            Hide();
+            try
+            {
+                if (true)//Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
                 {
-                    if (Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
-                {
-                        Cursor = Cursors.Arrow;
-                        Main.GetMainWindow().label1.Content = TBLogin.Text + '@' + textBox.Text;
-                        Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
-                        Main.GetMainWindow().Show();
-                        Hide();
-                        Settings.Get.Login = TBLogin.Text;
-                        Settings.Get.Password = TBPass.Text;
-                        Settings.Get.Server = textBox.Text;
-                        Settings.Get.Save();
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Arrow;
-                        Message.Show((string)Application.Current.Resources["Errid1"], (string)Application.Current.Resources["Dialogid5"]);
-                    }
+                    Main.GetMainWindow().label1.Content = TBLogin.Text + '@' + textBox.Text;
+                    Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
+                    Main.GetMainWindow().Show();
+                    
+                    Settings.Get.Login = TBLogin.Text;
+                    Settings.Get.Password = TBPass.Text;
+                    Settings.Get.Server = textBox.Text;
+                    Settings.Get.Save();
+                    splashScreen.Close(new TimeSpan(0));
                 }
-                catch (Exception ex) { Cursor = Cursors.Arrow; Message.Show((string)Application.Current.Resources["Errid1"] + ex.Message, (string)Application.Current.Resources["Dialogid5"]); }
+                else
+                {
+                    splashScreen.Close(new TimeSpan(0));
+                    Show();
+                    Message.Show((string)Application.Current.Resources["Errid1"], (string)Application.Current.Resources["Dialogid5"]);
+                }
+            }
+            catch (Exception ex) { Show(); splashScreen.Close(new TimeSpan(0)); Message.Show((string)Application.Current.Resources["Errid1"] + ex.Message, (string)Application.Current.Resources["Dialogid5"]); }
         }
 
         private void BGetCert_Click(object sender, RoutedEventArgs e)

@@ -26,7 +26,7 @@
 
     <Geometry x:Key="Yes">M29.403992,0L32,3.5860286 8.3720093,21.479001 5.7740173,17.895017 5.776001,17.893002 0,9.9110087 3.5079956,7.2570179 9.2829895,15.23602z</Geometry>
 
-    <Geometry x:Key="No">M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z</Geometry>
+    <Geometry x:Key="No">M16.78125,18.2799987792969L26.0625,18.2799987792969 48.28125,40.4987487792969 70.78125,18.2799987792969 79.78125,18.2799987792969 79.78125,27.5612487792969 57.5625,49.7799987792969 79.78125,71.9987487792969 79.78125,81.2799987792969 70.78125,81.2799987792969 48.28125,59.0612487792969 26.0625,81.2799987792969 16.78125,81.2799987792969 16.78125,72.2799987792969 39,49.7799987792969 16.78125,27.5612487792969 16.78125,18.2799987792969z</Geometry>
 
     <Geometry x:Key="Add">M12.126984,0L19.872009,0 19.872009,12.128 32,12.128 32,19.872999 19.872009,19.872999 19.872009,31.999 12.126984,31.999 12.126984,19.872999 0,19.872999 0,12.128 12.126984,12.128z</Geometry>
 
@@ -50,7 +50,7 @@
             <Setter Property="Background" Value="{DynamicResource MainColor}" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="3" BlurRadius="3" Color="{DynamicResource ShadowColor}" />
+                    <DropShadowEffect ShadowDepth="{DynamicResource ShadowSize}" BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" />
                 </Setter.Value>
             </Setter>
         </Style.Setters>
@@ -60,7 +60,7 @@
                     <Storyboard>
                         <DoubleAnimation
                Storyboard.TargetProperty="Effect.ShadowDepth"
-               From="3" To="0" Duration="0:0:0.2"
+               To="0" Duration="0:0:0.2"
                AutoReverse="True" />
                     </Storyboard>
                 </BeginStoryboard>
@@ -134,8 +134,8 @@
     </Style>
 
     <Style x:Key="{x:Type ListBox}" TargetType="{x:Type ListBox}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="{StaticResource MainColor}"/>
+        <Setter Property="Background" Value="{DynamicResource AlternativeBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource MainColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Style.Resources>
@@ -149,9 +149,11 @@
     <Style TargetType="{x:Type DataGridColumnHeader}">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Height" Value="30" />
-        <Setter Property="Background" Value="{DynamicResource MainColor}" />
-        <Setter Property="Foreground" Value="{DynamicResource OnDarkFontColor}" />
-        <Setter Property="Padding" Value="0,0,10,0"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
+        <Setter Property="Padding" Value="5,5,5,0"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OnLightFontColor}"/>
     </Style>
 
     <Style TargetType="{x:Type DataGrid}">
@@ -159,12 +161,14 @@
         <Setter Property="CanUserDeleteRows" Value="False" />
         <Setter Property="GridLinesVisibility" Value="None" />
         <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}"/>
-        <Setter Property="AlternatingRowBackground" Value="{DynamicResource AlternatingRowBackgroundColor}"/>
+        <Setter Property="AlternatingRowBackground" Value="Transparent"/>
         <Setter Property="RowBackground" Value="{DynamicResource RowBackgroundColor}"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
         <Setter Property="IsReadOnly" Value="True" />
-
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="CellStyle">
             <Setter.Value>
                 <Style TargetType="DataGridCell">
@@ -176,8 +180,31 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="true">
+                <Setter Property="Background" Value="{DynamicResource SelectionColor}" />
+                <!--<Setter Property="Height" Value="40"/>-->
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="DataGridTextColumn.Foreground" Value="{DynamicResource OnDarkFontColor}"/>
+                <Setter Property="DataGridTextColumn.FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="true" >
+                <Setter Property="Background" Value="{DynamicResource MainColor}" />
+                <Setter Property="DataGridTextColumn.Foreground" Value="{DynamicResource OnDarkFontColor}"/>
+                <!--<Setter Property="Height" Value="40"/>-->
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="DataGridTextColumn.FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type DataGridCell}">
         <Setter Property="Padding" Value="0,0,10,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -187,6 +214,12 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="true" >
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <!--#endregion-->
 
@@ -194,11 +227,41 @@
     <Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
         <Style.Setters>
             <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
-            <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DisabledColor}" />
+            <Setter Property="Background" Value="{DynamicResource AlternativeBackgroundColor}" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
             <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="bg" BorderBrush="{DynamicResource MainColor}" BorderThickness="0,0,0,2">
+                            <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource DisabledColor}"/>
+                            </Trigger>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource DisabledColor}"/>
+                                <Setter Property="BorderThickness" TargetName="bg" Value="0,0,0,1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style.Setters>
     </Style>
     <!--#endregion-->
@@ -504,7 +567,7 @@
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="3" BlurRadius="3" Color="{DynamicResource ShadowColor}" />
+                    <DropShadowEffect ShadowDepth="{DynamicResource ShadowSize}" BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" />
                 </Setter.Value>
             </Setter>
         </Style.Setters>
@@ -514,7 +577,7 @@
                     <Storyboard>
                         <DoubleAnimation
                Storyboard.TargetProperty="Effect.ShadowDepth"
-               From="3" To="0" Duration="0:0:0.2"
+               To="0" Duration="0:0:0.2"
                AutoReverse="True" />
                     </Storyboard>
                 </BeginStoryboard>
@@ -621,17 +684,18 @@
                             <Setter Property="Padding" Value="4,0,0,0"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="ForegroundPanel" Property="Background" Value="#8bc34a" />
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource CheckedColor}" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginStoryboardCheckedTrue" Storyboard="{StaticResource StoryboardIsChecked}" />
                                 <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedFalse" />
                             </Trigger.EnterActions>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">
-                            <Setter TargetName="ForegroundPanel" Property="Background" Value="#f44336" />
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource UncheckedColor}" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginStoryboardCheckedFalse" Storyboard="{StaticResource StoryboardIsCheckedOff}" />
                                 <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedTrue" />
@@ -690,17 +754,17 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid>
                         <Border Name="outerBorder"
-                            Background="#5534b4e3"
-                            BorderBrush="#5534b4e3"
-                            Height="26" Width="26" Opacity="1" BorderThickness="2" CornerRadius="13"/>
+                            Background="{DynamicResource DisabledColor}"
+                            BorderBrush="{DynamicResource DisabledColor}"
+                            Height="24" Width="24" Opacity="1" BorderThickness="2" CornerRadius="12"/>
                         <Border Name="innerBorder"
-                            Background="#FF34b4e3"
-                            BorderBrush="#FF34b4e3"
-                            Height="10" Width="10" CornerRadius="5" Opacity="1" />
+                            Background="{DynamicResource MainColor}"
+                            BorderBrush="{DynamicResource MainColor}"
+                            Height="8" Width="8" CornerRadius="4" Opacity="1" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="outerBorder" Property="BorderBrush" Value="#BB34b4e3" />
+                            <Setter TargetName="outerBorder" Property="BorderBrush" Value="{DynamicResource ButtonOverColor}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="outerBorder" Property="Background" Value="#55ACACAC" />
@@ -769,7 +833,7 @@
                 Grid.Row="1"
                 Margin="10,0"
                 BorderThickness="2"
-                BorderBrush="#FF8BC34A"
+                BorderBrush="{DynamicResource SelectionColor}"
                 VerticalAlignment="Center" Height="4" />
             <Track x:Name="PART_Track" Grid.Row="1">
                 <Track.DecreaseRepeatButton>
@@ -803,7 +867,7 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Rectangle x:Name="FocusStyle" StrokeDashArray="4 4" RadiusX="5" RadiusY="5" Fill="Transparent"
-                           Stroke="#99029cc7" StrokeThickness="1" />
+                           Stroke="{DynamicResource MainColor}" StrokeThickness="1" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -915,4 +979,58 @@
     </Style>
 
     <!--#endregion-->
+
+    <!--#region StaticCheckBox-->
+    <Style x:Key="StaticCheckBox" TargetType="{x:Type CheckBox}">
+        <Style.Setters>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
+            <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border"
+                                         Background="Transparent"
+                                       BorderBrush="{TemplateBinding BorderBrush}"
+                                       BorderThickness="0"
+                                       ClipToBounds="True">
+                                    <Path x:Name="CheckMark"
+                                          HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                          Data="{DynamicResource Yes}"
+                                         Stretch="Uniform"
+                                         Stroke="{DynamicResource CheckedColor}"
+                                            Fill="{DynamicResource CheckedColor}"
+                                        StrokeThickness="0" />
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter Margin="4,0,0,0"
+                                             HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                             RecognizesAccessKey="True" />
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter TargetName="CheckMark" Property="Data" Value="{DynamicResource No}" />
+                                <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource UncheckedColor}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckMark" Property="Data" Value="{DynamicResource Yes}" />
+                                <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource CheckedColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+    <!--#endregion-->
+    
 </ResourceDictionary>

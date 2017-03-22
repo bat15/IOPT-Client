@@ -11,7 +11,7 @@
     </Window.Background>
     <Grid Margin="10" UseLayoutRounding="True">
         <Grid.Effect>
-            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+            <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">

@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Settings" Height="269.619" Width="201.402" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png">
+        Title="Settings" Height="297.244" Width="201.402" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png">
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0"/>
     </Window.Background>
     <Grid Margin="10" UseLayoutRounding="True">
         <Grid.Effect>
-            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+            <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
@@ -28,6 +28,7 @@
                 <Label x:Name="label2" Content="{DynamicResource Setid3}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="94" Foreground="{DynamicResource OnLightFontColor}" VerticalContentAlignment="Center" FontSize="16"/>
                 <Label x:Name="label3" Content="{DynamicResource Setid4}" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" VerticalContentAlignment="Center" Margin="0,163,0,0" HorizontalContentAlignment="Center" SnapsToDevicePixels="True"/>
                 <ComboBox x:Name="uintBox" HorizontalAlignment="Center" Margin="27,194,16,0" VerticalAlignment="Top" Width="134" DataContext="{Binding}"/>
+                <CheckBox x:Name="checkBox1" IsChecked="{Binding Source={x:Static local:Settings.Get}, Path=AutoUpdate,Mode=TwoWay}" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="27,236,0,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" />
             </Grid>
         </Border>
     </Grid>

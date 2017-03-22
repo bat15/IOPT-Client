@@ -5,6 +5,7 @@
     <!--#region Settings-->
     <SolidColorBrush x:Key="MainColor" Color="#8bc34a" />
     <SolidColorBrush x:Key="BackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="AlternativeBackgroundColor" Color="White" />
     <SolidColorBrush x:Key="ButtonOverColor" Color="#aed581" />
     <SolidColorBrush x:Key="ButtonClickColor" Color="#33691e" />
     <SolidColorBrush x:Key="DisabledColor" Color="#af8bc34a" />
@@ -17,7 +18,13 @@
     <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#7f8bc34a" />
     <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="#8bc34a" />
 
-    <Color x:Key="ShadowColor" R="0" G="0" B="0" />
+    <SolidColorBrush x:Key="CheckedColor" Color="#8bc34a" />
+    <SolidColorBrush x:Key="UncheckedColor" Color="Red" />
+
+    <Color x:Key="ShadowColor" R="97" G="97" B="97" />
+    
+    <!--не работает-->
+    <sys:Double x:Key="ShadowSize">3</sys:Double>
 
     <FontFamily x:Key="FontFamilyMain">Segoe UI</FontFamily>
     <FontFamily x:Key="FontFamilyHighlight">Impact</FontFamily>

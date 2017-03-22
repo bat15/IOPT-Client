@@ -11,7 +11,7 @@
     </Window.Background>
     <Grid Margin="10" UseLayoutRounding="True">
         <Grid.Effect>
-            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+            <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
@@ -51,7 +51,7 @@
             <CheckBox x:Name="checkBox" Content="{DynamicResource Mainid2}" HorizontalAlignment="Left" Margin="401,14,0,0" VerticalAlignment="Top" Height="21" Width="94" Checked="checkBox_Checked" Unchecked="checkBox_Checked"/>
             <Grid x:Name="lmgrid" Margin="10,52,0,10" HorizontalAlignment="Left" Width="192">
                 <ComboBox x:Name="Lmodels" Margin="10,26,10,0" VerticalAlignment="Top" DataContext="{Binding}" BorderThickness="1" BorderBrush="{DynamicResource OnLightFontColor}"/>
-                <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.objects, ElementName=Lmodels}">
+                    <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.objects, ElementName=Lmodels}" BorderBrush="{DynamicResource MainColor}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -84,15 +84,12 @@
                 <Label x:Name="label3" Content="{DynamicResource Editid4}" Margin="24,0,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                 <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="24,49,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
             </Grid>
-            <ScrollViewer x:Name="stackscroll" Margin="207,91,10,12"/>
-            <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
+            <ScrollViewer x:Name="stackscroll" Margin="207,91,10,12">
+
+                </ScrollViewer>
+                <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="251,45,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
             <!--Delete--><Label x:Name="label1" HorizontalAlignment="Right" Margin="0,10,133,0" VerticalAlignment="Top" FontFamily="Impact" Foreground="{DynamicResource MainColor}" FontSize="14" Visibility="Hidden"/>
-            <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
-            <CheckBox x:Name="checkBox1" Content="{DynamicResource Mainid3}" HorizontalAlignment="Left" Margin="239,15,0,0" VerticalAlignment="Top" IsEnabled="False" Opacity="0.08">
-                    <CheckBox.Background>
-                        <SolidColorBrush Color="White"/>
-                    </CheckBox.Background>
-                </CheckBox>
+                <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
             </Grid>
     </Border>
     </Grid>
