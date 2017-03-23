@@ -19,6 +19,9 @@
     <v:String x:Key="Setid2">Language</v:String>
     <v:String x:Key="Setid3">Settings</v:String>
     <v:String x:Key="Setid4">Autoupdate interval</v:String>
+    <v:String x:Key="Setid5">Dashboards</v:String>
+    <v:String x:Key="Setid6">Table</v:String>
+    <v:String x:Key="Setid7">Platform</v:String>
 
     <v:String x:Key="Mainid1">Create</v:String>
     <v:String x:Key="Mainid2">Table</v:String>

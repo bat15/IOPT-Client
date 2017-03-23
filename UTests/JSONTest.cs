@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Client;
+using Client.Classes;
 using Newtonsoft.Json;
 
 namespace UTests
@@ -20,7 +21,7 @@ namespace UTests
         {
             var p = new Property(-1, "asd", "asd", (int)TypeCode.Boolean, -1, null, "false");
             var json = JsonConvert.DeserializeObject<Property>("{\"Scripts\":[],\"ObjectId\":\"zxc\",\"Id\":\"asd\",\"Name\":\"asd\",\"Value\":\"false\",\"Type\":3}");
-            Assert.IsTrue(p.pathUnit == json.pathUnit && p.name == json.name && p.objectId == json.objectId && p.type == json.type && p.value == json.value);
+            Assert.IsTrue(p.PathUnit == json.PathUnit && p.Name == json.Name && p.ObjectId == json.ObjectId && p.Type == json.Type && p.Value == json.Value);
         }
 
     }

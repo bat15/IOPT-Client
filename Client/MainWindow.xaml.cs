@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Client.Classes;
 
 namespace Client
 {
@@ -18,10 +19,10 @@ namespace Client
             Closed += (s, e) => { Controller.Close(); };
             InitializeComponent();
             GNew.MouseDown += Drag;
-            GList.MouseDown += Drag;
-            Accounts.ItemsSource = Settings.AccountsSettings;
+            GList.MouseDown += Drag;        
             BExit.Click += (s, e) => { Controller.Close(); };
             Settings.Load();
+            Accounts.ItemsSource = Settings.AccountsSettings;
             Instance = this;
             label4.Content = typeof(Model).Assembly.GetName().Version;
         }
@@ -54,6 +55,7 @@ namespace Client
                         Password = TBPass.Password,
                         Server = textBox.Text
                     };
+
                     Settings.AccountsSettings.Add(settings);
                 }
                 if (_editState == true)

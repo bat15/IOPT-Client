@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Client.Classes;
+using Object = Client.Classes.Object;
 
 namespace Client
 {
@@ -18,13 +20,13 @@ namespace Client
         {
             InitializeComponent();
             this.obj = obj;
-            label.Content = obj.name;
+            label.Content = obj.Name;
 
-            foreach (var p in obj.properties)
+            foreach (var p in obj.Properties)
             {
                 var list = new List<UIElement>();
                 var child = new StackPanel() { Orientation = Orientation.Horizontal };
-                var l = new Label() { Content = p.name, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 150 };
+                var l = new Label() { Content = p.Name, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 150 };
                 l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                 child.Children.Add(l);
                 //l = new Label() { Content = (string)Application.Current.Resources["Editid1"]+"?", HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12 };
@@ -40,7 +42,7 @@ namespace Client
                 tmp.SetBinding(Control.IsEnabledProperty, new Binding("IsChecked") { Source = (list[0] as CheckBox), Mode = BindingMode.OneWay });
                 list.Add(tmp);
                 child.Children.Add(tmp);
-                switch ((TypeCode)p.type)
+                switch ((TypeCode)p.Type)
                 {
                     case TypeCode.Boolean:
                     case TypeCode.String:
@@ -81,15 +83,15 @@ namespace Client
             foreach (var pair in results)
                 if ((bool)(pair.Value[0] as CheckBox).IsChecked)
                 {
-                    if (pair.Key.type < 7 || pair.Key.type > 15)
-                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property,(long)d.id, (bool)(pair.Value[1] as CheckBox).IsChecked,null,null));
+                    if (pair.Key.Type < 7 || pair.Key.Type > 15)
+                        d.View.Add(new Dashboard.PropertyMap(int.MaxValue - d.View.Count, pair.Key as Property,(long)d.Id, (bool)(pair.Value[1] as CheckBox).IsChecked,null,null));
                     else
                     {
                         double min, max;
                         double.TryParse((pair.Value[2] as TextBox).Text,out min);
                         double.TryParse((pair.Value[3] as TextBox).Text, out max);
                         if (min >= max) { Message.Show((string)Application.Current.Resources["Errid3"], (string)Application.Current.Resources["Dialogid5"]); return; }
-                        d.view.Add(new Dashboard.PropertyMap(int.MaxValue - d.view.Count, pair.Key as Property, (long)d.id, (bool)(pair.Value[1] as CheckBox).IsChecked, min, max));
+                        d.View.Add(new Dashboard.PropertyMap(int.MaxValue - d.View.Count, pair.Key as Property, (long)d.Id, (bool)(pair.Value[1] as CheckBox).IsChecked, min, max));
                     }
                 }
             Snapshot.current.dashboards.Add(d);

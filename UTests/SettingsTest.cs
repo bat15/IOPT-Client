@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Client;
+using Client.Classes;
 
 namespace UTests
 {

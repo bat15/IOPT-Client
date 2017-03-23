@@ -27,7 +27,7 @@
     <sys:Double x:Key="ShadowSize">3</sys:Double>
 
     <FontFamily x:Key="FontFamilyMain">Segoe UI</FontFamily>
-    <FontFamily x:Key="FontFamilyHighlight">Impact</FontFamily>
+    <FontFamily x:Key="FontFamilyHighlight">Lucida Sans Unicode</FontFamily>
     <sys:Double x:Key="FontSizeSmall">10</sys:Double>
     <sys:Double x:Key="FontSizeNormal">12</sys:Double>
     <sys:Double x:Key="FontSizeBig">16</sys:Double>

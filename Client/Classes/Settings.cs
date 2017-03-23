@@ -1,23 +1,21 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using Newtonsoft.Json;
 
-namespace Client
+// ReSharper disable EmptyGeneralCatchClause
+
+namespace Client.Classes
 {
     public class Settings
     {
         public static ObservableCollection<Settings> AccountsSettings { get; set; } = new ObservableCollection<Settings>();
-        static Settings instance;
+        static Settings _instance;
 
         public static Settings Current
         {
-            get { return instance ?? (instance = new Settings()); }
-            set { instance = value; }
+            get { return _instance ?? (_instance = new Settings()); }
+            set { _instance = value; }
         }
 
         private volatile string _login;
@@ -79,8 +77,16 @@ namespace Client
 
         public static void Load()
         {
-            AccountsSettings = JsonConvert.DeserializeObject<ObservableCollection<Settings>>(Controller.LoadFromFile() ?? "");
-            //MessageBox.Show(Get().Login + " " + Get().Password + " " + Get().Server + " " + Get().Language + " " + Get().Theme);
+            try
+            {
+                AccountsSettings =
+                    JsonConvert.DeserializeObject<ObservableCollection<Settings>>(Controller.LoadFromFile() ?? "") ??
+                    new ObservableCollection<Settings>();
+                //MessageBox.Show(Get().Login + " " + Get().Password + " " + Get().Server + " " + Get().Language + " " + Get().Theme);
+            }
+            catch
+            {
+            }
         }
     }
 }

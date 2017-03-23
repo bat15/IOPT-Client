@@ -9,27 +9,27 @@
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0"/>
     </Window.Background>
-    <Grid Margin="10" UseLayoutRounding="True">
+    <Grid Margin="4" UseLayoutRounding="True">
         <Grid.Effect>
             <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid>
-                <Grid x:Name="GNew" Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+                <Grid x:Name="GNew" Background="{DynamicResource BackgroundColor}" MouseDown="Drag" Visibility="Hidden">
                     <Button x:Name="BBack" Width="35" Style="{DynamicResource TranspButton}" Margin="0,5,5,5" Height="35" HorizontalAlignment="Right" Click="BBack_OnClick">
                         <Border>
                             <Path Data="{StaticResource Back}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                         </Border>
                     </Button>
-                    <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="47" Margin="0,190,0,109" Text="193.32.20.242:8080/IOPT-Server-Prod-1/service" VerticalAlignment="Center" Width="218" VerticalContentAlignment="Center"/>
+                    <TextBox x:Name="textBox" HorizontalAlignment="Center" Height="47" Margin="0,190,0,109" Text="193.32.20.242:8080/IOPT-Server/service" VerticalAlignment="Center" Width="218" VerticalContentAlignment="Center"/>
                     <Label x:Name="label" Content="{DynamicResource Sid1}" Margin="0,156,0,161" Foreground="{DynamicResource OnLightFontColor}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="163" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
                     <Button x:Name="Connect" Content="{DynamicResource Editid1}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Connect_Click" Height="30" Margin="24,274,25,42" Width="218" />
                     <TextBox x:Name="TBLogin" HorizontalAlignment="Center" Height="23" Margin="24,69,25,0" Text="iks" VerticalAlignment="Top" Width="218"/>
                     <Label x:Name="label1" FontSize="14" Content="{DynamicResource Sid3}" Margin="62,35,71,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                     <Label x:Name="label2" FontSize="14" Content="{DynamicResource Sid4}" Margin="62,97,71,0" Foreground="{DynamicResource OnLightFontColor}" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <PasswordBox x:Name="TBPass" HorizontalAlignment="Left" Margin="24,131,0,0" VerticalAlignment="Top" Width="218" Height="25"/>
+                    <PasswordBox x:Name="TBPass" HorizontalAlignment="Left" Margin="24,131,0,0" VerticalAlignment="Top" Width="218" Height="25" Password="123"/>
                 </Grid>
-                <Grid x:Name="GList" Background="{DynamicResource BackgroundColor}" Visibility="Hidden">
+                <Grid x:Name="GList" Background="{DynamicResource BackgroundColor}">
                     <ListBox x:Name="Accounts" Margin="10,45" DataContext="{Binding}" BorderBrush="{DynamicResource MainColor}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -39,7 +39,15 @@
                                         <ColumnDefinition Width="20"/>
                                         <ColumnDefinition Width="20"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Tag="{Binding}" Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding Database}" HorizontalAlignment="Left" Grid.Column="0" MouseDown="Label_MouseDown" Width="180" Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                    <Label Tag="{Binding}" Foreground="{DynamicResource OnDarkFontColor}" HorizontalAlignment="Left" Grid.Column="0" MouseDown="Label_MouseDown" Width="180" Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                                        <Label.Content>
+                                            <TextBlock>
+                                                <Run Text="{Binding Login}"/>
+                                                <Run Text="@"/>
+                                                <Run Text="{Binding Server}"/>
+                                            </TextBlock>
+                                        </Label.Content>
+                                    </Label>
                                     <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
                                         <Border>
                                             <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
@@ -59,14 +67,14 @@
                             <Path Data="{StaticResource Add}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                         </Border>
                     </Button>
-                    <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,5,5,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right">
+                    <Button x:Name="BExit" Width="30" Style="{DynamicResource TranspButton}" Margin="0,5,5,0" VerticalAlignment="Top" Height="30" HorizontalAlignment="Right">
                         <Border HorizontalAlignment="Right" VerticalAlignment="Top">
                             <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                         </Border>
                     </Button>
                     <Label x:Name="lab" Content="{DynamicResource Sid8}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="212" FontFamily="{DynamicResource FontFamilyMain}" FontSize="{DynamicResource FontSizeBig}"/>
                 </Grid>
-                <Label x:Name="label4" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColor}" FontFamily="Consolas" FontWeight="Bold" FontSize="10" Width="119"/>
+                <Label x:Name="label4" Content="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColor}" FontFamily="Consolas" FontWeight="Bold" FontSize="10" Width="90" Height="24" VerticalContentAlignment="Center"/>
             </Grid>
         </Border>
     </Grid>

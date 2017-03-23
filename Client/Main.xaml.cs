@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Client.Classes;
+using Object = Client.Classes.Object;
 
 namespace Client
 {
@@ -38,7 +40,7 @@ namespace Client
 
             styleBox.SelectionChanged += (s, e) => { Settings.Current.Theme = (Settings.Themes)styleBox.SelectedItem; };
             styleBox.ItemsSource = Enum.GetValues(typeof(Settings.Themes)).Cast<Settings.Themes>();
-            styleBox.SelectedItem = Settings.Current.Theme;
+            //styleBox.SelectedItem = Settings.Current.Theme;
 
             langBox.SelectionChanged += (s, e) => { Settings.Current.Language = (Settings.Languages)langBox.SelectedItem; };
             langBox.ItemsSource = Enum.GetValues(typeof(Settings.Languages)).Cast<Settings.Languages>();
@@ -68,7 +70,7 @@ namespace Client
             }
         }
 
-        private void Drag(object sender, MouseButtonEventArgs e)
+        public void Drag(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -150,10 +152,9 @@ namespace Client
         private void BLogout_Click(object sender, RoutedEventArgs e)
         {
             if (!(bool)Message.Show((string)Application.Current.Resources["Dialogid2"], (string)Application.Current.Resources["Dialogid4"], true)) return;
-            Settings.Current.Login = null;
-            Settings.Current.Password = null;
-            Settings.Current.Server = null;
             MainWindow.Instance.Show();
+            instance = null;
+            Settings.Current = null;
             Close();
 
         }
@@ -239,7 +240,7 @@ namespace Client
                         try
                         {
                             model = new Model(name);
-                            model.id = Snapshot.current.models.Count == 0 ? -1 : Snapshot.current.models.Min(i => i.id) - 1;
+                            model.Id = Snapshot.current.models.Count == 0 ? -1 : Snapshot.current.models.Min(i => i.Id) - 1;
                             //model = Network.IoTFactory.CreateModel(new Model(name));
                         }
                         catch
@@ -263,8 +264,8 @@ namespace Client
                         Object obj;
                         try
                         {
-                            obj = new Object(name, (long)(ELmodels.SelectedItem as Model).id);
-                            obj.id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).Min(i => i.id) - 1;
+                            obj = new Object(name, (long)(ELmodels.SelectedItem as Model).Id);
+                            obj.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).Min(i => i.Id) - 1;
                             //obj = Network.IoTFactory.CreateObject(new Object(name, (long)(Lmodels.SelectedItem as Model).id));
                         }
                         catch
@@ -275,7 +276,7 @@ namespace Client
                         {
                             Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid2"], (string)Application.Current.Resources["Dialogid5"]); return;
                         }
-                        (ELmodels.SelectedItem as Model)?.objects.Add(obj);
+                        (ELmodels.SelectedItem as Model)?.Objects.Add(obj);
                         break;
                     case 3:
                         if (CBType.SelectedItem != null)
@@ -287,8 +288,8 @@ namespace Client
                                 Property prop;
                                 try
                                 {
-                                    prop = new Property(name, (long)(ELobjects.SelectedItem as Object).id, (int)type, TBValue.Text);
-                                    prop.id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Min(i => i.id) - 1;
+                                    prop = new Property(name, (long)(ELobjects.SelectedItem as Object).Id, (int)type, TBValue.Text);
+                                    prop.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Min(i => i.Id) - 1;
                                     //prop = Network.IoTFactory.CreateProperty(new Property(name, (long)(Lobjects.SelectedItem as Object).id, (int)type, TBValue.Text));
                                 }
                                 catch
@@ -299,7 +300,7 @@ namespace Client
                                 {
                                     Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid2"], (string)Application.Current.Resources["Dialogid5"]); return;
                                 }
-                                (ELobjects.SelectedItem as Object)?.properties.Add(prop);
+                                (ELobjects.SelectedItem as Object)?.Properties.Add(prop);
 
                             }
                         }
@@ -309,8 +310,8 @@ namespace Client
                         Script script;
                         try
                         {
-                            script = new Script(name, (long)(ELproperties.SelectedItem as Property).id, TBScript.Text);
-                            script.id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Count() == 0 || Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z => z.scripts).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).SelectMany(z => z.scripts).Min(i => i.id) - 1;
+                            script = new Script(name, (long)(ELproperties.SelectedItem as Property).Id, TBScript.Text);
+                            script.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Min(i => i.Id) - 1;
                             //script = Network.IoTFactory.CreateScript(new Script(name, (long)(Lproperties.SelectedItem as Property).id, TBScript.Text));
                         }
                         catch
@@ -321,13 +322,13 @@ namespace Client
                         {
                             Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid5"], (string)Application.Current.Resources["Dialogid5"]); return;
                         }
-                        (ELproperties.SelectedItem as Property)?.scripts.Add(script);
+                        (ELproperties.SelectedItem as Property)?.Scripts.Add(script);
                         break;
                     case 10:
                         if (iop != null)
                         {
-                            iop.name = name;
-                            iop.value = TBValue.Text;
+                            iop.Name = name;
+                            iop.Value = TBValue.Text;
                             //Network.IoTFactory.UpdateProperty(iop);//добавить проверку на 1/0, а лучше сделать другую модель одновления
                             int t = ELobjects.SelectedIndex;
                             ELobjects.SelectedIndex = -1;
@@ -337,8 +338,8 @@ namespace Client
                     case 11:
                         if (ios != null)
                         {
-                            ios.name = name;
-                            ios.value = TBScript.Text;
+                            ios.Name = name;
+                            ios.Value = TBScript.Text;
                             //Network.IoTFactory.UpdateScript(ios);
                             int t = ELproperties.SelectedIndex;
                             ELproperties.SelectedIndex = -1;
@@ -348,7 +349,7 @@ namespace Client
                     case 12:
                         if (ioo != null)
                         {
-                            ioo.name = name;
+                            ioo.Name = name;
                             //Network.IoTFactory.UpdateObject(ioo);
                             int t = ELmodels.SelectedIndex;
                             ELmodels.SelectedIndex = -1;
@@ -358,7 +359,7 @@ namespace Client
                     case 13:
                         if (iom != null)
                         {
-                            iom.name = name;
+                            iom.Name = name;
                             try
                             {
                                 int t = ELmodels.SelectedIndex == -1 ? 0 : ELmodels.SelectedIndex;
@@ -493,12 +494,12 @@ namespace Client
                 labelValue.Visibility = Visibility.Visible;
                 labelScript.Visibility = Visibility.Hidden;
                 TBName.Visibility = Visibility.Visible;
-                TBName.Text = ((sender as Button).Tag as Property).name;
+                TBName.Text = ((sender as Button).Tag as Property).Name;
                 TBValue.Visibility = Visibility.Visible;
-                TBValue.Text = ((sender as Button).Tag as Property).value;
+                TBValue.Text = ((sender as Button).Tag as Property).Value;
                 TBScript.Visibility = Visibility.Hidden;
                 CBType.Visibility = Visibility.Hidden;
-                CBType.SelectedItem = ((sender as Button).Tag as Property).type;
+                CBType.SelectedItem = ((sender as Button).Tag as Property).Type;
                 CBType.IsEnabled = false;
                 ELproperties.SelectedItem = (sender as Button).Tag;
                 editmode = 10;
@@ -512,10 +513,10 @@ namespace Client
                 labelValue.Visibility = Visibility.Hidden;
                 labelScript.Visibility = Visibility.Visible;
                 TBName.Visibility = Visibility.Visible;
-                TBName.Text = ((sender as Button).Tag as Script).name;
+                TBName.Text = ((sender as Button).Tag as Script).Name;
                 TBValue.Visibility = Visibility.Hidden;
                 TBScript.Visibility = Visibility.Visible;
-                TBScript.Text = ((sender as Button).Tag as Script).value;
+                TBScript.Text = ((sender as Button).Tag as Script).Value;
                 CBType.Visibility = Visibility.Hidden;
                 CBType.IsEnabled = false;
                 ELscripts.SelectedItem = (sender as Button).Tag;
@@ -530,7 +531,7 @@ namespace Client
                 labelValue.Visibility = Visibility.Hidden;
                 labelScript.Visibility = Visibility.Hidden;
                 TBName.Visibility = Visibility.Visible;
-                TBName.Text = ((sender as Button).Tag as Object).name;
+                TBName.Text = ((sender as Button).Tag as Object).Name;
                 TBValue.Visibility = Visibility.Hidden;
                 TBScript.Visibility = Visibility.Hidden;
                 CBType.Visibility = Visibility.Hidden;
@@ -547,7 +548,7 @@ namespace Client
                 labelValue.Visibility = Visibility.Hidden;
                 labelScript.Visibility = Visibility.Hidden;
                 TBName.Visibility = Visibility.Visible;
-                TBName.Text = ((sender as Button).Tag as Model).name;
+                TBName.Text = ((sender as Button).Tag as Model).Name;
                 TBValue.Visibility = Visibility.Hidden;
                 TBScript.Visibility = Visibility.Hidden;
                 CBType.Visibility = Visibility.Hidden;
@@ -576,7 +577,7 @@ namespace Client
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
                         //if (Network.IoTFactory.DeleteObject((sender as Button).Tag as Object))
-                        (ELmodels.SelectedItem as Model).objects.Remove((sender as Button).Tag as Object);
+                        (ELmodels.SelectedItem as Model).Objects.Remove((sender as Button).Tag as Object);
                     }
             }
             if (((Button)sender).Tag is Property)
@@ -586,7 +587,7 @@ namespace Client
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
                         //if (Network.IoTFactory.DeleteProperty((sender as Button).Tag as Property))
-                        (ELobjects.SelectedItem as Object)?.properties.Remove(((Button)sender).Tag as Property);
+                        (ELobjects.SelectedItem as Object)?.Properties.Remove(((Button)sender).Tag as Property);
                     }
             }
             if (((Button)sender).Tag is Script)
@@ -596,7 +597,7 @@ namespace Client
                     if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                     {
                         //if (Network.IoTFactory.DeleteScript((sender as Button).Tag as Script))
-                        (ELproperties.SelectedItem as Property).scripts.Remove((sender as Button).Tag as Script);
+                        (ELproperties.SelectedItem as Property).Scripts.Remove((sender as Button).Tag as Script);
                     }
             }
             Main.GetMainWindow().Notified(null, null);
@@ -612,7 +613,7 @@ namespace Client
                 {
                     model = new Model((sender as Button).Tag as Model)
                     {
-                        id = !Snapshot.current.models.Any() ? -1 : Snapshot.current.models.Min(i => i.id) - 1
+                        Id = !Snapshot.current.models.Any() ? -1 : Snapshot.current.models.Min(i => i.Id) - 1
                     };
                     //model = Network.IoTFactory.CreateModel(new Model((sender as Button).Tag as Model));
                 }
@@ -635,10 +636,10 @@ namespace Client
                     {
                         obj = new Object(((Button)sender).Tag as Object)
                         {
-                            id =
-                                !Snapshot.current.models.SelectMany(x => x.objects).Any()
+                            Id =
+                                !Snapshot.current.models.SelectMany(x => x.Objects).Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.objects).Min(i => i.id) - 1
+                                    : Snapshot.current.models.SelectMany(x => x.Objects).Min(i => i.Id) - 1
                         };
                         //obj = Network.IoTFactory.CreateObject(new Object((sender as Button).Tag as Object));
                     }
@@ -650,7 +651,7 @@ namespace Client
                     {
                         Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid2"], (string)Application.Current.Resources["Dialogid5"]); return;
                     }
-                        (ELmodels.SelectedItem as Model)?.objects.Add(obj);
+                        (ELmodels.SelectedItem as Model)?.Objects.Add(obj);
                 }
             }
             if (((Button)sender).Tag is Property)
@@ -662,12 +663,12 @@ namespace Client
                     {
                         prop = new Property(((Button)sender).Tag as Property)
                         {
-                            id =
-                                !Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties).Any()
+                            Id =
+                                !Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.objects)
-                                          .SelectMany(y => y.properties)
-                                          .Min(i => i.id) - 1
+                                    : Snapshot.current.models.SelectMany(x => x.Objects)
+                                          .SelectMany(y => y.Properties)
+                                          .Min(i => i.Id) - 1
                         };
                         //prop = Network.IoTFactory.CreateProperty(new Property((sender as Button).Tag as Property));
                     }
@@ -679,7 +680,7 @@ namespace Client
                     {
                         Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid2"], (string)Application.Current.Resources["Dialogid5"]); return;
                     }
-                                (ELobjects.SelectedItem as Object)?.properties.Add(prop);
+                                (ELobjects.SelectedItem as Object)?.Properties.Add(prop);
                 }
             }
             if (((Button)sender).Tag is Script)
@@ -691,16 +692,16 @@ namespace Client
                     {
                         script = new Script((sender as Button).Tag as Script)
                         {
-                            id =
-                                !Snapshot.current.models.SelectMany(x => x.objects)
-                                    .SelectMany(y => y.properties)
-                                    .SelectMany(z => z.scripts)
+                            Id =
+                                !Snapshot.current.models.SelectMany(x => x.Objects)
+                                    .SelectMany(y => y.Properties)
+                                    .SelectMany(z => z.Scripts)
                                     .Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.objects)
-                                          .SelectMany(y => y.properties)
-                                          .SelectMany(z => z.scripts)
-                                          .Min(i => i.id) - 1
+                                    : Snapshot.current.models.SelectMany(x => x.Objects)
+                                          .SelectMany(y => y.Properties)
+                                          .SelectMany(z => z.Scripts)
+                                          .Min(i => i.Id) - 1
                         };
                         //script = Network.IoTFactory.CreateScript(new Script((sender as Button).Tag as Script));
                     }
@@ -714,7 +715,7 @@ namespace Client
                         Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid5"], (string)Application.Current.Resources["Dialogid5"]);
                         return;
                     }
-                        (ELproperties.SelectedItem as Property)?.scripts.Add(script);
+                        (ELproperties.SelectedItem as Property)?.Scripts.Add(script);
                 }
             }
         }

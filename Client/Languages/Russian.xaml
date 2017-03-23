@@ -20,6 +20,9 @@
     <v:String x:Key="Setid2">Язык</v:String>
     <v:String x:Key="Setid3">Настройки</v:String>
     <v:String x:Key="Setid4">Интервал автообновления</v:String>
+    <v:String x:Key="Setid5">Мониторинг</v:String>
+    <v:String x:Key="Setid6">Таблица</v:String>
+    <v:String x:Key="Setid7">Платформа</v:String>
 
     <v:String x:Key="Mainid1">Создать</v:String>
     <v:String x:Key="Mainid2">Таблица</v:String>

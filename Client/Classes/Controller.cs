@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using System.Collections;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using System.IO;
-using System.Windows;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Windows.Threading;
+using System.Windows;
+// ReSharper disable PossibleNullReferenceException
 
-namespace Client
+namespace Client.Classes
 {
-    static class Controller
+    internal static class Controller
     {
         private const string Key = "Q1e3@3e344";
         private static readonly byte[] Salt = { 0x15, 0xdc, 0xf5, 0x40, 0xad, 0x5d, 0x7a, 0x0e, 0xc5, 0xae, 0x89, 0xaf, 0x4d, 0xaa, 0xc2, 0x3c };
@@ -35,7 +26,7 @@ namespace Client
             if (Key.Length == 0) return;
             using (var myAes = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(Key, Salt);
+                var pdb = new Rfc2898DeriveBytes(Key, Salt);
                 myAes.Key = pdb.GetBytes(32);
                 myAes.IV = pdb.GetBytes(16);
                 using (StreamWriter sw = new StreamWriter("user.data", false, Encoding.Default))
@@ -50,7 +41,7 @@ namespace Client
             if (!File.Exists("user.data")) return null;
             using (var myAes = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(Key, Salt);
+                var pdb = new Rfc2898DeriveBytes(Key, Salt);
                 myAes.Key = pdb.GetBytes(32);
                 myAes.IV = pdb.GetBytes(16);
                 byte[] data;
@@ -83,23 +74,23 @@ namespace Client
         }
 
 
-        static byte[] EncryptStringToBytesAes(string plainText, byte[] Key, byte[] IV)
+        static byte[] EncryptStringToBytesAes(string plainText, byte[] key, byte[] iv)
         {
             if (plainText == null || plainText.Length <= 0)
                 throw new ArgumentNullException(nameof(plainText));
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException(nameof(Key));
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException(nameof(IV));
+            if (key == null || key.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            if (iv == null || iv.Length <= 0)
+                throw new ArgumentNullException(nameof(iv));
             byte[] encrypted;
             // Создаем объект класса AES
             // с определенным ключом и IV.
-            using (Aes aesAlg = Aes.Create())
+            using (var aesAlg = Aes.Create())
             {
-                aesAlg.Key = Key;
-                aesAlg.IV = IV;
+                aesAlg.Key = key;
+                aesAlg.IV = iv;
                 // Создаем объект, который определяет основные операции преобразований.
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 // Создаем поток для шифрования.
                 using (var msEncrypt = new MemoryStream())
                 {
@@ -119,21 +110,21 @@ namespace Client
 
         }
 
-        static string DecryptStringFromBytesAes(byte[] cipherText, byte[] Key, byte[] IV)
+        static string DecryptStringFromBytesAes(byte[] cipherText, byte[] key, byte[] iv)
         {
             if (cipherText == null || cipherText.Length <= 0)
                 throw new ArgumentNullException(nameof(cipherText));
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException(nameof(Key));
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException(nameof(IV));
+            if (key == null || key.Length <= 0)
+                throw new ArgumentNullException(nameof(key));
+            if (iv == null || iv.Length <= 0)
+                throw new ArgumentNullException(nameof(iv));
             string plaintext;
             // Создаем объект класса AES,
             // Ключ и IV
             using (Aes aesAlg = Aes.Create())
             {
-                aesAlg.Key = Key;
-                aesAlg.IV = IV;
+                aesAlg.Key = key;
+                aesAlg.IV = iv;
                 // Создаем объект, который определяет основные операции преобразований.
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
                 // Создаем поток для расшифрования.
@@ -157,6 +148,7 @@ namespace Client
     public enum TransliterationType
     {
         Gost,
+        // ReSharper disable once InconsistentNaming
         ISO
     }
     public static class Transliteration
