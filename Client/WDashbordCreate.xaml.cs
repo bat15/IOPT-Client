@@ -94,7 +94,7 @@ namespace Client
                         d.View.Add(new Dashboard.PropertyMap(int.MaxValue - d.View.Count, pair.Key as Property, (long)d.Id, (bool)(pair.Value[1] as CheckBox).IsChecked, min, max));
                     }
                 }
-            Snapshot.current.dashboards.Add(d);
+            Classes.Client.Current.Dashboards.Add(d);
             Close();
         }
 

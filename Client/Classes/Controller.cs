@@ -70,7 +70,7 @@ namespace Client.Classes
             var obj = new ObservableCollection<Object> { new Object(-1, "TestObject", "TestObject", -1, props) };
 
             var model = new Model(-1, "TestModel", "TestModel", obj);
-            Snapshot.current.models.Add(model);
+            Platform.Current.Models.Add(model);
         }
 
 

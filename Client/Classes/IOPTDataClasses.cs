@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.RightsManagement;
 using Newtonsoft.Json;
 
 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
@@ -36,23 +37,36 @@ namespace Client.Classes
         protected abstract bool CheckName(string name);
     }
 
-    public class Snapshot
+    public class Platform
     {
-        long? _id;
-        static Snapshot _instance;
+        private static Platform current;
 
-        public long? id { get { return _id; } set { _id = value; } }
-        public static Snapshot current { get { return _instance ?? (_instance = new Snapshot()); } set { _instance = value; } }
+        private Platform() { }
 
-        private Snapshot() { }
+        public static Platform Current {
+            get { return current ?? (current = new Platform()); }
+            set { current = value; }
+        }
 
-        public ObservableCollection<Model> models { get; } = new ObservableCollection<Model>();
-
-        public ObservableCollection<Dashboard> dashboards { get; } = new ObservableCollection<Dashboard>();
-        //[JsonIgnore]
-        public string lastUpdate { get; set; }
+        [JsonProperty(PropertyName = "models")]
+        public ObservableCollection<Model> Models { get; set; } = new ObservableCollection<Model>();
     }
 
+    public class Client
+    {
+        private static Client current;
+
+        private Client() { }
+
+        public static Client Current
+        {
+            get { return current ?? (current = new Client()); }
+            set { current = value; }
+        }
+
+        [JsonProperty(PropertyName = "dashboards")]
+        public ObservableCollection<Dashboard> Dashboards { get; set; } = new ObservableCollection<Dashboard>();
+    }
 
 
     public class Model : IoT
@@ -93,9 +107,9 @@ namespace Client.Classes
 
         protected override bool CheckName(string cname)
         {
-            if (Snapshot.current.models.Count == 0) return true;
+            if (Platform.Current.Models.Count == 0) return true;
             bool res = true;
-            foreach (var m in Snapshot.current.models) if (m.PathUnit.Equals(cname)) res = false;
+            foreach (var m in Platform.Current.Models) if (m.PathUnit.Equals(cname)) res = false;
             return res;
         }
     }
@@ -144,9 +158,9 @@ namespace Client.Classes
 
         protected override bool CheckName(string val)
         {
-            if (Snapshot.current.models.Count == 0) return true;
+            if (Platform.Current.Models.Count == 0) return true;
             bool res = true;
-            var objects= (from m in Snapshot.current.models where m.Id == ModelId select m).FirstOrDefault()?.Objects;
+            var objects= (from m in Platform.Current.Models where m.Id == ModelId select m).FirstOrDefault()?.Objects;
             if(objects!=null)
             foreach (var o in objects)
                 if (o.PathUnit.Equals(val)) res = false;
@@ -165,18 +179,53 @@ namespace Client.Classes
             get { return _value; }
             set
             {
-                if (Type == 3) value = value.ToLower();
-                if (Type >= 7 && Type <= 12) { try { value = ((int)double.Parse(value.Replace('.', ','))).ToString(); }
+                if (Type == 3)
+                {
+                    value = value.ToLower();
+                    try
+                    {
+                        Changes.Add(new Series(DateTime.Now, bool.Parse(value) ? 1.0 : 0.0));
+                    }
+                    catch { }             
+                }
+                if (Type >= 7 && Type <= 12) {
+                    try
+                    {
+                        value = ((int)double.Parse(value.Replace('.', ','))).ToString();
+                        Changes.Add(new Series(DateTime.Now, double.Parse(value)));
+                    }
                     catch
                     {
                         // ignored
                     }
                 }
-                if (Type >= 13 && Type <= 15) value = value.Replace('.', ',');
+                if (Type >= 13 && Type <= 15)
+                {
+                    value = value.Replace('.', ',');
+                    try { 
+                    Changes.Add(new Series(DateTime.Now, double.Parse(value)));
+                    }
+                    catch { }
+                }
                 if (CheckType(value))
                     _value = value;
             }
         }
+
+       public class Series
+       {
+           public DateTime Name { get; set; }
+           public double Value { get; set; }
+
+           public Series(DateTime dt, double val)
+           {
+               Name = dt;
+               Value = val;
+           }
+       }
+
+        [JsonIgnore]
+        public ObservableCollection<Series> Changes { get; }=new ObservableCollection<Series>();
 
         [JsonProperty(PropertyName = "type")]
         public int Type { get; set; }
@@ -236,9 +285,9 @@ namespace Client.Classes
 
         protected override bool CheckName(string val)
         {
-            if (Snapshot.current.models.Count == 0) return true;
+            if (Platform.Current.Models.Count == 0) return true;
             bool res = true;
-            var props = (from o in Snapshot.current.models.SelectMany(x => x.Objects) where o.Id == ObjectId select o).FirstOrDefault()?.Properties;
+            var props = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == ObjectId select o).FirstOrDefault()?.Properties;
             if(props!=null)
             foreach (var p in props)
                 if (p.PathUnit.Equals(val)) res = false;
@@ -281,9 +330,9 @@ namespace Client.Classes
 
         protected override bool CheckName(string val)
         {
-            if (Snapshot.current.models.Count == 0) return true;
+            if (Platform.Current.Models.Count == 0) return true;
             var res = true;
-            var scripts = (from o in Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where o.Id == PropertyId select o).FirstOrDefault()?.Scripts;
+            var scripts = (from o in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where o.Id == PropertyId select o).FirstOrDefault()?.Scripts;
             if (scripts == null) return true;
             foreach (var s in scripts)
                 if (s.PathUnit.Equals(val)) res = false;
@@ -331,7 +380,7 @@ namespace Client.Classes
         }
         public Dashboard(Object parent)
         {
-            Id = Snapshot.current.dashboards.Count == 0 ? 0 : Snapshot.current.dashboards.MaxBy(x => x.Id).Id + 1;
+            Id = Client.Current.Dashboards.Count == 0 ? 0 : Client.Current.Dashboards.MaxBy(x => x.Id).Id + 1;
             ObjectId = parent.Id;
         }
 
@@ -339,6 +388,9 @@ namespace Client.Classes
         {
             [JsonProperty(PropertyName = "id")]
             public long? Id { get; set; }
+
+            [JsonProperty(PropertyName = "pathUnit")]
+            public string PathUnit { get; set; }
 
             [JsonProperty(PropertyName = "property")]
             public Property Property { get; set; }

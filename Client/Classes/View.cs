@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace Client.Classes
@@ -25,7 +26,7 @@ namespace Client.Classes
                 lastO = a; return a;
             };
             return
-                Snapshot.current.models.SelectMany(m => m.Objects, (m, o) => new {m, o})
+                Platform.Current.Models.SelectMany(m => m.Objects, (m, o) => new {m, o})
                     .SelectMany(@t1 => @t1.o.Properties, (@t1, p) => new ModelView
                     {
                         ModelName = ch1(@t1.m.Name),
@@ -90,7 +91,7 @@ namespace Client.Classes
             var result = new StackPanel { Orientation = Orientation.Vertical };
             result.MouseDown += Main.GetMainWindow().Drag;
             if (obj == null) return result;
-            var dashboards = (from t in Snapshot.current.dashboards where t.ObjectId == obj.Id select t).ToList();
+            var dashboards = (from t in Client.Current.Dashboards where t.ObjectId == obj.Id select t).ToList();
             if (!dashboards.Any()) return result;
             foreach (var dash in dashboards)
             {
@@ -111,10 +112,40 @@ namespace Client.Classes
                     Margin = new Thickness(5),
                     Width = 25,
                     Height = 25,
-                    Content = path
+                    Content = path,
+                    Tag=dash
                 };
                 Panel.SetZIndex(fullWindow, 20);
-                fullWindow.Click += (s, ee) => { Message.Show("Comming soon", ""); };
+                fullWindow.Click += (s, ee) => {
+                    try
+                    {
+                        if ((s as Button) != null)
+                        {
+                            var patx = new Path();
+                            patx.SetResourceReference(Path.DataProperty, "Loading");
+                            patx.SetResourceReference(Shape.FillProperty, "MainColor");
+                            var but = new Border { Child = patx };
+                            var da = new DoubleAnimation(0, 359, new Duration(TimeSpan.FromMilliseconds(600)));
+                            var rt = new RotateTransform();
+                            but.RenderTransform = rt;
+                            but.RenderTransformOrigin = new Point(0.5, 0.5);
+                            da.RepeatBehavior = RepeatBehavior.Forever;
+                            ((Button)s).Content = but;
+                            rt.BeginAnimation(RotateTransform.AngleProperty, da);
+                        }
+                        var tmp=new WDashboard((s as Button).Tag as Dashboard);
+                        tmp.Show();
+                        tmp.Activate();
+                        if ((s as Button) != null)
+                        {
+                            var pathx = new Path();
+                            pathx.SetResourceReference(Path.DataProperty, "DashFull");
+                            pathx.SetResourceReference(Shape.FillProperty, "MainColor");
+                            var but = new Border() { Child = pathx };
+                            ((Button)s).Content = but;
+                        }
+                    }
+                    catch {} };
                 temp.Children.Add(fullWindow);
                 #endregion
 

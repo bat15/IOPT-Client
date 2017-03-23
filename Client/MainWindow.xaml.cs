@@ -19,7 +19,7 @@ namespace Client
             Closed += (s, e) => { Controller.Close(); };
             InitializeComponent();
             GNew.MouseDown += Drag;
-            GList.MouseDown += Drag;        
+            GList.MouseDown += Drag;
             BExit.Click += (s, e) => { Controller.Close(); };
             Settings.Load();
             Accounts.ItemsSource = Settings.AccountsSettings;
@@ -77,21 +77,20 @@ namespace Client
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //if (e.ChangedButton != MouseButton.Left) return;
-            //Cursor = Cursors.Wait;
             SplashScreen splashScreen = new SplashScreen("IOPT_Splash.png");
             splashScreen.Show(false);
             Hide();
             try
             {
                 var o = sender as Label;
-                if (o != null) Settings.Current = o.Tag as Settings;
-                if (true)//Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
+                if (o == null) return;
+                Settings.Current = o.Tag as Settings;
+                if (true)//Network.Connect()
                 {
                     Cursor = Cursors.Arrow;
-                    splashScreen.Close(new TimeSpan(0));
                     Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
                     Main.GetMainWindow().Show();
+                    splashScreen.Close(new TimeSpan(0));
                 }
                 else
                 {

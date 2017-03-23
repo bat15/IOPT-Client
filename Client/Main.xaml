@@ -1,10 +1,13 @@
-﻿<Window x:Class="Client.Main"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         xmlns:classes="clr-namespace:Client.Classes"
+        xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit" xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=System.Windows.Controls.Layout.Toolkit"
+    xmlns:oxy="http://oxyplot.org/wpf"
+    x:Class="Client.Main"
         mc:Ignorable="d"
             Title="Client" Height="540" Width="1066.599" ResizeMode="NoResize" Icon="Resources/wind-grasp-acid-3.png" Closed="Window_Closed" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None">
     <Window.Background>
@@ -20,7 +23,7 @@
                     <TabItem.Header>
                         <TextBlock Text="{DynamicResource Setid5}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
-                    <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
+                    <Grid x:Name="___Без_имени_" Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
                         <Grid x:Name="lmgrid" Margin="10,10,0,10" HorizontalAlignment="Left" Width="192">
                             <ComboBox x:Name="Lmodels" Margin="10,26,10,0" VerticalAlignment="Top" DataContext="{Binding}" BorderThickness="1" BorderBrush="{DynamicResource OnLightFontColor}"/>
                             <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.Objects, ElementName=Lmodels}" BorderBrush="{DynamicResource MainColor}">
@@ -56,7 +59,7 @@
                             <Label x:Name="label333" Content="{DynamicResource Editid4}" Margin="24,0,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="24,49,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                         </Grid>
-                        <ScrollViewer x:Name="stackscroll" Margin="207,55,10,12" MouseDown="Drag"/>
+                        <ScrollViewer x:Name="stackscroll" Margin="207,55,10,10" MouseDown="Drag"/>
                         <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="202,9,84,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
                         <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
 
@@ -67,7 +70,7 @@
                         <TextBlock Text="{DynamicResource Setid6}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
                     <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
-                        <DataGrid x:Name="DGProp" Margin="10,43,10,12" DataContext="{Binding}" AutoGenerateColumns="False">
+                        <DataGrid x:Name="DGProp" Margin="10,43,10,10" DataContext="{Binding}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="{DynamicResource Viewid1}" Width="*"
                              Binding="{Binding ModelName}"/>
@@ -102,18 +105,17 @@
                             <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Name="TBScript" FontFamily="Consolas" SyntaxHighlighting="JavaScript" FontSize="10pt" Margin="10,131,10,132" Foreground="{DynamicResource OnLightFontColor}" Background="{DynamicResource BackgroundColor}" LineNumbersForeground="{DynamicResource ButtonOverColor}"/>
                         </Grid>
                         <Grid Margin="10,52,0,10" HorizontalAlignment="Left" Width="201">
-                            <ListBox x:Name="ELmodels" Margin="0,26,0,25" DataContext="{Binding}">
+                            <ListBox x:Name="ELmodels" Margin="0,26,0,25" ItemsSource="{Binding Models, Source={x:Static classes:Platform.Current}}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="20"/>
                                                 <ColumnDefinition Width="20"/>
                                                 <ColumnDefinition Width="20"/>
                                             </Grid.ColumnDefinitions>
-                                            <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding Name}" HorizontalAlignment="Left" Grid.Column="0"/>
+                                            <Label Foreground="{DynamicResource OnDarkFontColor}" Content="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" Grid.Column="0"/>
                                             <Button Tag="{Binding}" Click="EditEvent" Style="{DynamicResource TranspButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
                                                 <Border>
                                                     <Path Data="{StaticResource Edit}" Fill="{DynamicResource OnDarkFontColor}" Stretch="Uniform"/>
@@ -271,14 +273,12 @@
         </Border>
         <Button x:Name="BLogout" Width="40" Style="{DynamicResource TranspButton}" Margin="0,8,48,0" Height="35" HorizontalAlignment="Right" Click="BLogout_Click" Panel.ZIndex="10">
             <Border>
-                <Path Data="{StaticResource Logout}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
-                </Path>
+                <Path Data="{StaticResource Logout}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
             </Border>
         </Button>
         <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,8,8,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Click="Exit_Click" Panel.ZIndex="10">
             <Border>
-                <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform">
-                </Path>
+                <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
             </Border>
         </Button>
         <Rectangle Fill="{DynamicResource MainColor}" Stroke="{DynamicResource MainColor}" Margin="0,0,10,0" Panel.ZIndex="-1" MouseDown="Drag"/>

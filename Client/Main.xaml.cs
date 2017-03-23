@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Client.Classes;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using Model = Client.Classes.Model;
 using Object = Client.Classes.Object;
 
 namespace Client
@@ -34,7 +40,7 @@ namespace Client
             {
                 stackscroll.Content = View.GetDashboard(Lobjects.SelectedItem as Object);
             };
-            Snapshot.current.models.CollectionChanged += Notified;
+            Platform.Current.Models.CollectionChanged += Notified;
             BUpdate_Click(null, null);
             //Network.AutoUpdate();
 
@@ -51,9 +57,10 @@ namespace Client
             setuintBox.SelectedItem = Settings.Current.AutoUpdateInterval.ToString() ?? "1";
             setuintBox.SetBinding(System.Windows.Controls.Primitives.Selector.SelectedItemProperty, new Binding() { Source = Settings.Current, Path = new PropertyPath("AutoUpdateInterval"), Mode = BindingMode.TwoWay });
 
-            ELmodels.ItemsSource = Snapshot.current.models;
+            //ELmodels.ItemsSource = Platform.Current.Models;
             CBType.ItemsSource = types.Keys;
             GShade.MouseDown += (s,e) => { OPShowHide();};
+            //Data.DataContext = Platform.Current.Models.FirstOrDefault()?.Objects.FirstOrDefault()?.Properties[1].Changes;
         }
 
         public void Notified(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -62,7 +69,7 @@ namespace Client
             DGProp.ItemsSource = View.ModelToView();
             int tmp = Lmodels.SelectedIndex;
             Lmodels.ItemsSource = null;
-            Lmodels.ItemsSource = Snapshot.current.models;
+            Lmodels.ItemsSource = Platform.Current.Models;
             Lmodels.SelectedIndex = tmp;
             if (Lmodels.SelectedItem != null)
             {
@@ -106,7 +113,7 @@ namespace Client
             Controller.GenerateTestData();
             //Snapshot.Current.LastUpdate = DateTimeOffset.Now;
             //Message.Show(Controller.Serialize(), "");
-            //Message.Show(JsonConvert.SerializeObject(Snapshot.Current.Models.First().Objects.First().Properties[3]), "");
+            //Message.Show(JsonConvert.SerializeObject(Platform.Current.Models.First().Objects.First().Properties[3]), "");
             if ((sender as Button) != null)
             {
                 var path = new Path();
@@ -125,12 +132,11 @@ namespace Client
             {
                 try
                 {
-                    //Network.GetDataFromServer();
-                    Snapshot.current.lastUpdate = DateTimeOffset.Now.ToString();
+                    //Network.GetDataFromServer();                  
                     await Dispatcher.BeginInvoke(new Action(delegate ()
                     {
                         DGProp.ItemsSource = View.ModelToView();
-                        Lmodels.ItemsSource = Snapshot.current.models;
+                        Lmodels.ItemsSource = Platform.Current.Models;
                         if (Lobjects.SelectedItem != null)
                         {
                             stackscroll.Content = View.GetDashboard(Lobjects.SelectedItem as Object);
@@ -141,8 +147,8 @@ namespace Client
             });
             if ((sender as Button) != null)
             {
-                var path = new System.Windows.Shapes.Path() { };
-                path.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "Update");
+                var path = new Path { };
+                path.SetResourceReference(Path.DataProperty, "Update");
                 path.SetResourceReference(Shape.FillProperty, "MainColor");
                 var but = new Border() { Child = path };
                 ((Button)sender).Content = but;
@@ -240,7 +246,7 @@ namespace Client
                         try
                         {
                             model = new Model(name);
-                            model.Id = Snapshot.current.models.Count == 0 ? -1 : Snapshot.current.models.Min(i => i.Id) - 1;
+                            model.Id = Platform.Current.Models.Count == 0 ? -1 : Platform.Current.Models.Min(i => i.Id) - 1;
                             //model = Network.IoTFactory.CreateModel(new Model(name));
                         }
                         catch
@@ -251,21 +257,14 @@ namespace Client
                         {
                             Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid1"], (string)Application.Current.Resources["Dialogid5"]); return;
                         }
-                        Snapshot.current.models.Add(model);
-                        try
-                        {
-                            int t =ELmodels.SelectedIndex == -1 ? 0 : ELmodels.SelectedIndex;
-                            ELmodels.SelectedIndex = -1;
-                            ELmodels.SelectedItem = ELmodels.Items[t];
-                        }
-                        catch { }
+                        Platform.Current.Models.Add(model);
                         break;
                     case 2:
                         Object obj;
                         try
                         {
                             obj = new Object(name, (long)(ELmodels.SelectedItem as Model).Id);
-                            obj.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).Min(i => i.Id) - 1;
+                            obj.Id = Platform.Current.Models.Count == 0 || Platform.Current.Models.SelectMany(x => x.Objects).Count() == 0 ? -1 : Platform.Current.Models.SelectMany(x => x.Objects).Min(i => i.Id) - 1;
                             //obj = Network.IoTFactory.CreateObject(new Object(name, (long)(Lmodels.SelectedItem as Model).id));
                         }
                         catch
@@ -289,7 +288,7 @@ namespace Client
                                 try
                                 {
                                     prop = new Property(name, (long)(ELobjects.SelectedItem as Object).Id, (int)type, TBValue.Text);
-                                    prop.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Min(i => i.Id) - 1;
+                                    prop.Id = Platform.Current.Models.Count == 0 || Platform.Current.Models.SelectMany(x => x.Objects).Count() == 0 || Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 ? -1 : Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Min(i => i.Id) - 1;
                                     //prop = Network.IoTFactory.CreateProperty(new Property(name, (long)(Lobjects.SelectedItem as Object).id, (int)type, TBValue.Text));
                                 }
                                 catch
@@ -311,7 +310,7 @@ namespace Client
                         try
                         {
                             script = new Script(name, (long)(ELproperties.SelectedItem as Property).Id, TBScript.Text);
-                            script.Id = Snapshot.current.models.Count == 0 || Snapshot.current.models.SelectMany(x => x.Objects).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 || Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Count() == 0 ? -1 : Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Min(i => i.Id) - 1;
+                            script.Id = Platform.Current.Models.Count == 0 || Platform.Current.Models.SelectMany(x => x.Objects).Count() == 0 || Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Count() == 0 || Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Count() == 0 ? -1 : Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).SelectMany(z => z.Scripts).Min(i => i.Id) - 1;
                             //script = Network.IoTFactory.CreateScript(new Script(name, (long)(Lproperties.SelectedItem as Property).id, TBScript.Text));
                         }
                         catch
@@ -567,7 +566,7 @@ namespace Client
                 if ((bool)Message.Show((string)Application.Current.Resources["Dialogid1"], (string)Application.Current.Resources["Dialogid3"], true))
                 {
                     //if(Network.IoTFactory.DeleteModel((sender as Button).Tag as Model))
-                    Snapshot.current.models.Remove(((Button)sender).Tag as Model);
+                    Platform.Current.Models.Remove(((Button)sender).Tag as Model);
                 }
             }
             if (((Button)sender).Tag is Object)
@@ -613,7 +612,7 @@ namespace Client
                 {
                     model = new Model((sender as Button).Tag as Model)
                     {
-                        Id = !Snapshot.current.models.Any() ? -1 : Snapshot.current.models.Min(i => i.Id) - 1
+                        Id = !Platform.Current.Models.Any() ? -1 : Platform.Current.Models.Min(i => i.Id) - 1
                     };
                     //model = Network.IoTFactory.CreateModel(new Model((sender as Button).Tag as Model));
                 }
@@ -625,7 +624,7 @@ namespace Client
                 {
                     Message.Show((string)Application.Current.Resources["Dialogid9"] + (string)Application.Current.Resources["Viewid1"], (string)Application.Current.Resources["Dialogid5"]); return;
                 }
-                Snapshot.current.models.Add(model);
+                Platform.Current.Models.Add(model);
             }
             if (((Button)sender).Tag is Object)
             {
@@ -637,9 +636,9 @@ namespace Client
                         obj = new Object(((Button)sender).Tag as Object)
                         {
                             Id =
-                                !Snapshot.current.models.SelectMany(x => x.Objects).Any()
+                                !Platform.Current.Models.SelectMany(x => x.Objects).Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.Objects).Min(i => i.Id) - 1
+                                    : Platform.Current.Models.SelectMany(x => x.Objects).Min(i => i.Id) - 1
                         };
                         //obj = Network.IoTFactory.CreateObject(new Object((sender as Button).Tag as Object));
                     }
@@ -664,9 +663,9 @@ namespace Client
                         prop = new Property(((Button)sender).Tag as Property)
                         {
                             Id =
-                                !Snapshot.current.models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Any()
+                                !Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.Objects)
+                                    : Platform.Current.Models.SelectMany(x => x.Objects)
                                           .SelectMany(y => y.Properties)
                                           .Min(i => i.Id) - 1
                         };
@@ -693,12 +692,12 @@ namespace Client
                         script = new Script((sender as Button).Tag as Script)
                         {
                             Id =
-                                !Snapshot.current.models.SelectMany(x => x.Objects)
+                                !Platform.Current.Models.SelectMany(x => x.Objects)
                                     .SelectMany(y => y.Properties)
                                     .SelectMany(z => z.Scripts)
                                     .Any()
                                     ? -1
-                                    : Snapshot.current.models.SelectMany(x => x.Objects)
+                                    : Platform.Current.Models.SelectMany(x => x.Objects)
                                           .SelectMany(y => y.Properties)
                                           .SelectMany(z => z.Scripts)
                                           .Min(i => i.Id) - 1
@@ -721,5 +720,8 @@ namespace Client
         }
 
         #endregion
+
+
     }
+
 }
