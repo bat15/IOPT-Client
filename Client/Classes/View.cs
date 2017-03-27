@@ -1,29 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Effects;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace Client
+namespace Client.Classes
 {
-    class View
+    internal class View
     {
         public static IEnumerable<ModelView> ModelToView()
         {
             string lastM = null;
-            Func<string, string> ch1 = (a) => { if (a == lastM) return null; else { lastM = a; return a; } };
+            Func<string, string> ch1 = a => { if (a == lastM) return null;
+                lastM = a; return a;
+            };
             string lastO = null;
-            Func<string, string> ch2 = (a) => { if (a == lastO) return null; else { lastO = a; return a; } };
-            return from m in Snapshot.current.models from o in m.objects from p in o.properties select new ModelView() { ModelName = ch1(m.name), ObjectName = ch2(o.name), PropertyName = p.name, Value = p.value, Type =  ((TypeCode)p.type).ToString(), Listeners = string.Join(", ", (from t in p.scripts select t.name).ToArray()) };
+            Func<string, string> ch2 = a => { if (a == lastO) return null;
+                lastO = a; return a;
+            };
+            return
+                Platform.Current.Models.SelectMany(m => m.Objects, (m, o) => new {m, o})
+                    .SelectMany(@t1 => @t1.o.Properties, (@t1, p) => new ModelView
+                    {
+                        ModelName = ch1(@t1.m.Name),
+                        ObjectName = ch2(@t1.o.Name),
+                        PropertyName = p.Name,
+                        Value = p.Value,
+                        Type = ((TypeCode) p.Type).ToString(),
+                        Listeners = string.Join(", ", (from t in p.Scripts select t.Name).ToArray())
+                    });
         }
 
         public static string GetPropertyDisplayName(object descriptor)
@@ -34,7 +46,7 @@ namespace Client
             {
                 var displayName = pd.Attributes[typeof(DisplayNameAttribute)] as DisplayNameAttribute;
 
-                if (displayName != null && displayName != DisplayNameAttribute.Default)
+                if (displayName != null && !Equals(displayName, DisplayNameAttribute.Default))
                 {
                     return GetDisplayNameFromRes(displayName.DisplayName);
                 }
@@ -44,16 +56,14 @@ namespace Client
             {
                 var pi = descriptor as PropertyInfo;
 
-                if (pi != null)
+                if (pi == null) return null;
+                var attributes = pi.GetCustomAttributes(typeof(DisplayNameAttribute), true);
+                for (var i = 0; i < attributes.Length; ++i)
                 {
-                    object[] attributes = pi.GetCustomAttributes(typeof(DisplayNameAttribute), true);
-                    for (int i = 0; i < attributes.Length; ++i)
+                    var displayName = attributes[i] as DisplayNameAttribute;
+                    if (displayName != null && !Equals(displayName, DisplayNameAttribute.Default))
                     {
-                        var displayName = attributes[i] as DisplayNameAttribute;
-                        if (displayName != null && displayName != DisplayNameAttribute.Default)
-                        {
-                            return GetDisplayNameFromRes(displayName.DisplayName);
-                        }
+                        return GetDisplayNameFromRes(displayName.DisplayName);
                     }
                 }
             }
@@ -68,62 +78,91 @@ namespace Client
             {
                 res = (string)Application.Current.Resources[id];
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             return res;
         }
-
-        //public static UIElement GetElemetsPanels(Model model)
-        //{
-        //    var Result = new StackPanel() { Orientation = Orientation.Vertical };
-        //    if (model==null) return Result;
-        //    foreach (var obj in model.objects)
-        //    {
-        //        var WP = new StackPanel() { Orientation = Orientation.Horizontal };
-        //        var l = new Label() { Content = obj.name, HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 16 };
-        //        l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-        //        WP.Children.Add(l);
-        //        Result.Children.Add(WP);
-        //        foreach (var prop in obj.properties)
-        //        {
-        //            Result.Children.Add(GetPropertyView(prop, Dashboard.PropertyMap plink));
-        //        }
-        //    }
-        //    return Result;
-        //}
 
 
         public static UIElement GetDashboard(Object obj)
         {
-            var result = new StackPanel() { Orientation = Orientation.Vertical };
-
+            var result = new StackPanel { Orientation = Orientation.Vertical };
+            result.MouseDown += Main.GetMainWindow().Drag;
             if (obj == null) return result;
-            var dashboards = (from t in Snapshot.current.dashboards where t.objectId == obj.id select t);
+            var dashboards = (from t in Client.Current.Dashboards where t.ObjectId == obj.Id select t).ToList();
             if (!dashboards.Any()) return result;
             foreach (var dash in dashboards)
             {
-                DropShadowEffect shadow = new DropShadowEffect() { BlurRadius = 6, ShadowDepth = 6 };
-               
-
-                //добавить тень вместто бордера
-                var dashboard = new StackPanel() { Orientation = Orientation.Horizontal, SnapsToDevicePixels = true };
-                dashboard.SetResourceReference(Control.BackgroundProperty,"BackgroundColor");
-                var border = new Border() { Child = dashboard, BorderThickness = new Thickness(1), SnapsToDevicePixels = true };
-                var temp = new Grid() { Effect = shadow, Margin = new Thickness(6, 16, 6, 6),SnapsToDevicePixels=true };
+                var dashboard = new StackPanel { Orientation = Orientation.Horizontal, SnapsToDevicePixels = true };
+                dashboard.SetResourceReference(Control.BackgroundProperty,"AlternativeBackgroundColor");
+                var border = new Border { Child = dashboard, BorderThickness = new Thickness(1), SnapsToDevicePixels = true };
+                var temp = new Grid { Margin = new Thickness(6, 16, 6, 6),SnapsToDevicePixels=true};
                 temp.Children.Add(border);
+
+                #region fullWindowbutton
+                var path = new Path { Stretch = Stretch.Uniform };
+                path.SetResourceReference(Path.DataProperty, "DashFull");
+                path.SetResourceReference(Shape.FillProperty, "MainColor");
+                var fullWindow = new Button
+                {
+                    Style = Application.Current.FindResource("TranspButton") as Style,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(5),
+                    Width = 25,
+                    Height = 25,
+                    Content = path,
+                    Tag=dash
+                };
+                Panel.SetZIndex(fullWindow, 20);
+                fullWindow.Click += (s, ee) => {
+                    try
+                    {
+                        if ((s as Button) != null)
+                        {
+                            var patx = new Path { Stretch = Stretch.Uniform }; 
+                            patx.SetResourceReference(Path.DataProperty, "Loading");
+                            patx.SetResourceReference(Shape.FillProperty, "MainColor");
+                            var but = new Border { Child = patx };
+                            var da = new DoubleAnimation(0, 359, new Duration(TimeSpan.FromMilliseconds(600)));
+                            var rt = new RotateTransform();
+                            but.RenderTransform = rt;
+                            but.RenderTransformOrigin = new Point(0.5, 0.5);
+                            da.RepeatBehavior = RepeatBehavior.Forever;
+                            ((Button)s).Content = but;
+                            rt.BeginAnimation(RotateTransform.AngleProperty, da);
+                        }
+                        var tmp=new WDashboard((s as Button).Tag as Dashboard);
+                        tmp.Show();
+                        tmp.Activate();
+                        if ((s as Button) != null)
+                        {
+                            var pathx = new Path { Stretch = Stretch.Uniform };
+                            pathx.SetResourceReference(Path.DataProperty, "DashFull");
+                            pathx.SetResourceReference(Shape.FillProperty, "MainColor");
+                            var but = new Border() { Child = pathx };
+                            ((Button)s).Content = but;
+                        }
+                    }
+                    catch {} };
+                temp.Children.Add(fullWindow);
+                #endregion
+
                 border.SetResourceReference(Control.BorderBrushProperty, "MainColor");
-                var e = new StackPanel() { Orientation = Orientation.Vertical,UseLayoutRounding=true };
-                var n = new StackPanel() { Orientation = Orientation.Vertical, UseLayoutRounding = true };
+                var e = new StackPanel { Orientation = Orientation.Vertical,UseLayoutRounding=true };
+                var n = new StackPanel { Orientation = Orientation.Vertical, UseLayoutRounding = true };
                 dashboard.Children.Add(e);
                 dashboard.Children.Add(n);
-                foreach (var t in dash.view)
+                foreach (var t in dash.View)
                 {
-                    if (t.isControl)
+                    if (t.IsControl)
                     {
-                        e.Children.Add(GetManagePropertyView(t.property,t));
+                        e.Children.Add(GetManagePropertyView(t.Property,t));
                     }
                     else
                     {
-                        n.Children.Add(GetPropertyView(t.property,t));
+                        n.Children.Add(GetPropertyView(t.Property,t));
                     }
                 }
                 result.Children.Add(temp);
@@ -133,29 +172,23 @@ namespace Client
 
         private static UIElement GetPropertyView(Property prop, Dashboard.PropertyMap plink)
         {
-            var child = new StackPanel() { Orientation = Orientation.Horizontal };
-            var l = new Label() { Content = prop.name, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 200 };
+            var child = new StackPanel { Orientation = Orientation.Horizontal };
+            var l = new Label { Content = prop.Name, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 200 };
             l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
             child.Children.Add(l);
-            switch (prop.type)
+            switch (prop.Type)
             {
                 case 3:
-                    var yes = new Path() { Fill = (System.Windows.Media.Brush)new BrushConverter().ConvertFromString("#8bc34a") };
-                    yes.SetResourceReference(Path.DataProperty, "Yes");
-                    var no = new Path() { Fill = System.Windows.Media.Brushes.Red };
-                    no.SetResourceReference(Path.DataProperty, "No");
-                    bool check;
-                    bool.TryParse(prop.value, out check);
-                       
-                    var checker = new Border() { Padding = new Thickness(0, 10, 0, 10),Child= check ? yes:no,Height=54 };
-                    checker.IsEnabledChanged += (s,e) =>
+                    var checkBox = new CheckBox
                     {
-                        var border = s as Border;
-                        if(border != null)
-                        border.Child =  border.IsEnabled ? yes : no;
+                        Style = Application.Current.FindResource("StaticCheckBox") as Style,
+                        Width = 20,
+                        Height = 20,
+                        Margin = new Thickness(8)
                     };
-                    checker.SetBinding(UIElement.IsEnabledProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
-                    child.Children.Add(checker);
+                    checkBox.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty,
+                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.OneWay});
+                    child.Children.Add(checkBox);
                     break;
                 case 9:
                 case 7:
@@ -166,19 +199,43 @@ namespace Client
                 case 14:
                 case 15:
                 case 13:
-                    var pb = new ProgressBar() { Width = 150, Minimum = (long)plink.min, Maximum = (long)plink.max,IsIndeterminate=false };
-                    pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
+                    var pb = new ProgressBar
+                    {
+                        Width = 150,
+                        Minimum = plink.Min ?? 0,
+                        Maximum = plink.Max ?? 0,
+                        Margin = new Thickness(4),
+                        IsIndeterminate = false
+                    };
+                    pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty,
+                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.OneWay});
                     pb.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    l = new Label() { Content = double.Parse(prop.value), HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 20, FontFamily = new System.Windows.Media.FontFamily("Consolas") };
+                    l = new Label
+                    {
+                        Content = double.Parse(prop.Value),
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        VerticalContentAlignment = VerticalAlignment.Center,
+                        FontSize = 20,
+                        FontFamily = new FontFamily("Consolas")
+                    };
                     l.SetResourceReference(Control.ForegroundProperty, "MainColor");
-                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty,
+                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.OneWay});
                     child.Children.Add(pb);
                     child.Children.Add(l);
                     break;
                 case 18:
-                    l = new Label() { Content = "\""+prop.value+ "\"", HorizontalContentAlignment = HorizontalAlignment.Center, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12,FontFamily=new System.Windows.Media.FontFamily("Consolas") };
+                    l = new Label
+                    {
+                        Content = "\"" + prop.Value + "\"",
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        VerticalContentAlignment = VerticalAlignment.Center,
+                        FontSize = 12,
+                        FontFamily = new FontFamily("Consolas")
+                    };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    l.SetBinding(ContentControl.ContentProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.OneWay });
+                    l.SetBinding(ContentControl.ContentProperty,
+                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.OneWay});
                     child.Children.Add(l);
                     break;
             }
@@ -187,17 +244,25 @@ namespace Client
 
         private static UIElement GetManagePropertyView(Property prop, Dashboard.PropertyMap plink)
         {           
-            var child = new StackPanel() { Orientation = Orientation.Horizontal };
-            var l = new Label() { Content = prop.name, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 130 };
+            var child = new StackPanel { Orientation = Orientation.Horizontal };
+            var l = new Label { Content = prop.Name, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 14, Width = 130 };
             l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
             child.Children.Add(l);
-            switch ((TypeCode)prop.type)
+            switch ((TypeCode)prop.Type)
             {
                 case TypeCode.Boolean:
-                    var tmp = new CheckBox() { Margin=new Thickness(0,5,0,5)};
-                    tmp.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    //tmp.Checked += (s,e) => { Network.IoTFactory.UpdateProperty(prop); };
-                    //tmp.Unchecked += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
+                    var tmp = new CheckBox { Margin=new Thickness(5)};
+                    tmp.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding { Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay });
+                    //tmp.Checked += async (s,e) =>
+                    //{
+                   
+                    //    await Task.Run(() =>
+                    //        { Network.IoTFactory.ModifyProperty(prop); });
+                    //};
+                    //tmp.Unchecked += async (s, e) => {
+                    //await Task.Run(() =>
+                    //{ Network.IoTFactory.ModifyProperty(prop);});
+                    //};
                     child.Children.Add(tmp);
                     break;
                 case TypeCode.Int32:
@@ -206,18 +271,18 @@ namespace Client
                 case TypeCode.UInt32:
                 case TypeCode.UInt16:
                 case TypeCode.UInt64:
-                    l = new Label() { Content = plink.min, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10, Margin = new Thickness(0, 0, -15, 0) };
+                    l = new Label { Content = plink.Min, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10, Margin = new Thickness(0, 0, -15, 0) };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l); 
-                     var sl = new Slider() { Minimum = (long)plink.min, Maximum = (long)plink.max, Width = 150, TickFrequency = 1, IsSnapToTickEnabled = true };
+                     var sl = new Slider { Minimum = plink.Min ?? 0, Maximum = plink.Max ?? 0, Width = 150, TickFrequency = 1, IsSnapToTickEnabled = true };
                     sl.SetBinding(FrameworkElement.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
-                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    //sl.ValueChanged+=(s,e)=> { Network.IoTFactory.UpdateProperty(prop); };
+                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding { Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay });
+                    //sl.ValueChanged+=(s,e)=> { Network.IoTFactory.ModifyProperty(prop); };
                     child.Children.Add(sl);
-                    l = new Label() { Content = plink.max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10,Margin=new Thickness(-15,0,0,0) };
+                    l = new Label { Content = plink.Max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10,Margin=new Thickness(-15,0,0,0) };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l);
-                    l = new Label() {  HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12};
+                    l = new Label {  HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12};
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     l.SetBinding(ContentControl.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
                     child.Children.Add(l);   
@@ -225,27 +290,36 @@ namespace Client
                 case TypeCode.Double:
                 case TypeCode.Decimal:
                 case TypeCode.Single:
-                    l = new Label() { Content = plink.min, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10 };
+                    if (plink.Min == null || plink.Max == null) break;
+                    l = new Label { Content = plink.Min, HorizontalContentAlignment = HorizontalAlignment.Right, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10 };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l);
-                     sl = new Slider() { Minimum = (double)plink.min, Maximum = (double)plink.max ,Width=150,TickFrequency= (double)(plink.max-plink.min)/100.0, IsSnapToTickEnabled =true};
+                     sl = new Slider { Minimum = plink.Min ?? 0, Maximum = plink.Max ?? 0, Width=150,TickFrequency= (plink.Max-plink.Min)/ 100.0 ?? 0, IsSnapToTickEnabled =true};
                     sl.SetBinding(FrameworkElement.ToolTipProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
-                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding() { Source = prop, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    //sl.ValueChanged += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
+                    sl.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty, new Binding { Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay });
+                    //sl.ValueChanged += (s, e) => { Network.IoTFactory.ModifyProperty(prop); };
                     child.Children.Add(sl); 
-                     l = new Label() { Content = plink.max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10, Margin = new Thickness(-15, 0, 0, 0) };
+                     l = new Label { Content = plink.Max, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 10, Margin = new Thickness(-15, 0, 0, 0) };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     child.Children.Add(l);
-                    l = new Label() { HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12 };
+                    l = new Label { HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center, FontSize = 12 };
                     l.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
                     l.SetBinding(ContentControl.ContentProperty, new Binding("Value") { Source = sl, Mode = BindingMode.OneWay });
                     child.Children.Add(l); 
                     break;
                 case TypeCode.String:
-                    var tmp1 = new TextBox() { Width = 100, HorizontalContentAlignment = HorizontalAlignment.Left, VerticalContentAlignment = VerticalAlignment.Center };
+                    var tmp1 = new TextBox { Width = 100, HorizontalContentAlignment = HorizontalAlignment.Left, Margin = new Thickness(4), VerticalContentAlignment = VerticalAlignment.Center };
                     tmp1.SetResourceReference(Control.ForegroundProperty, "OnLightFontColor");
-                    tmp1.SetBinding(TextBox.TextProperty, new Binding() { Source = prop, UpdateSourceTrigger=UpdateSourceTrigger.PropertyChanged, Path = new PropertyPath("value"), Mode = BindingMode.TwoWay });
-                    //tmp1.TextChanged += (s, e) => { Network.IoTFactory.UpdateProperty(prop); };
+                    tmp1.SetBinding(TextBox.TextProperty, new Binding { Source = prop, UpdateSourceTrigger=UpdateSourceTrigger.PropertyChanged, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay });
+
+                    /*
+                     * TODO 
+                     * Придумать что-нибудь с уменьшением 
+                     * трафика мб на моазу лив и ентер повесить,
+                     * замкнуть внешнюю переменную бул на изменение, поставить таймаут.
+                     * завернуть все вызовы в другие потоки                  
+                   */
+                    //tmp1.TextChanged += (s, e) => { Network.IoTFactory.ModifyProperty(prop); };
                     child.Children.Add(tmp1); 
                     break;
             }
@@ -269,5 +343,23 @@ namespace Client
 
         [DisplayName("Viewid5")]
         public string Listeners { get; set; }
+    }
+
+    public class TabSizeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            TabControl tabControl = values[0] as TabControl;
+            double width = tabControl.ActualWidth / tabControl.Items.Count;
+            //Subtract 1, otherwise we could overflow to two rows.
+            return (width <= 1) ? 0 : (width - 1);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

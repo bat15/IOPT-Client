@@ -7,16 +7,24 @@
     <v:String x:Key="Sid3">Логин</v:String>
     <v:String x:Key="Sid4">Пароль</v:String>
     <v:String x:Key="Sid5">Сертификат</v:String>
+    <v:String x:Key="Sid6">Добавить</v:String>
+    <v:String x:Key="Sid7">Изменить</v:String>
+    <v:String x:Key="Sid8">Выберите подключение</v:String>
 
     <v:String x:Key="Errid1">Не удалось подключиться к серверу, проверте его адресс или попробуйте снова через некоторое время.</v:String>
     <v:String x:Key="Errid2">Выберите родительский элемент в списке.</v:String>
     <v:String x:Key="Errid3">Минимум должен быть меньше максимума.</v:String>
 
+    <v:String x:Key="Wid8">Выход</v:String>
+    <v:String x:Key="Wid11">Отключиться</v:String>
 
     <v:String x:Key="Setid1">Тема</v:String>
     <v:String x:Key="Setid2">Язык</v:String>
     <v:String x:Key="Setid3">Настройки</v:String>
-    <v:String x:Key="Setid4">Интервал автообновления</v:String>
+    <v:String x:Key="Setid4">Интервал автообновления, с</v:String>
+    <v:String x:Key="Setid5">Мониторинг</v:String>
+    <v:String x:Key="Setid6">Таблица</v:String>
+    <v:String x:Key="Setid7">Платформа</v:String>
 
     <v:String x:Key="Mainid1">Создать</v:String>
     <v:String x:Key="Mainid2">Таблица</v:String>
@@ -27,6 +35,8 @@
     <v:String x:Key="Viewid3">Свойство</v:String>
     <v:String x:Key="Viewid4">Значение</v:String>
     <v:String x:Key="Viewid5">Скрипт</v:String>
+    <v:String x:Key="Viewid6">Измерение</v:String>
+    <v:String x:Key="Viewid7">Дата</v:String>
 
     <v:String x:Key="Editid1">Добавить</v:String>
     <v:String x:Key="Editid2">Имя</v:String>

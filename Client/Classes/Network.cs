@@ -1,38 +1,35 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+// ReSharper disable AssignNullToNotNullAttribute
 
-namespace Client
+namespace Client.Classes
 {
-    static class Network
+    internal static class Network
     {
-        private static CookieContainer cookies;
+        private static CookieContainer _cookies;
 
-        public static bool Connect(string adress, string login, string password)
+        public static bool Connect()
         {
-            if (string.IsNullOrWhiteSpace(adress) || string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password)) return false;
+            if (string.IsNullOrWhiteSpace(Settings.Current.Server) || string.IsNullOrWhiteSpace(Settings.Current.Login) || string.IsNullOrWhiteSpace(Settings.Current.Password)) return false;
             try
             {
-                string url = "http://" + adress + "/login";
+                var url = "http://" + Settings.Current.Server + "/login";
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
                 request.Method = "POST";
                 request.Timeout = 5000;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    streamWriter.Write(JsonConvert.SerializeObject(new { login = login, password = password }));
+                    streamWriter.Write(JsonConvert.SerializeObject(new { login = Settings.Current.Login, password = Settings.Current.Password }));
                 }
-               
+
                 var httpResponse = (HttpWebResponse)request.GetResponse();
 
                 //var coc = new CookieCollection();
@@ -60,8 +57,8 @@ namespace Client
                 //                "\nHost: " + request.Host.Split(':')[0],"");
                 //    }
                 //}
-                cookies = new CookieContainer();
-                cookies.Add(httpResponse.Cookies);
+                _cookies = new CookieContainer();
+                _cookies.Add(httpResponse.Cookies);
                 //Message.Show(coc.Count.ToString(), "");
                 //Message.Show(new StreamReader(request.GetRequestStream()).ReadToEnd(), "address");
                 //string s = "";
@@ -75,26 +72,26 @@ namespace Client
             catch { return false; }
         }
 
+        /*
+         * TODO Переделать
+         */
         public static void SendDataToServer()
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//?user=" + Settings.Get.Login;
+                var url = "http://" + Settings.Current.Server + "/snapshot?user=" + Settings.Current.Login;
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
-                request.Method = "PUT"; //"POST";
-                request.CookieContainer = cookies;
+                request.Method = "POST"; // "PUT";
+                request.CookieContainer = _cookies;
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    streamWriter.Write(JsonConvert.SerializeObject(Snapshot.current));
+                    // streamWriter.Write(JsonConvert.SerializeObject(Snapshot.current));
                 }
                 var httpResponse = (HttpWebResponse)request.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    var responseText = streamReader.ReadToEnd();
-                    Message.Show(responseText,"");
-                }
+
+                if (httpResponse.StatusCode != HttpStatusCode.Accepted || httpResponse.StatusCode != HttpStatusCode.OK) throw new Exception();
             }
             catch
             {
@@ -102,14 +99,17 @@ namespace Client
             }
         }
 
+        /*
+         * TODO Переделать
+         */
         public static async void GetDataFromServer()
         {
             try
             {
-                string url = "http://" + Settings.Get.Server + "/snapshot";//?user="+Settings.Get.Login;
+                string url = "http://" + Settings.Current.Server + "/snapshot?user=" + Settings.Current.Login;
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.CookieContainer = cookies;
+                request.CookieContainer = _cookies;
                 request.Method = "GET";
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 Stream resStream = response.GetResponseStream();
@@ -123,7 +123,7 @@ namespace Client
                 //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, ""); }));
                 if (string.IsNullOrWhiteSpace(resp)) throw new Exception("Can't get data from server");
                 //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate { Message.Show(resp, response.ResponseUri.AbsolutePath); }));
-                Snapshot.current = JsonConvert.DeserializeObject<Snapshot>(resp);
+                //Snapshot.current = JsonConvert.DeserializeObject<Snapshot>(resp);
             }
             catch
             {
@@ -135,90 +135,280 @@ namespace Client
         {
             await Task.Run(() =>
             {
-                while (true)
+                // TODO
+                while (false)//Settings.Current.AutoUpdate)
                 {
-                    try
+                    /*
+                     * TODO Уменьшить нагрузку на сеть
+                     */
+                    Thread.Sleep((int)Settings.Current.AutoUpdateInterval * 1000);
+                    var props = Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties).ToList();
+                    if (!props.Any()) continue;
+                    foreach (var p in props)
                     {
-                        if (Settings.Get.AutoUpdate) GetDataFromServer();
-                        Thread.Sleep((int)Settings.Get.AutoUpdateInterval * 1000);
+                        try
+                        {
+                            var newp = IoTFactory.GetProperty(p);
+                            if (newp != null)
+                            {
+                                //p.Value = newp;
+                                //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(p.value, ""); }));
+                            }
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
                     }
-                    catch { }
+                    Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate { Main.GetMainWindow().stackscroll.Content = View.GetDashboard(Main.GetMainWindow().Lobjects.SelectedItem as Object); }));
                 }
             });
         }
 
-        //"http://"+snapshot
-        /*
         public class IoTFactory
         {
+            #region Get
+            public static Model GetModel(Model newModel)
+            {
+                if (string.IsNullOrWhiteSpace(newModel.PathUnit)) return null;
+                return (Model)Get("/platform/models/" + newModel.PathUnit);
+            }
+
+            public static Object GetObject(Object newObject)
+            {
+                if (string.IsNullOrWhiteSpace(newObject.PathUnit)) return null;
+                var modPath = (from m in Platform.Current.Models where m.Id == newObject.ModelId select m.PathUnit).First();
+                if (modPath == null) return null;
+                    return (Object)Get("/platform/models/" + modPath + "/objects/" + newObject.PathUnit);
+            }
+
+            public static Property GetProperty(Property newProperty)
+            {
+                if (string.IsNullOrWhiteSpace(newProperty.PathUnit)) return null;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == newProperty.ObjectId select o).First();
+                if (obj == null) return null;
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
+                if (modPath == null) return null;
+                return (Property)Get("/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + newProperty.PathUnit);
+            }
+
+            public static Script GetScript(Script newScript)
+            {
+                if (string.IsNullOrWhiteSpace(newScript.PathUnit)) return null;
+                var prop = (from p in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where p.Id == newScript.Id select p).First();
+                if (prop == null) return null;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == prop.ObjectId select o).First();
+                if (obj == null) return null;
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
+                if (modPath == null) return null;
+                return (Script)Get( "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + prop.PathUnit + "/scripts/" + newScript.PathUnit);
+            }
+
+            // TODO s
+            //public static Dashboard GetDashboard(Dashboard newDashboard)
+            //{
+            //    try
+            //    {
+            //        string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + newDashboard.PathUnit;
+            //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //        request.ContentType = "application/json";
+            //        request.Method = "PUT";
+            //        request.CookieContainer = _cookies;
+            //        request.Timeout = 10000;
+            //        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            //        {
+            //            streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
+            //        }
+            //        var httpResponse = (HttpWebResponse)request.GetResponse();
+            //        return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+            //    }
+            //    catch { return false; }
+            //}
+            //public static Dashboard.PropertyMap GetPropertyMap(Dashboard.PropertyMap newPropertyMap)
+            //{
+            //    try
+            //    {
+            //        var parent =
+            //                    (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
+            //                    .FirstOrDefault();
+            //        if (parent == null) return false;
+
+            //        string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit + "/visio/" + newPropertyMap.PathUnit;
+            //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //        request.ContentType = "application/json";
+            //        request.Method = "PUT";
+            //        request.CookieContainer = _cookies;
+            //        request.Timeout = 10000;
+            //        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            //        {
+            //            streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
+            //        }
+            //        var httpResponse = (HttpWebResponse)request.GetResponse();
+            //        return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+            //    }
+            //    catch { return false; }
+            //}
+
+            private static IoT Get(string path)
+            {
+                try
+                {
+                    string url = "http://" + Settings.Current.Server + "/models/" + path + "?user=" + Settings.Current.Login;
+                    //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "GET";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 1000;
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                    if (httpResponse.StatusCode != HttpStatusCode.OK || httpResponse.StatusCode != HttpStatusCode.Found) return null;
+                    string responseText;
+                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    {
+                        responseText = streamReader.ReadToEnd();
+                        responseText = WebUtility.HtmlDecode(responseText);
+                    }
+                    if (string.IsNullOrWhiteSpace(responseText)) throw new Exception("Can't get data from server");
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate { Message.Show(responseText, ""); }));
+                    return JsonConvert.DeserializeObject<IoT>(responseText);
+                }
+                catch { return null; }
+            }
+            #endregion
+
+            // Done
             #region Create
             public static Model CreateModel(Model newModel)
             {
-                if (string.IsNullOrWhiteSpace(newModel.pathUnit)) return null;
-                newModel.id = null;
-                return (Model)Register(newModel,"");
+                if (string.IsNullOrWhiteSpace(newModel.PathUnit)) return null;
+                newModel.Id = null;
+                return (Model)CreateIoT(newModel, "/platform/models");
             }
 
             public static Object CreateObject(Object newObject)
             {
-                if (string.IsNullOrWhiteSpace(newObject.pathUnit)) return null;
-                newObject.id = null;
-                var modPath = (from m in Snapshot.current.models where m.id == newObject.modelId select m.pathUnit).First();
+                if (string.IsNullOrWhiteSpace(newObject.PathUnit)) return null;
+                newObject.Id = null;
+                var modPath = (from m in Platform.Current.Models where m.Id == newObject.ModelId select m.PathUnit).First();
                 if (modPath == null) return null;
-                return (Object)Register(newObject, modPath);
+                return (Object)CreateIoT(newObject, "/platform/models/" + modPath + "objects");
             }
             public static Property CreateProperty(Property newProperty)
             {
-                if (string.IsNullOrWhiteSpace(newProperty.pathUnit)) return null;
-                newProperty.id = null;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == newProperty.objectId select o).First();
+                if (string.IsNullOrWhiteSpace(newProperty.PathUnit)) return null;
+                newProperty.Id = null;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == newProperty.ObjectId select o).First();
                 if (obj == null) return null;
-                var modPath= (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return null;
-                return (Property)Register(newProperty,modPath+"/"+obj.pathUnit);
+                return (Property)CreateIoT(newProperty, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties");
             }
             public static Script CreateScript(Script newScript)
             {
-                if (string.IsNullOrWhiteSpace(newScript.pathUnit)) return null;
-                newScript.id = null;
-                var prop = (from p in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where p.id == newScript.id select p).First();
+                if (string.IsNullOrWhiteSpace(newScript.PathUnit)) return null;
+                newScript.Id = null;
+                var prop = (from p in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where p.Id == newScript.Id select p).First();
                 if (prop == null) return null;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == prop.ObjectId select o).First();
                 if (obj == null) return null;
-                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return null;
-                return (Script)Register(newScript, modPath + "/" + obj.pathUnit + "/" + prop.pathUnit);
-            }
-            public static Dashboard CreateDashboard(Dashboard newDashboard)
-            {
-                newDashboard.id = null;
-                return null;
-            }
-            public static Dashboard.PropertyMap CreatePropertyMap(Dashboard.PropertyMap newPropertyMap)
-            {
-                newPropertyMap.id = null;
-                return null;
+                return (Script)CreateIoT(newScript, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + prop.PathUnit + "/scripts");
             }
 
-            private static IoT Register(IoT obj, string path)
+            public static Dashboard CreateDashboard(Dashboard newDashboard)
             {
+                newDashboard.Id = null;
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/"+path;
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/";
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "POST";
-                    request.CookieContainer = cookies;
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
+                    }
+                    request.GetResponse();
+
+                    url = url + newDashboard.PathUnit;
+
+                    request = (HttpWebRequest)WebRequest.Create(url);
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    string resp;
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        resp = reader.ReadToEnd();
+                    }
+                    resp = WebUtility.HtmlDecode(resp);
+                    if (string.IsNullOrWhiteSpace(resp)) throw new Exception("Can't get data from server");
+                    return JsonConvert.DeserializeObject<Dashboard>(resp);
+                }
+                catch { return null; }
+            }
+            public static Dashboard.PropertyMap CreatePropertyMap(Dashboard.PropertyMap newPropertyMap)
+            {
+                newPropertyMap.Id = null;
+                try
+                {
+                    var parent =
+                        (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
+                        .FirstOrDefault();
+                    if (parent == null) return null;
+
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit + "/visio/";
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "POST";
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
+                    }
+                    request.GetResponse();
+
+                    url = url + newPropertyMap.PathUnit;
+
+                    request = (HttpWebRequest)WebRequest.Create(url);
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    string resp;
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                    {
+                        resp = reader.ReadToEnd();
+                    }
+                    resp = WebUtility.HtmlDecode(resp);
+                    if (string.IsNullOrWhiteSpace(resp)) throw new Exception("Can't get data from server");
+                    return JsonConvert.DeserializeObject<Dashboard.PropertyMap>(resp);
+                }
+                catch { return null; }
+            }
+
+            private static IoT CreateIoT(IoT obj, string path)
+            {
+                try
+                {
+                    string url = "http://" + Settings.Current.Server + path;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "POST";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
                     using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                     {
                         streamWriter.Write(JsonConvert.SerializeObject(obj));
                     }
                     request.GetResponse();
 
-                    url = url + obj.pathUnit;
+                    url = url + obj.PathUnit;
 
                     request = (HttpWebRequest)WebRequest.Create(url);
-                    request.CookieContainer = cookies;
+                    request.CookieContainer = _cookies;
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                     Stream resStream = response.GetResponseStream();
                     string resp;
@@ -232,67 +422,105 @@ namespace Client
                 }
                 catch { return null; }
             }
+
             #endregion
 
+            // Done
             #region Update
             public static bool UpdateModel(Model newModel)
             {
-                if (string.IsNullOrWhiteSpace(newModel.pathUnit)) return false;
-                return Change(newModel, newModel.pathUnit);
+                return !string.IsNullOrWhiteSpace(newModel.PathUnit) && Change(newModel, "/platform/models/" + newModel.PathUnit);
             }
 
             public static bool UpdateObject(Object newObject)
             {
-                if (string.IsNullOrWhiteSpace(newObject.pathUnit)) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == newObject.modelId select m.pathUnit).First();
-                if (modPath == null) return false;
-                return Change(newObject, modPath+"/"+newObject.pathUnit);
+                if (string.IsNullOrWhiteSpace(newObject.PathUnit)) return false;
+                var modPath = (from m in Platform.Current.Models where m.Id == newObject.ModelId select m.PathUnit).First();
+                return modPath != null && Change(newObject, "/platform/models/" + modPath + "/objects/" + newObject.PathUnit);
             }
             public static bool UpdateProperty(Property newProperty)
             {
-                if (string.IsNullOrWhiteSpace(newProperty.pathUnit)) return false;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == newProperty.objectId select o).First();
+                if (string.IsNullOrWhiteSpace(newProperty.PathUnit)) return false;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == newProperty.ObjectId select o).First();
                 if (obj == null) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return false;
-                return Change(newProperty, modPath + "/" + obj.pathUnit + "/" + newProperty.pathUnit);
+                return Change(newProperty, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + newProperty.PathUnit);
             }
             public static bool UpdateScript(Script newScript)
             {
-                if (string.IsNullOrWhiteSpace(newScript.pathUnit)) return false;
-                var prop = (from p in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where p.id == newScript.id select p).First();
+                if (string.IsNullOrWhiteSpace(newScript.PathUnit)) return false;
+                var prop = (from p in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where p.Id == newScript.Id select p).First();
                 if (prop == null) return false;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == prop.ObjectId select o).First();
                 if (obj == null) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return false;
-                return Change(newScript, modPath + "/" + obj.pathUnit + "/" + prop.pathUnit + "/" + newScript.pathUnit);
+                return Change(newScript, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + prop.PathUnit + "/scripts/" + newScript.PathUnit);
             }
+
             public static bool UpdateDashboard(Dashboard newDashboard)
-            {
-                return false;
-            }
-            public static bool UpdatePropertyMap(Dashboard.PropertyMap newPropertyMap)
-            {
-                return false;
-            }
-            private static bool Change(IoT obj,string path)
             {
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/" + path;
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + newDashboard.PathUnit;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "PUT";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
+                    }
+                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+                }
+                catch { return false; }
+            }
+            public static bool UpdatePropertyMap(Dashboard.PropertyMap newPropertyMap)
+            {
+                try
+                {
+                    var parent =
+                                (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
+                                .FirstOrDefault();
+                    if (parent == null) return false;
+
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit+ "/visio/" + newPropertyMap.PathUnit;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "PUT";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
+                    }
+                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+                }
+                catch { return false; }
+            }
+            private static bool Change(IoT obj, string path)
+            {
+                try
+                {
+                    string url = "http://" + Settings.Current.Server + path;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
-                    request.Method = "PATCH";
-                    request.CookieContainer = cookies;
+                    request.Method = "PUT";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
                     using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                     {
                         streamWriter.Write(JsonConvert.SerializeObject(obj));
                     }
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                    if (httpResponse.StatusCode == HttpStatusCode.OK) return true;
-                    else return false;
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show("{\"value\":" + ((Property)obj).value + "}", url); }));
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, url); }));
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
                     //using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                     //{
                     //    var responseText = await streamReader.ReadToEndAsync();
@@ -303,61 +531,153 @@ namespace Client
             }
             #endregion
 
+            // Done
+            #region Modify
+
+            public static bool ModifyProperty(Property newProperty)
+            {
+                if (string.IsNullOrWhiteSpace(newProperty.PathUnit)) return false;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == newProperty.ObjectId select o).First();
+                if (obj == null) return false;
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
+                return modPath != null && Modify(newProperty, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + newProperty.PathUnit);
+            }
+
+            public static bool ModifyScript(Script newScript)
+            {
+                if (string.IsNullOrWhiteSpace(newScript.PathUnit)) return false;
+                var prop = (from p in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where p.Id == newScript.Id select p).First();
+                if (prop == null) return false;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == prop.ObjectId select o).First();
+                if (obj == null) return false;
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
+                return modPath != null && Modify(newScript, "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + prop.PathUnit + "/scripts/" + newScript.PathUnit);
+            }
+
+            private static bool Modify(IoT iot, string path)
+            {
+                try
+                {
+                    string url = "http://" + Settings.Current.Server + path;
+                    //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "POST";//"PATCH"
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        if (iot is Property)
+                            streamWriter.Write("{\"value\":" + ((Property)iot).Value + "}");
+                        if (iot is Script)
+                            streamWriter.Write("{\"value\":" + ((Script)iot).Value + "}");
+                    }
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show("{\"value\":" + ((Property)obj).value + "}", url); }));
+                    //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(url, url); }));
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+                    //using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                    //{
+                    //    var responseText = await streamReader.ReadToEndAsync();
+                    //    await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(httpResponse.StatusCode.ToString(), ""); }));
+                    //}
+                }
+                catch { return false; }
+            }
+
+            #endregion
+
+            //Done
             #region Delete
             public static bool DeleteModel(Model newModel)
             {
-                if (string.IsNullOrWhiteSpace(newModel.pathUnit)) return false;
-                return Delete(newModel.pathUnit);
+                return !string.IsNullOrWhiteSpace(newModel.PathUnit) && Delete("/platform/models/" + newModel.PathUnit);
             }
 
             public static bool DeleteObject(Object newObject)
             {
-                if (string.IsNullOrWhiteSpace(newObject.pathUnit)) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == newObject.modelId select m.pathUnit).First();
-                if (modPath == null) return false;
-                return Delete(modPath + "/" + newObject.pathUnit);
+                if (string.IsNullOrWhiteSpace(newObject.PathUnit)) return false;
+                var modPath = (from m in Platform.Current.Models where m.Id == newObject.ModelId select m.PathUnit).First();
+                return modPath != null && Delete( "/platform/models/" + modPath + "/objects/" + newObject.PathUnit);
             }
             public static bool DeleteProperty(Property newProperty)
             {
-                if (string.IsNullOrWhiteSpace(newProperty.pathUnit)) return false;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == newProperty.objectId select o).First();
+                if (string.IsNullOrWhiteSpace(newProperty.PathUnit)) return false;
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == newProperty.ObjectId select o).First();
                 if (obj == null) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return false;
-                return Delete(modPath + "/" + obj.pathUnit + "/" + newProperty.pathUnit);
+                return Delete("/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + newProperty.PathUnit);
             }
             public static bool DeleteScript(Script newScript)
             {
-                if (string.IsNullOrWhiteSpace(newScript.pathUnit)) return false;
-                var prop = (from p in Snapshot.current.models.SelectMany(x => x.objects).SelectMany(y => y.properties) where p.id == newScript.id select p).First();
+                if (string.IsNullOrWhiteSpace(newScript.PathUnit)) return false;
+                var prop = (from p in Platform.Current.Models.SelectMany(x => x.Objects).SelectMany(y => y.Properties) where p.Id == newScript.Id select p).First();
                 if (prop == null) return false;
-                var obj = (from o in Snapshot.current.models.SelectMany(x => x.objects) where o.id == prop.objectId select o).First();
+                var obj = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == prop.ObjectId select o).First();
                 if (obj == null) return false;
-                var modPath = (from m in Snapshot.current.models where m.id == obj.modelId select m.pathUnit).First();
+                var modPath = (from m in Platform.Current.Models where m.Id == obj.ModelId select m.PathUnit).First();
                 if (modPath == null) return false;
-                return Delete(modPath + "/" + obj.pathUnit + "/" + prop.pathUnit + "/" + newScript.pathUnit);
+                return Delete( "/platform/models/" + modPath + "/objects/" + obj.PathUnit + "/properties/" + prop.PathUnit + "/scripts/" + newScript.PathUnit);
             }
+
             public static bool DeleteDashboard(Dashboard newDashboard)
             {
-                return false;
+                try
+                {
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + newDashboard.PathUnit;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "DELETE";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
+                    }
+                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+                }
+                catch { return false; }
             }
             public static bool DeletePropertyMap(Dashboard.PropertyMap newPropertyMap)
             {
-                return false;
+                try
+                {
+                    var parent =
+                                (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
+                                .FirstOrDefault();
+                    if (parent == null) return false;
+
+                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit + "/visio/" + newPropertyMap.PathUnit;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.ContentType = "application/json";
+                    request.Method = "DELETE";
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
+                    }
+                    var httpResponse = (HttpWebResponse)request.GetResponse();
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+                }
+                catch { return false; }
             }
+
             private static bool Delete(string path)
             {
                 try
                 {
-                    string url = Settings.Get().Server + "/Model/" + path;
+                    string url = "http://" + Settings.Current.Server + path;
                     //await Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(JsonConvert.SerializeObject(obj), url); }));
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                     request.ContentType = "application/json";
                     request.Method = "DELETE";
-                    request.CookieContainer = cookies;
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                    if (httpResponse.StatusCode == HttpStatusCode.OK) return true;
-                    else return false;
+                    request.CookieContainer = _cookies;
+                    request.Timeout = 10000;
+                    var httpResponse = (HttpWebResponse)request.GetResponseAsync().Result;
+                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
                     //using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                     //{
                     //    var responseText = await streamReader.ReadToEndAsync();
@@ -368,6 +688,6 @@ namespace Client
             }
             #endregion
         }
-        */
+
     }
 }

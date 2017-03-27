@@ -9,3 +9,14 @@ C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\bin\Debug\Newto
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.csprojResolveAssemblyReference.cache
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.dll
 C:\Users\iks\Documents\Visual Studio 2015\Projects\Client\UTests\obj\Debug\UTests.pdb
+D:\Client\UTests\obj\Debug\UTests.csprojResolveAssemblyReference.cache
+D:\Client\UTests\bin\Debug\UTests.dll
+D:\Client\UTests\bin\Debug\UTests.pdb
+D:\Client\UTests\bin\Debug\IOPT-Client.exe
+D:\Client\UTests\bin\Debug\Newtonsoft.Json.dll
+D:\Client\UTests\bin\Debug\ICSharpCode.AvalonEdit.dll
+D:\Client\UTests\bin\Debug\IOPT-Client.pdb
+D:\Client\UTests\bin\Debug\Newtonsoft.Json.xml
+D:\Client\UTests\bin\Debug\ICSharpCode.AvalonEdit.xml
+D:\Client\UTests\obj\Debug\UTests.dll
+D:\Client\UTests\obj\Debug\UTests.pdb

@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="" Height="339.703" Width="565.34" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png" WindowStartupLocation="CenterScreen">
+        Title="" Height="334" Width="562" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Icon="Resources/Settings.png" WindowStartupLocation="CenterScreen">
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0"/>
     </Window.Background>
-    <Grid Margin="10" UseLayoutRounding="True">
+    <Grid Margin="4" UseLayoutRounding="True">
         <Grid.Effect>
-            <DropShadowEffect BlurRadius="6" Color="{DynamicResource ShadowColor}" ShadowDepth="6"/>
+            <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
             <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">

@@ -1,32 +1,34 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:oxy="http://oxyplot.org/wpf"
                     xmlns:local="clr-namespace:Client"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:classes="clr-namespace:Client.Classes">
 
     <!--#region Geometry-->
     <Geometry x:Key="Settings">M10.328002,10.720993C13.239013,10.720993 15.606993,13.089996 15.606993,16 15.606993,18.910995 13.239013,21.278992 10.328002,21.278992L10.328002,19.054001C12.012999,19.054001 13.381987,17.68399 13.381987,16 13.381987,14.315994 12.012999,12.945999 10.328002,12.945999z M1.6659851,0.16099548L1.9859924,0.16099548 2.221985,0.16099548 2.221985,3.3040009C2.2219847,3.548996,2.4209898,3.7480011,2.6669923,3.7480011L5.6979974,3.7480011C5.9439996,3.7480011,6.1430047,3.548996,6.1430047,3.3040009L6.1430047,0.16099548 6.481994,0.16099548 6.6019891,0.16099548 6.6990045,0.16099548 8.3479908,1.8099976 8.3479908,5.2599945 5.8789972,7.6999969 5.8720087,7.6999969 5.8720087,24.162003 8.3290089,26.591995 8.3290089,30.041992 6.6809991,31.690994 6.5830072,31.690994 6.4630121,31.690994 6.1249994,31.690994 6.1249994,28.548996C6.1249994,28.302994,5.9259942,28.104004,5.6799921,28.104004L2.6489869,28.104004C2.4029845,28.104004,2.2040099,28.302994,2.2040101,28.548996L2.2040101,31.690994 1.967987,31.690994 1.6489868,31.690994 0,30.041992 0,26.591995 2.4389955,24.151993 2.4570008,24.151993 2.4570008,7.6999969 0.01699829,5.2599945 0.01699829,1.8099976z M10.328002,0L11.440001,0C12.178984,0,12.774993,0.59799957,12.774993,1.3349991L12.774993,5.3079987C13.990996,5.5859985,15.127989,6.0680008,16.153991,6.7129974L18.967007,3.9000015C19.489011,3.3789978,20.334988,3.3789978,20.855008,3.9000015L22.428006,5.4729996C22.950009,5.9939957,22.950009,6.8399963,22.428006,7.3610001L19.614987,10.173996C20.260983,11.199997,20.742001,12.337006,21.020993,13.552994L24.993008,13.552994C25.730008,13.552994,26.328,14.151001,26.328,14.888L26.328,17.112991C26.328,17.849991,25.730008,18.447998,24.993008,18.447998L21.020993,18.447998C20.742001,19.664001,20.260983,20.800003,19.614987,21.826004L22.428006,24.639999C22.950009,25.160995,22.950009,26.005997,22.428006,26.526993L20.855008,28.100998C20.334988,28.621994,19.489011,28.621994,18.967007,28.100998L16.153991,25.287003C15.127989,25.932999,13.990996,26.414993,12.774993,26.692993L12.774993,30.664993C12.774993,31.403,12.178984,32,11.440001,32L10.328002,32 10.328002,26.977997 10.328002,25.865005 10.328002,24.752991C15.15399,24.752991 19.079984,20.826004 19.079984,16 19.079984,11.173996 15.15399,7.2480011 10.328002,7.2480011L10.328002,6.1349945 10.328002,5.022995z</Geometry>
 
-    <Geometry x:Key="Exit">M2.999979,0C3.8000264,0,4.4999763,0.30000305,5.1000115,0.90000927L15.999954,11.700012 26.899959,0.90000927C28.099967,-0.29998779 29.999927,-0.29998779 31.099961,0.90000927 32.299972,2.1000061 32.299972,4 31.099961,5.1000061L20.199958,16 31.099961,26.900009C32.299972,28.100006 32.299972,30 31.099961,31.100006 29.899951,32.300003 27.999931,32.300003 26.899959,31.100006L15.999954,20.200012 5.1000115,31.100006C3.9000017,32.300003 1.9999809,32.300003 0.90000743,31.100006 -0.30000248,29.900009 -0.30000248,28 0.90000743,26.900009L11.800011,16 0.90000743,5.1000061C-0.30000248,3.9000092 -0.30000248,2 0.90000743,0.90000927 1.4999818,0.30000305 2.1999928,0 2.999979,0z</Geometry>
+    <Geometry x:Key="Exit">M1.442037,0L16.002031,14.585751 30.588022,0.025996563 32.001024,1.4409965 17.414783,16.001002 31.97503,30.587006 30.560022,32 15.999268,17.413969 1.4130009,31.973999 0,30.558998 14.586494,15.998742 0.027028472,1.4140019z</Geometry>
 
     <Geometry x:Key="Back">M21.575989,0L32,9.0769969 21.390991,17.842995 20.208008,16.409996 28.848999,9.2729961C8.6690063,4.3729998,1.967041,18.186997,1.6870117,18.790001L0,18.010994C0.072021484,17.856995,6.960022,3.4460021,26.697021,6.9219991L20.356995,1.4000011z</Geometry>
 
     <Geometry x:Key="Update">M15.938026,10.979996L17.938026,10.979996 17.938026,22.074949 20.27599,19.736986 21.689991,21.150986 16.939991,25.900986 16.937481,25.898478 16.934973,25.900986 12.184973,21.150986 13.598972,19.736986 15.938026,22.07604z M19.872986,0C23.780029,3.6547317E-07,27.082031,3.0029921,27.082031,6.9920072L27.078979,6.9920072C29.837036,7.989017 32,10.459995 32,13.46201 32,17.064001 29.02301,19.956001 26.031006,19.956001L25.843018,19.956001 22.932983,19.956001 22.927002,17.962013 24.763,17.962013 25.09198,17.962013C28.083984,17.962013 29.986023,16.121008 29.986023,13.474004 29.986023,10.820011 27.90802,8.6839942 24.916016,8.6839942L24.916016,6.8720121C24.916016,4.5450153 22.775024,2.0010082 19.890015,2.001008 17.124023,2.0010082 14.588013,4.0000019 14.588013,6.9920072L12.40802,6.9920072C12.40802,6.9920072 12.393005,7.0170011 12.393005,7.0119962 12.002991,5.7040123 10.538025,4.9960045 9.072998,5.3590111 7.3599854,5.7800011 7.1000366,7.6300082 7.1170044,8.694004L6.9639893,8.6960182 6.9639893,8.7770118C3.9730225,8.7770118 2.0310059,10.833013 2.0310059,13.360997 2.0310059,15.882025 4.315979,17.933021 7.0579834,17.945015L10.947998,17.973 10.942017,19.956001 6.9639893,19.956001C2.9750366,19.821022 0,16.905004 0,13.359014 0,10.343998 2.1640015,7.8219943 5.1790161,7.0430021 5.5930176,5.1730065 6.776001,3.8529987 8.5440063,3.4180006 10.205994,3.007997 11.862,3.3909928 13.036987,4.3320026 14.215027,1.847993 16.906006,3.6547317E-07 19.872986,0z</Geometry>
 
     <Geometry x:Key="Upload">M16.936007,10.979014L16.937996,10.981005 16.939987,10.979014 21.689985,15.730008 20.275986,17.144007 17.937004,14.804536 17.937004,25.941009 15.937003,25.941009 15.937003,14.806521 13.600007,17.144007 12.186007,15.730008z M19.872986,0C23.780029,2.1826963E-07,27.082031,3.0029907,27.082031,6.9919738L27.078979,6.9919738C29.837036,7.9889831 32,10.459991 32,13.461974 32,17.065002 29.02301,19.957001 26.031006,19.957001L25.843018,19.957001 22.932983,19.957001 22.927002,17.961975 24.763,17.961975 25.09198,17.961975C28.083984,17.961975 30.152039,16.329987 30.152039,13.681975 30.152039,11.027985 27.90802,8.6839904 24.916016,8.6839904L24.916016,6.8719787C24.916016,4.5449829 22.775024,2.0009768 19.890015,2.0009765 17.124023,2.0009768 14.588013,4 14.588013,6.9919738L12.40802,6.9919738C12.40802,6.9919738 12.393005,7.0169983 12.393005,7.0119934 12.002991,5.7039795 10.538025,4.9960022 9.072998,5.3589782 7.3599854,5.7799987 7.1000366,7.6299743 7.1170044,8.6949768L6.9639893,8.6959839 6.9639893,8.7769775C3.9730225,8.7769775 2.0310059,10.832977 2.0310059,13.361999 2.0310059,15.882995 4.31604,17.93399 7.0579834,17.944977L10.947998,17.973999 10.942017,19.957001 6.9639893,19.957001C2.9750366,19.821991 0,16.905975 0,13.358977 0,10.345001 2.1640015,7.8219909 5.1790161,7.0429992 5.5930176,5.1730041 6.776001,3.8529968 8.5440063,3.4179992 10.205994,3.0079956 11.862,3.3899841 13.036987,4.3320007 14.215027,1.847992 16.906006,2.1826963E-07 19.872986,0z</Geometry>
-    
+
     <Geometry x:Key="Edit">M0,22.691865L9.6958332,27.864942 0.24500618,32.000013z M8.8988495,6.3116251L18.869686,12.034729 11.211813,25.370919 10.644821,23.665877 7.7198686,23.364879 7.2188854,21.531844 4.3549361,21.429853 3.5479436,19.422835 1.2459807,19.647815z M13.690775,0.00052993685C13.965764,-0.0064584891,14.233765,0.055554115,14.474758,0.19355655L21.534634,4.2476002C22.392622,4.7375976,22.586618,6.0146238,21.968632,7.0966398L21.126636,8.5616571 10.95782,2.7255753 11.799801,1.2555529C12.243793,0.48054798,12.988775,0.017528671,13.690775,0.00052993685z</Geometry>
 
     <Geometry x:Key="Delete">M6.1999817,0L16,9.8000031 25.799988,0 32,6.1999969 22.199982,16 32,25.800003 25.799988,32 16,22.199997 6.1999817,32 0,25.800003 9.7999878,16 0,6.1999969z</Geometry>
 
     <Geometry x:Key="Copy">M23.999999,15.418115L23.962253,15.457889C23.181096,16.260372,22.242412,16.940259,21.199292,17.443369L20.999999,17.536404 20.999999,25C20.999999,26.102999,20.103,27,18.999999,27L7.0000002,27 7.0000002,30.000021 23.999999,30.000021z M11.958992,14.577012L8.9899933,16.061019 11.958992,17.94003z M20.999999,7.0000219L20.999999,15.278901 21.012683,15.2716C22.391946,14.431999,23.46508,13.200135,23.994144,11.815854L23.999999,11.7998 23.999999,7.0000219z M7.0234015,3.3905988L3.4139419,7.0000582 7.005018,7.0000582z M9.0305483,1.9999999L8.9950068,9.0000544 1.9999999,9.0000544 1.9999999,25 19.001001,25 19.000703,18.182404 18.80247,18.219628C18.289209,18.309409 17.771127,18.354006 17.254001,18.354006 16.176501,18.354006 15.103297,18.160258 14.086394,17.77764L13.95899,17.727051 13.95899,21.574048 4.9279964,15.856019 13.95899,11.339995 13.95899,15.528388 13.983423,15.541783C15.511926,16.349478,17.277454,16.561065,18.94419,16.14617L19.000615,16.131202 18.999999,1.9999999z M7.5860002,0L18.999999,0C20.103,0,20.999999,0.897,20.999999,1.9999999L20.999999,5.0000219 23.999999,5.0000219C25.103,5.0000222,25.999999,5.8970222,25.999999,7.0000219L25.999999,30.000021C25.999999,31.103022,25.103,32.000021,23.999999,32.000021L7.0000002,32.000021C5.8970001,32.000021,5.0000002,31.103022,5.0000002,30.000021L5.0000002,27 1.9999999,27C0.89700021,27,2.3841858E-07,26.102999,0,25L0,7.586z</Geometry>
 
-    <Geometry x:Key="Logout">M17.199995,17.970026L18.099958,18.599998 18.099958,30.599998 13.2,30.599998 13.2,29.300003 17.199995,29.300003z M17.099958,17.900002L17.199995,17.900002 17.199995,17.970026z M9.4999914,15.099998C8.9999914,15.099998 8.599967,15.5 8.599967,16 8.599967,16.5 8.9999914,16.900002 9.4999914,16.900002 9.9999905,16.900002 10.400015,16.5 10.400015,16 10.400015,15.5 9.9999905,15.099998 9.4999914,15.099998z M22.099955,12.800003L22.099955,14.599998 25.9,14.599998 25.9,17.900002 22.099955,17.900002 22.099955,19.699997 17.099958,16.300003z M12.999988,1.9000015L13.099963,1.9000015 17.999983,1.9000015 17.999983,13.900002 16.999985,14.599998 16.999985,3.0999985 12.999988,3.0999985z M12.099964,0L12.099964,32 0,30 0,2z</Geometry>
+    <Geometry x:Key="Logout">M17.227443,0.00011515617C23.663684,-0.02380538,29.524736,3.6793081,32.000001,9.4210017L30.164003,10.212011C27.899001,4.9599484 22.372999,1.6759092 16.393995,2.0269136 11.083991,2.3439173 6.4269894,5.5139551 4.3359879,10.08601L10.825992,9.1769989 11.102991,11.158022 2.9010238,12.307828 2.9130002,12.424029 0.92401315,12.629046 0,3.6640635 1.9890176,3.4590459 2.5740291,9.1351464 2.6108104,9.0557344C5.0485648,3.9273926 10.30235,0.38714385 16.273994,0.030889273 16.592979,0.011482954 16.910905,0.0012919903 17.227443,0.00011515617z</Geometry>
 
     <Geometry x:Key="GetCert">M5.2390408,21.088247L15.360125,21.088247C15.360125,21.088247,15.546132,22.086259,15.59113,22.272258L5.2390408,22.272258C4.967051,22.272258,4.7480397,22.052253,4.7480397,21.781255L4.7480397,21.578251C4.7480397,21.307251,4.967051,21.088247,5.2390408,21.088247z M5.2160458,17.303199L14.170113,17.303199C14.174126,17.3582,14.17112,17.414201,14.150124,17.468202L13.758122,18.487219 5.2160458,18.487219C4.9450473,18.487219,4.7250442,18.268215,4.7250442,17.996208L4.7250442,17.79421C4.7250442,17.522203,4.9450473,17.303199,5.2160458,17.303199z M5.1480522,13.587161L13.845113,13.587161 13.970114,13.867163C14.029121,14.002166,14.001121,14.160165,13.898123,14.26517L13.392106,14.771172 5.1480522,14.771172C4.8770384,14.771172,4.6570353,14.551169,4.6570353,14.280169L4.6570353,14.077164C4.6570353,13.806165,4.8770384,13.587161,5.1480522,13.587161z M23.249197,10.324123C20.131175,10.324123 17.605154,12.851152 17.605154,15.969185 17.605154,19.086225 20.131175,21.615253 23.249197,21.615253 26.367218,21.615253 28.894247,19.086225 28.894247,15.969185 28.894247,12.851152 26.367218,10.324123 23.249197,10.324123z M5.1320452,9.9081179L15.360125,9.9081179 15.360125,10.971126C15.360125,11.013126,15.352129,11.054127,15.338137,11.092129L5.1320452,11.092129C4.8600401,11.092129,4.6410441,10.873126,4.6410441,10.602126L4.6410441,10.399121C4.6410441,10.127123,4.8600401,9.9081179,5.1320452,9.9081179z M23.249197,7.2690879C23.367194,7.2690879,23.4842,7.3140866,23.574196,7.4040915L24.481202,8.3101002C24.579209,8.4081007,24.727206,8.4361006,24.854205,8.3801009L26.02821,7.8600904C26.261214,7.7560927,26.531222,7.8630964,26.634219,8.0950934L27.246224,9.4731156C27.302224,9.599116,27.429223,9.6821171,27.569224,9.6821171L29.076239,9.6821171C29.330239,9.6821171,29.535243,9.8871142,29.535243,10.142122L29.535243,11.425133C29.535243,11.564135,29.621243,11.688137,29.750241,11.738141L30.947257,12.200144C31.18525,12.291141,31.303263,12.55815,31.211251,12.795152L30.669255,14.200167C30.61826,14.331165,30.64925,14.480169,30.748249,14.578169L31.814269,15.643184C31.994263,15.823187,31.994263,16.11519,31.814269,16.295192L30.907248,17.2012C30.809256,17.299202,30.781256,17.447206,30.838263,17.574207L31.357264,18.747217C31.460261,18.98022,31.355265,19.251228,31.123253,19.354225L29.746243,19.965232C29.618252,20.021232,29.535243,20.149233,29.535243,20.289234L29.535243,21.794256C29.535243,22.049255,29.330239,22.25526,29.076239,22.25526L29.024237,22.25526 31.98526,29.371338C32.049271,29.525346,31.893263,29.678348,31.741271,29.61034L28.285233,28.085329C28.168227,28.034317,28.034239,28.088319,27.987227,28.205324L26.575228,31.638363C26.510224,31.796369,26.288222,31.796369,26.222212,31.63937L23.349188,24.748285C23.337195,24.717292 23.334189,24.684288 23.326193,24.654289 23.264197,24.663292 23.20319,24.662285 23.141194,24.647285L20.266171,31.55137C20.201168,31.707363,19.978175,31.707363,19.914162,31.550363L18.502148,28.117326C18.454159,28.001327,18.319149,27.94432,18.20315,27.996322L14.747129,29.521333C14.594128,29.589344,14.439127,29.436342,14.502117,29.28334L17.427144,22.25526 17.423146,22.25526C17.169146,22.25526,16.96315,22.049255,16.96315,21.794256L16.96315,20.511236C16.96315,20.373233,16.877135,20.248233,16.748137,20.199236L15.552128,19.737232C15.314135,19.645229,15.196123,19.379226,15.287126,19.142225L15.829138,17.736202C15.879127,17.606205,15.848135,17.4582,15.749135,17.359199L14.684124,16.295192C14.505123,16.11519,14.505123,15.823187,14.684124,15.643184L15.593129,14.735169C15.689138,14.637169,15.716131,14.488172,15.661138,14.362171L15.141129,13.189153C15.038131,12.957149,15.142121,12.68515,15.374133,12.581145L16.753142,11.972137C16.88115,11.916136,16.96315,11.789137,16.96315,11.649135L16.96315,10.142122C16.96315,9.8871142,17.169146,9.6821171,17.423146,9.6821171L18.70616,9.6821171C18.844162,9.6821171,18.969162,9.59611,19.01816,9.4671112L19.48017,8.2700983C19.571158,8.0340964,19.838173,7.9150912,20.075175,8.0060955L21.482184,8.548102C21.612175,8.600104,21.761177,8.5670992,21.860178,8.4690987L22.924197,7.4040915C23.014195,7.3140866,23.131199,7.2690879,23.249197,7.2690879z M5.1270403,5.7650729L11.604098,5.7650729C11.875096,5.7650729,12.095099,5.9840695,12.095099,6.2550761L12.095099,6.4580737C12.095099,6.7300803,11.875096,6.9490844,11.604098,6.9490844L5.1270403,6.9490844C4.8560423,6.9490844,4.6360392,6.7300803,4.6360392,6.4580737L4.6360392,6.2550761C4.6360392,5.9840695,4.8560423,5.7650729,5.1270403,5.7650729z M0.82001372,0L23.394202,0C23.847193,-2.2791892E-07,24.215208,0.36800782,24.215208,0.82001657L24.215208,6.392079 23.719202,5.8970705C23.596199,5.774068 23.433188,5.7060663 23.259192,5.7060663 23.084187,5.7060663 22.921191,5.774068 22.79819,5.8960711L22.08218,6.6130821 22.08218,2.7830364C22.08218,2.4250306,21.790184,2.1330274,21.431174,2.1330277L2.7830274,2.1330277C2.424031,2.1330274,2.1330282,2.4250306,2.133028,2.7830364L2.133028,26.339306C2.1330282,26.698303,2.424031,26.990314,2.7830274,26.990314L13.834112,26.990314 12.947112,29.122343 0.82001372,29.122343C0.36801444,29.122343,0,28.754327,0,28.302326L0,0.82001657C0,0.36800782,0.36801444,-2.2791892E-07,0.82001372,0z</Geometry>
 
     <Geometry x:Key="Yes">M29.403992,0L32,3.5860286 8.3720093,21.479001 5.7740173,17.895017 5.776001,17.893002 0,9.9110087 3.5079956,7.2570179 9.2829895,15.23602z</Geometry>
 
-    <Geometry x:Key="No">M7.1999998,0L16,8.7999997 24.799999,0 32,7.1999998 23.2,16 32,24.799999 24.799999,32 16,23.2 7.1999998,32 0,24.799999 8.7999997,16 0,7.1999998z</Geometry>
+    <Geometry x:Key="No">M16.78125,18.2799987792969L26.0625,18.2799987792969 48.28125,40.4987487792969 70.78125,18.2799987792969 79.78125,18.2799987792969 79.78125,27.5612487792969 57.5625,49.7799987792969 79.78125,71.9987487792969 79.78125,81.2799987792969 70.78125,81.2799987792969 48.28125,59.0612487792969 26.0625,81.2799987792969 16.78125,81.2799987792969 16.78125,72.2799987792969 39,49.7799987792969 16.78125,27.5612487792969 16.78125,18.2799987792969z</Geometry>
 
     <Geometry x:Key="Add">M12.126984,0L19.872009,0 19.872009,12.128 32,12.128 32,19.872999 19.872009,19.872999 19.872009,31.999 12.126984,31.999 12.126984,19.872999 0,19.872999 0,12.128 12.126984,12.128z</Geometry>
 
@@ -34,8 +36,12 @@
 
     <Geometry x:Key="DashAdd">M0,3.2989992L16.263,3.2989992C16.003998,3.8440015,15.798981,4.4169995,15.648987,5.0130002L1.7139893,5.0130002 1.7139893,18.724002 23.993988,18.724002 23.993988,16.603C24.233002,16.620998 24.472992,16.639003 24.717987,16.639003 25.052002,16.639003 25.381989,16.619998 25.707001,16.586002L25.707001,20.436999 16.709991,20.436999 16.709991,22.151996 18.852997,22.151996 18.852997,23.865001 6.8559875,23.865001 6.8559875,22.151996 8.9970093,22.151996 8.9970093,20.436999 0,20.436999z M23.93399,3.1879992L23.93399,6.4980003 20.623993,6.4980003 20.623993,8.0660011 23.93399,8.0660011 23.93399,11.376002 25.501984,11.376002 25.501984,8.0660011 28.811981,8.0660011 28.811981,6.4980003 25.501984,6.4980003 25.501984,3.1879992z M24.71701,0C28.73999,-1.6934871E-07 32,3.2610013 32,7.2810013 32,11.303996 28.73999,14.563998 24.71701,14.563998 20.695007,14.563998 17.434998,11.303996 17.434998,7.2810013 17.434998,3.2610013 20.695007,-1.6934871E-07 24.71701,0z</Geometry>
 
-    <Geometry x:Key="DashFull">M17.599976,0L32,0 29.799988,15.300009 26,10.500004 0,29.299998 21.399963,4.8000048z</Geometry>
-    <!--#endregion-->
+    <Geometry x:Key="DashFull">M0,22.496973L32,22.496973 32,25.868 0,25.868z M9.3140149,18.981964L22.685999,18.981964 22.685999,21.134976 9.3140149,21.134976z M2.222001,1.9290133L2.222001,17.222994 29.778014,17.222994 29.778014,1.9290133z M0.20899963,0L31.790009,0 31.790009,18.832978 0.20899963,18.832978z</Geometry>
+
+    <Geometry x:Key="Minimize">M0,0L32,0 32,5.3 0,5.3z</Geometry>
+
+    <Geometry x:Key="Maximize">M11.585977,18.999021L12.999977,20.41302 3.4147511,30.000045 9.999999,30.000045 9.999999,32.000045 0,32.000045 0,22.000045 2,22.000045 2,28.586798z M20.414059,18.998996L29.999999,28.586804 29.999999,22.000045 31.999999,22.000045 31.999999,32.000045 21.999999,32.000045 21.999999,30.000045 28.585288,30.000045 18.999996,20.412996z M21.999999,0L31.999999,0 31.999999,9.999999 29.999999,9.999999 29.999999,3.4131746 20.413977,13.001045 18.999977,11.587039 28.585168,2 21.999999,2z M0,0L9.999999,0 9.999999,2 3.4148293,2 13.000021,11.587039 11.586021,13.001045 2,3.4131756 2,9.999999 0,9.999999z</Geometry>
+        <!--#endregion-->
 
     <!--#region Button-->
     <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
@@ -50,7 +56,7 @@
             <Setter Property="Background" Value="{DynamicResource MainColor}" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="3" BlurRadius="3" Color="{DynamicResource ShadowColor}" />
+                    <DropShadowEffect ShadowDepth="{DynamicResource ShadowSize}" BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" />
                 </Setter.Value>
             </Setter>
         </Style.Setters>
@@ -60,7 +66,7 @@
                     <Storyboard>
                         <DoubleAnimation
                Storyboard.TargetProperty="Effect.ShadowDepth"
-               From="3" To="0" Duration="0:0:0.2"
+               To="0" Duration="0:0:0.2"
                AutoReverse="True" />
                     </Storyboard>
                 </BeginStoryboard>
@@ -134,8 +140,8 @@
     </Style>
 
     <Style x:Key="{x:Type ListBox}" TargetType="{x:Type ListBox}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="{StaticResource MainColor}"/>
+        <Setter Property="Background" Value="{DynamicResource AlternativeBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource MainColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Style.Resources>
@@ -149,9 +155,12 @@
     <Style TargetType="{x:Type DataGridColumnHeader}">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Height" Value="30" />
-        <Setter Property="Background" Value="{DynamicResource MainColor}" />
-        <Setter Property="Foreground" Value="{DynamicResource OnDarkFontColor}" />
-        <Setter Property="Padding" Value="0,0,10,0"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeBig}"/>
+        <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
+        <Setter Property="Padding" Value="5,5,5,0"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource OnLightFontColor}"/>
     </Style>
 
     <Style TargetType="{x:Type DataGrid}">
@@ -159,12 +168,14 @@
         <Setter Property="CanUserDeleteRows" Value="False" />
         <Setter Property="GridLinesVisibility" Value="None" />
         <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}"/>
-        <Setter Property="AlternatingRowBackground" Value="{DynamicResource AlternatingRowBackgroundColor}"/>
+        <Setter Property="AlternatingRowBackground" Value="Transparent"/>
         <Setter Property="RowBackground" Value="{DynamicResource RowBackgroundColor}"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
         <Setter Property="IsReadOnly" Value="True" />
-
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="SelectionMode" Value="Single"/>
         <Setter Property="CellStyle">
             <Setter.Value>
                 <Style TargetType="DataGridCell">
@@ -176,8 +187,31 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="true">
+                <Setter Property="Background" Value="{DynamicResource SelectionColor}" />
+                <!--<Setter Property="Height" Value="40"/>-->
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="DataGridTextColumn.Foreground" Value="{DynamicResource OnDarkFontColor}"/>
+                <Setter Property="DataGridTextColumn.FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="true" >
+                <Setter Property="Background" Value="{DynamicResource MainColor}" />
+                <Setter Property="DataGridTextColumn.Foreground" Value="{DynamicResource OnDarkFontColor}"/>
+                <!--<Setter Property="Height" Value="40"/>-->
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="DataGridTextColumn.FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type DataGridCell}">
         <Setter Property="Padding" Value="0,0,10,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -187,6 +221,12 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="true" >
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <!--#endregion-->
 
@@ -194,31 +234,89 @@
     <Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
         <Style.Setters>
             <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
-            <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DisabledColor}" />
+            <Setter Property="Background" Value="{DynamicResource AlternativeBackgroundColor}" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
             <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource SelectionColor}"/>
+            <Setter Property="SelectionOpacity" Value="0.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="bg" BorderBrush="{DynamicResource MainColor}" BorderThickness="0,0,0,2">
+                            <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource MainColor}"/>
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource DisabledColor}"/>
+                            </Trigger>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="BorderBrush" TargetName="bg" Value="{DynamicResource DisabledColor}"/>
+                                <Setter Property="BorderThickness" TargetName="bg" Value="0,0,0,1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region PasswordBox-->
+    <Style x:Key="{x:Type PasswordBox}" TargetType="{x:Type PasswordBox}">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
+            <Setter Property="Background" Value="{DynamicResource AlternativeBackgroundColor}" />
+            <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="SelectionBrush" Value="{DynamicResource SelectionColor}"/>
+            <Setter Property="SelectionOpacity" Value="0.5"/>
         </Style.Setters>
     </Style>
     <!--#endregion-->
 
     <!--#region TabControl-->
+    <classes:TabSizeConverter x:Key="TabSizeConverter" />
     <Style TargetType="{x:Type TabItem}">
 
         <Setter Property="Foreground" Value="{DynamicResource OnDarkFontColor}"/>
         <Setter Property="Background" Value="{DynamicResource MainColor}" />
-        <Setter Property="FontFamily" Value="{DynamicResource FontFamilyHighlight}"/>
-        <Setter Property="FontSize" Value="{DynamicResource FontSizeBig}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource FontFamilyMain}"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSizeNormal}"/>
+        <Setter Property="Width">
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource TabSizeConverter}">
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,
+            AncestorType={x:Type TabControl}}" />
+                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor,
+            AncestorType={x:Type TabControl}}" Path="ActualWidth" />
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
                     <Grid>
-                        <Border Name="Border" Margin="0,0,0,0" Background="Transparent"
-                  BorderBrush="Transparent" BorderThickness="0,0,0,0" CornerRadius="0">
+                        <Border Name="Border" Margin="0,0,0,0" Background="{DynamicResource BackgroundColor}"
+                  BorderBrush="Transparent" BorderThickness="0,0,0,0" CornerRadius="0" Height="50">
                             <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center"
                               HorizontalAlignment="Center"
-                              ContentSource="Header" Margin="32,22,32,22"
+                              ContentSource="Header" Margin="22,12,22,12"
                               RecognizesAccessKey="True">
                             </ContentPresenter>
                         </Border>
@@ -232,6 +330,12 @@
                             <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
                             <Setter Property="Foreground" Value="{DynamicResource MainColor}" />
                         </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource MainColor}" />
+                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,1" />
+                            <Setter Property="Background" Value="{DynamicResource MainColor}" />
+                            <Setter Property="Foreground" Value="{DynamicResource BackgroundColor}" />
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="{DynamicResource MainColor}" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource BackgroundColor}" />
@@ -243,6 +347,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
     <!--#endregion-->
 
     <!--#region Scroll-->
@@ -502,9 +607,17 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="3" BlurRadius="3" Color="{DynamicResource ShadowColor}" />
+                    <DropShadowEffect ShadowDepth="{DynamicResource ShadowSize}" BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" />
                 </Setter.Value>
             </Setter>
         </Style.Setters>
@@ -514,11 +627,34 @@
                     <Storyboard>
                         <DoubleAnimation
                Storyboard.TargetProperty="Effect.ShadowDepth"
-               From="3" To="0" Duration="0:0:0.2"
+               To="0" Duration="0:0:0.2"
                AutoReverse="True" />
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
+            <!--Меньше анимаций богу анимаций-->
+            <!--<Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX" To="1.15" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY" To="1.15" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[1].X" To="-4" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[1].Y" To="-4" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX" To="1.0" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY" To="1.0" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[1].X" To="0" Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[1].Y" To="0" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>-->
         </Style.Triggers>
     </Style>
 
@@ -583,13 +719,13 @@
                         <Storyboard x:Key="StoryboardIsChecked">
                             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
                                 <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="14"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.002" Value="14"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="StoryboardIsCheckedOff">
                             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
                                 <EasingDoubleKeyFrame KeyTime="0" Value="14"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.002" Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </ControlTemplate.Resources>
@@ -621,17 +757,18 @@
                             <Setter Property="Padding" Value="4,0,0,0"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="ForegroundPanel" Property="Background" Value="#8bc34a" />
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource CheckedColor}" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginStoryboardCheckedTrue" Storyboard="{StaticResource StoryboardIsChecked}" />
                                 <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedFalse" />
                             </Trigger.EnterActions>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">
-                            <Setter TargetName="ForegroundPanel" Property="Background" Value="#f44336" />
+                            <Setter TargetName="ForegroundPanel" Property="Background" Value="{DynamicResource UncheckedColor}" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard x:Name="BeginStoryboardCheckedFalse" Storyboard="{StaticResource StoryboardIsCheckedOff}" />
                                 <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedTrue" />
@@ -690,17 +827,17 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid>
                         <Border Name="outerBorder"
-                            Background="#5534b4e3"
-                            BorderBrush="#5534b4e3"
-                            Height="26" Width="26" Opacity="1" BorderThickness="2" CornerRadius="13"/>
+                            Background="{DynamicResource DisabledColor}"
+                            BorderBrush="{DynamicResource DisabledColor}"
+                            Height="24" Width="24" Opacity="1" BorderThickness="2" CornerRadius="12"/>
                         <Border Name="innerBorder"
-                            Background="#FF34b4e3"
-                            BorderBrush="#FF34b4e3"
-                            Height="10" Width="10" CornerRadius="5" Opacity="1" />
+                            Background="{DynamicResource MainColor}"
+                            BorderBrush="{DynamicResource MainColor}"
+                            Height="8" Width="8" CornerRadius="4" Opacity="1" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="outerBorder" Property="BorderBrush" Value="#BB34b4e3" />
+                            <Setter TargetName="outerBorder" Property="BorderBrush" Value="{DynamicResource ButtonOverColor}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="outerBorder" Property="Background" Value="#55ACACAC" />
@@ -769,7 +906,7 @@
                 Grid.Row="1"
                 Margin="10,0"
                 BorderThickness="2"
-                BorderBrush="#FF8BC34A"
+                BorderBrush="{DynamicResource SelectionColor}"
                 VerticalAlignment="Center" Height="4" />
             <Track x:Name="PART_Track" Grid.Row="1">
                 <Track.DecreaseRepeatButton>
@@ -803,7 +940,7 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Rectangle x:Name="FocusStyle" StrokeDashArray="4 4" RadiusX="5" RadiusY="5" Fill="Transparent"
-                           Stroke="#99029cc7" StrokeThickness="1" />
+                           Stroke="{DynamicResource MainColor}" StrokeThickness="1" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -826,7 +963,7 @@
         </Style.Triggers>
     </Style>
 
-    
+
     <Style x:Key="SliderThumb" TargetType="Thumb">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -915,4 +1052,148 @@
     </Style>
 
     <!--#endregion-->
+
+    <!--#region OxyPlot-->
+    <Style x:Key="OxyColumnStyle" TargetType="{x:Type oxy:Plot}">
+        <Setter Property="PlotAreaBackground" Value="{DynamicResource AlternativeBackgroundColor}"/>
+        <Setter Property="DefaultTrackerTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <oxy:TrackerControl
+                        Background="{DynamicResource AlternativeBackgroundColor}"
+                        LineExtents="{Binding PlotModel.PlotArea}"
+                        LineStroke="{DynamicResource MainColor}"
+                        Position="{Binding Position}">
+                        <Border Margin="2" BorderBrush="{DynamicResource MainColor}">
+                            <Grid Margin="6">
+                                <TextBlock
+                                Margin="2"
+                                FontFamily="{DynamicResource FontFamilyMain}"
+                                FontSize="{DynamicResource FontSizeNormal}"
+                                Foreground="{DynamicResource MainColor}"
+                                Text="{Binding}" />
+                            </Grid>
+                        </Border>
+                    </oxy:TrackerControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="OxyLineStyle" TargetType="{x:Type oxy:Plot}">
+        <Setter Property="PlotAreaBackground" Value="{DynamicResource AlternativeBackgroundColor}"/>
+        <Setter Property="DefaultTrackerTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <oxy:TrackerControl
+                        Background="{DynamicResource BackgroundColor}"
+                        LineExtents="{Binding PlotModel.PlotArea}"
+                        LineStroke="{DynamicResource MainColor}"
+                        Position="{Binding Position}">
+                        <Border Margin="2" BorderBrush="{DynamicResource OnLightFontColor}">
+                            <Grid Margin="6">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                Margin="2"
+                                FontFamily="{DynamicResource FontFamilyMain}"
+                                FontSize="{DynamicResource FontSizeNormal}"
+                                Text="X :" />
+                                <TextBlock
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                Margin="2"
+                                FontFamily="{DynamicResource FontFamilyMain}"
+                                FontSize="{DynamicResource FontSizeNormal}"
+                                Foreground="{DynamicResource MainColor}"
+                                Text="{Binding DataPoint.X, StringFormat={}{0:0.##}}" />
+                                <TextBlock
+                                Grid.Column="0"
+                                Grid.Row="1"
+                                Margin="2"
+                                FontFamily="{DynamicResource FontFamilyMain}"
+                                FontSize="{DynamicResource FontSizeNormal}"
+                                Text="Y :" />
+                                <TextBlock
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                Margin="2"
+                                FontFamily="{DynamicResource FontFamilyMain}"
+                                FontSize="{DynamicResource FontSizeNormal}"
+                                Foreground="{DynamicResource MainColor}"
+                                Text="{Binding DataPoint.Y, StringFormat={}{0:0.##}}" />
+                            </Grid>
+                        </Border>
+
+                    </oxy:TrackerControl>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
+
+    <!--#region StaticCheckBox-->
+    <Style x:Key="StaticCheckBox" TargetType="{x:Type CheckBox}">
+        <Style.Setters>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource OnLightFontColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MainColor}" />
+            <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border"
+                                         Background="Transparent"
+                                       BorderBrush="{TemplateBinding BorderBrush}"
+                                       BorderThickness="0"
+                                       ClipToBounds="True">
+                                    <Path x:Name="CheckMark"
+                                          HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                          Data="{DynamicResource Yes}"
+                                         Stretch="Uniform"
+                                         Stroke="{DynamicResource CheckedColor}"
+                                            Fill="{DynamicResource CheckedColor}"
+                                        StrokeThickness="0" />
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter Margin="4,0,0,0"
+                                             HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                             RecognizesAccessKey="True" />
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter TargetName="CheckMark" Property="Data" Value="{DynamicResource No}" />
+                                <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource UncheckedColor}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckMark" Property="Data" Value="{DynamicResource Yes}" />
+                                <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource CheckedColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+    <!--#endregion-->
+
+
 </ResourceDictionary>

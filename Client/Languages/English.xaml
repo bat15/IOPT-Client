@@ -7,6 +7,12 @@
     <v:String x:Key="Sid3">Login</v:String>
     <v:String x:Key="Sid4">Password</v:String>
     <v:String x:Key="Sid5">Certificate</v:String>
+    <v:String x:Key="Sid6">Add</v:String>
+    <v:String x:Key="Sid7">Edit</v:String>
+    <v:String x:Key="Sid8">Select a connection</v:String>
+
+    <v:String x:Key="Wid8">Exit</v:String>
+    <v:String x:Key="Wid11">Log out</v:String>
 
     <v:String x:Key="Errid1">Unable connect to server, check the address or try again later.</v:String>
     <v:String x:Key="Errid2">Choose parent value in listbox.</v:String>
@@ -15,7 +21,10 @@
     <v:String x:Key="Setid1">Theme</v:String>
     <v:String x:Key="Setid2">Language</v:String>
     <v:String x:Key="Setid3">Settings</v:String>
-    <v:String x:Key="Setid4">Autoupdate interval</v:String>
+    <v:String x:Key="Setid4">Autoupdate interval, s</v:String>
+    <v:String x:Key="Setid5">Dashboards</v:String>
+    <v:String x:Key="Setid6">Table</v:String>
+    <v:String x:Key="Setid7">Platform</v:String>
 
     <v:String x:Key="Mainid1">Create</v:String>
     <v:String x:Key="Mainid2">Table</v:String>
@@ -26,6 +35,8 @@
     <v:String x:Key="Viewid3">Property</v:String>
     <v:String x:Key="Viewid4">Value</v:String>
     <v:String x:Key="Viewid5">Script</v:String>
+    <v:String x:Key="Viewid6">Measurement</v:String>
+    <v:String x:Key="Viewid7">Date</v:String>
 
     <v:String x:Key="Editid1">Add</v:String>
     <v:String x:Key="Editid2">Name</v:String>

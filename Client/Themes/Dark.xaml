@@ -3,24 +3,31 @@
                     xmlns:local="clr-namespace:Client"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <!--#region Settings-->
-    <SolidColorBrush x:Key="MainColor" Color="#ff5722" />
+    <SolidColorBrush x:Key="MainColor" Color="#ffee58" />
     <SolidColorBrush x:Key="BackgroundColor" Color="#1A1A1D" />
+    <SolidColorBrush x:Key="AlternativeBackgroundColor" Color="#1A1A1D" />
     <SolidColorBrush x:Key="ButtonOverColor" Color="#f57c00" />
     <SolidColorBrush x:Key="ButtonClickColor" Color="#ffcc80" />
-    <SolidColorBrush x:Key="DisabledColor" Color="#afff5722" />
-    <SolidColorBrush x:Key="SelectionColor" Color="#ff5722" />
+    <SolidColorBrush x:Key="DisabledColor" Color="#afffee58" />
+    <SolidColorBrush x:Key="SelectionColor" Color="#ffee58" />
 
-    <SolidColorBrush x:Key="RowBackgroundColor" Color="#1A1A1D" />
-    <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3fff5722" />
+    <SolidColorBrush x:Key="RowBackgroundColor" Color="Transparent" />
+    <SolidColorBrush x:Key="AlternatingRowBackgroundColor" Color="#3fffee58" />
     <SolidColorBrush x:Key="ListBoxItemBackgroundColor" Color="Transparent" />
 
-    <!--<Color x:Key="ShadowColor" R="236" G="239" B="241" />-->
-    <Color x:Key="ShadowColor" R="139" G="195" B="74" />
+    <SolidColorBrush x:Key="CheckedColor" Color="#8bc34a" />
+    <SolidColorBrush x:Key="UncheckedColor" Color="Red" />
+
+    <Color x:Key="ShadowColor" R="224" G="224" B="224" />
+
+    <!--не работает-->
+    <sys:Double x:Key="ShadowSize">3</sys:Double>
+    <!--<Color x:Key="ShadowColor" R="139" G="195" B="74" />-->
 
     <SolidColorBrush x:Key="OnLightFontColor" Color="#eceff1" />
     <SolidColorBrush x:Key="OnDarkFontColor" Color="#eceff1" />
     <FontFamily x:Key="FontFamilyMain">Segoe UI</FontFamily>
-    <FontFamily x:Key="FontFamilyHighlight">Impact</FontFamily>
+    <FontFamily x:Key="FontFamilyHighlight">Lucida Sans Unicode</FontFamily>
     <sys:Double x:Key="FontSizeSmall">10</sys:Double>
     <sys:Double x:Key="FontSizeNormal">12</sys:Double>
     <sys:Double x:Key="FontSizeBig">16</sys:Double>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Client.Classes;
 
 namespace Client
 {
@@ -9,21 +11,19 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow instance;
+        private bool? _editState;
+        public static MainWindow Instance;
         public MainWindow()
         {
-            Application.Current.Exit += (s, e) => { Settings.Get.Save(); };
+            Application.Current.Exit += (s, e) => { Settings.Save(); };
             Closed += (s, e) => { Controller.Close(); };
             InitializeComponent();
+            GNew.MouseDown += Drag;
+            GList.MouseDown += Drag;
+            BExit.Click += (s, e) => { Controller.Close(); };
             Settings.Load();
-            if (!string.IsNullOrEmpty(Settings.Get.Login) && !string.IsNullOrEmpty(Settings.Get.Password) && !string.IsNullOrEmpty(Settings.Get.Server) && Settings.Get.Server != null)
-                if (Network.Connect(Settings.Get.Server, Settings.Get.Login, Settings.Get.Password))
-                {
-                    Main.GetMainWindow().label1.Content = Settings.Get.Login + '@' + Settings.Get.Server;
-                    Main.GetMainWindow().Show();
-                    Hide();
-                }
-            instance = this;
+            Accounts.ItemsSource = Settings.AccountsSettings;
+            Instance = this;
             label4.Content = typeof(Model).Assembly.GetName().Version;
         }
 
@@ -41,44 +41,114 @@ namespace Client
             }
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Controller.Close();
-        }
-
-        private void Settings_Click(object sender, RoutedEventArgs e)
-        {
-            WSettings.GetSettingsWindow().Show();
-        }
-
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
-            Cursor = Cursors.Wait;
-                try
+            if (string.IsNullOrWhiteSpace(textBox.Text) || string.IsNullOrWhiteSpace(TBLogin.Text) || string.IsNullOrWhiteSpace(TBPass.Password))
+                return;
+            try
+            {
+                if (_editState == false)
                 {
-                    if (Network.Connect(textBox.Text, TBLogin.Text, TBPass.Text))
-                {
-                        Cursor = Cursors.Arrow;
-                        Main.GetMainWindow().label1.Content = TBLogin.Text + '@' + textBox.Text;
-                        Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
-                        Main.GetMainWindow().Show();
-                        Hide();
-                        Settings.Get.Login = TBLogin.Text;
-                        Settings.Get.Password = TBPass.Text;
-                        Settings.Get.Server = textBox.Text;
-                        Settings.Get.Save();
-                    }
-                    else
+                    var settings = new Settings
                     {
-                        Cursor = Cursors.Arrow;
-                        Message.Show((string)Application.Current.Resources["Errid1"], (string)Application.Current.Resources["Dialogid5"]);
-                    }
+                        Login = TBLogin.Text,
+                        Password = TBPass.Password,
+                        Server = textBox.Text
+                    };
+
+                    Settings.AccountsSettings.Add(settings);
                 }
-                catch (Exception ex) { Cursor = Cursors.Arrow; Message.Show((string)Application.Current.Resources["Errid1"] + ex.Message, (string)Application.Current.Resources["Dialogid5"]); }
+                if (_editState == true)
+                {
+                    var settings = (sender as Button)?.Tag as Settings;
+                    if (settings == null) return;
+                    settings.Login = TBLogin.Text;
+                    settings.Password = TBPass.Password;
+                    settings.Server = textBox.Text;
+                }
+                _editState = null;
+                ChangeScene(false);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
-        private void BGetCert_Click(object sender, RoutedEventArgs e)
+        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            SplashScreen splashScreen = new SplashScreen("IOPT_Splash.png");
+            splashScreen.Show(false);
+            Hide();
+            try
+            {
+                var o = sender as Label;
+                if (o == null) return;
+                Settings.Current = o.Tag as Settings;
+                if (true)//Network.Connect()
+                {
+                    Cursor = Cursors.Arrow;
+                    Main.GetMainWindow().DGProp.ItemsSource = View.ModelToView();
+                    Main.GetMainWindow().Show();
+                    splashScreen.Close(new TimeSpan(0));
+                }
+                else
+                {
+                    Show();
+                    splashScreen.Close(new TimeSpan(0));
+                    Message.Show((string)Application.Current.Resources["Errid1"], (string)Application.Current.Resources["Dialogid5"]);
+                }
+            }
+            catch (Exception ex) { Show(); splashScreen.Close(new TimeSpan(0)); Message.Show((string)Application.Current.Resources["Errid1"] + ex.Message, (string)Application.Current.Resources["Dialogid5"]); }
+        }
+
+        private void EditEvent(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null && !(button.Tag is Settings)) return;
+            _editState = true;
+            Connect.Tag = button?.Tag;
+            ChangeScene(true);
+            TBLogin.Text = ((Settings)button?.Tag)?.Login;
+            TBPass.Password = ((Settings)button?.Tag)?.Password;
+            textBox.Text = ((Settings)button?.Tag)?.Server;
+
+        }
+
+        private void DeleteEvent(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null && !(button.Tag is Settings)) return;
+            Settings.AccountsSettings.Remove((Settings)button?.Tag);
+            Settings.Save();
+        }
+
+        private void BAdd_OnClick(object sender, RoutedEventArgs e)
+        {
+            _editState = false;
+            ChangeScene(true);
+        }
+
+        private void BBack_OnClick(object sender, RoutedEventArgs e)
+        {
+            ChangeScene(false);
+        }
+
+        private void ChangeScene(bool isNew)
+        {
+            if (isNew)
+            {
+                if (_editState == null) return;
+                Connect.Content = (bool)_editState ? (string)Application.Current.Resources["Sid7"] : (string)Application.Current.Resources["Sid6"];
+                GList.Visibility = Visibility.Hidden;
+                GNew.Visibility = Visibility.Visible;
+                //TBLogin.Text = TBPass.Password = TBServer.Text = TBPort.Text = TBDB.Text = "";
+            }
+            else
+            {
+                GList.Visibility = Visibility.Visible;
+                GNew.Visibility = Visibility.Hidden;
+            }
         }
     }
 }
