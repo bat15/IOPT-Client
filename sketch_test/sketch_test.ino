@@ -1,4 +1,3 @@
-#include <NewPing.h>
 #include <ESP8266WiFi.h>
 
 #define TRIGGER_PIN  2
@@ -28,45 +27,58 @@ String url_xcontroller=String("/IOPT-Server-Prod-1/models/TestModel/TestObject/X
 int value = 0;
 unsigned long timestamp = 0;
 
-NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
-
 void setup() {
   Serial.begin(115200);
   delay(10);
   pinMode(14, OUTPUT);
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+//  Serial.print("Connecting to ");
+//  Serial.println(ssid);
+//  WiFi.begin(ssid, password);
+//  while (WiFi.status() != WL_CONNECTED) {
+//    delay(500);
+//    Serial.print(".");
+//  }
+//  Serial.println("");
+//  Serial.println("WiFi connected");
+//  Serial.println("IP address: ");
+//  Serial.println(WiFi.localIP());
 
   pinMode(xPin, INPUT);
   pinMode(buttonPin, INPUT_PULLUP); 
 }
 unsigned long times = 0;
 void loop() {  
-  if(millis() - times > 500)
+  if(millis() - times > 1000)
   {
   xPosition = analogRead(xPin);
   buttonState = digitalRead(buttonPin);
-  
-  Serial.print("X: ");
-  Serial.print(xPosition);
-  Serial.print(" | Button: ");
-  Serial.println(buttonState);
   String bs=buttonState==0?String("true"):String("false");
-  String json= String("{\"value\":\"") +xPosition+"\"}";
-  sendData(json,url_xcontroller);
+  //Serial.print("{\"Xpos\":\"");
+  
+  Serial.print(xPosition);
+  //Serial.print(",\"Button\":\"");
+  Serial.print(",");
+  Serial.println(bs);
+  //Serial.println("\"}");
+    String buf = "";
+  while (Serial.available())
+  {
+    char c = Serial.read();
+    buf += c;
+}
+  if (buf.indexOf("ledon") >= 0) {
+    digitalWrite(14,HIGH);
+  }
+  if (buf.indexOf("ledoff") >= 0)
+  {
+    digitalWrite(14,LOW);
+}
+  //String json= String("{\"value\":\"") +xPosition+"\"}";
+  //sendData(json,url_xcontroller);
 //{"name":"XPosition","type":9,"value":"0"}
-  json= String("{\"value\":\"") +bs+"\"}";
-  sendData(json,url_button);
-  getData();
+  //json= String("{\"value\":\"") +bs+"\"}";
+  //sendData(json,url_button);
+  //getData();
   times=millis();
   }
 }

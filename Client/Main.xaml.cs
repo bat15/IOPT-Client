@@ -1,37 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Client.Classes;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
 using Model = Client.Classes.Model;
 using Object = Client.Classes.Object;
-
+//"$(SolutionDir)\ILMerge\merge_all.bat" "$(SolutionDir)" "$(TargetPath)" $(ConfigurationName)
 namespace Client
 {
     /// <summary>
     /// Логика взаимодействия для Main.xaml
     /// </summary>
-    public partial class Main : Window
+    public partial class Main
     {
-
-        static Main instance;
+        private static Main _instance;
 
         public static Main GetMainWindow()
         {
-            return instance ?? (instance = new Main());
+            return _instance ?? (_instance = new Main());
         }
         private Main()
         {
@@ -44,23 +39,24 @@ namespace Client
             BUpdate_Click(null, null);
             //Network.AutoUpdate();
 
-            styleBox.SelectionChanged += (s, e) => { Settings.Current.Theme = (Settings.Themes)styleBox.SelectedItem; };
             styleBox.ItemsSource = Enum.GetValues(typeof(Settings.Themes)).Cast<Settings.Themes>();
-            //styleBox.SelectedItem = Settings.Current.Theme;
+            styleBox.SelectedItem = Settings.Current.Theme;
+            styleBox.SelectionChanged += (s, e) => { Settings.Current.Theme = (Settings.Themes)styleBox.SelectedItem; };
 
-            langBox.SelectionChanged += (s, e) => { Settings.Current.Language = (Settings.Languages)langBox.SelectedItem; };
             langBox.ItemsSource = Enum.GetValues(typeof(Settings.Languages)).Cast<Settings.Languages>();
-            //Зацикливание
-            //langBox.SelectedItem = Settings.Current.Language;
+            langBox.SelectedItem = Settings.Current.Language;
+            langBox.SelectionChanged += (s, e) => { Settings.Current.Language = (Settings.Languages)langBox.SelectedItem; };
 
-            setuintBox.ItemsSource = new string[] { "1", "5", "30", "60", "600", "1800", "3600" };
-            setuintBox.SelectedItem = Settings.Current.AutoUpdateInterval.ToString() ?? "1";
-            setuintBox.SetBinding(System.Windows.Controls.Primitives.Selector.SelectedItemProperty, new Binding() { Source = Settings.Current, Path = new PropertyPath("AutoUpdateInterval"), Mode = BindingMode.TwoWay });
+            setuintBox.ItemsSource = new[] { "1", "5", "30", "60", "600", "1800", "3600" };
+            setuintBox.SelectedItem = Settings.Current.AutoUpdateInterval.ToString();
+            setuintBox.SetBinding(System.Windows.Controls.Primitives.Selector.SelectedItemProperty, new Binding { Source = Settings.Current, Path = new PropertyPath("AutoUpdateInterval"), Mode = BindingMode.TwoWay });
 
             //ELmodels.ItemsSource = Platform.Current.Models;
             CBType.ItemsSource = types.Keys;
             GShade.MouseDown += (s,e) => { OPShowHide();};
             //Data.DataContext = Platform.Current.Models.FirstOrDefault()?.Objects.FirstOrDefault()?.Properties[1].Changes;
+
+            //TryReadFromPortAsync();
         }
 
         public void Notified(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -91,12 +87,9 @@ namespace Client
             }
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Controller.Close();
-        }
 
-
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private void OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             var displayName = View.GetPropertyDisplayName(e.PropertyDescriptor);
@@ -133,7 +126,7 @@ namespace Client
                 try
                 {
                     //Network.GetDataFromServer();                  
-                    await Dispatcher.BeginInvoke(new Action(delegate ()
+                    await Dispatcher.BeginInvoke(new Action(delegate
                     {
                         DGProp.ItemsSource = View.ModelToView();
                         Lmodels.ItemsSource = Platform.Current.Models;
@@ -147,23 +140,14 @@ namespace Client
             });
             if ((sender as Button) != null)
             {
-                var path = new Path { };
+                var path = new Path();
                 path.SetResourceReference(Path.DataProperty, "Update");
                 path.SetResourceReference(Shape.FillProperty, "MainColor");
-                var but = new Border() { Child = path };
+                var but = new Border { Child = path };
                 ((Button)sender).Content = but;
             }
         }
 
-        private void BLogout_Click(object sender, RoutedEventArgs e)
-        {
-            if (!(bool)Message.Show((string)Application.Current.Resources["Dialogid2"], (string)Application.Current.Resources["Dialogid4"], true)) return;
-            MainWindow.Instance.Show();
-            instance = null;
-            Settings.Current = null;
-            Close();
-
-        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -172,30 +156,30 @@ namespace Client
 
         private void BAdd_Click(object sender, RoutedEventArgs e)
         {
-            if ((sender as Button).Tag is Object)
-            {
-                //if (Lobjects.SelectedItem == null) { Message.Show((string)Application.Current.Resources["Dialogid6"], (string)Application.Current.Resources["Dialogid5"]); return; }
-                Lobjects.SelectedItem = (sender as Button).Tag;
-                new WDashbordCreate((sender as Button).Tag as Object).ShowDialog();
-                Lobjects.SelectedIndex = -1;
-                Lobjects.SelectedItem = (sender as Button).Tag;
-            }
+            var button = sender as Button;
+            if (!(button?.Tag is Object)) return;
+            //if (Lobjects.SelectedItem == null) { Message.Show((string)Application.Current.Resources["Dialogid6"], (string)Application.Current.Resources["Dialogid5"]); return; }
+            Lobjects.SelectedItem = button.Tag;
+            new WDashbordCreate((Object) button.Tag).ShowDialog();
+            Lobjects.SelectedIndex = -1;
+            Lobjects.SelectedItem = button.Tag;
         }
 
         private async void BUpload_Click(object sender, RoutedEventArgs e)
         {
             if (sender != null)
             {
-                var path = new System.Windows.Shapes.Path() { };
-                path.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "Loading");
+                var path = new Path();
+                path.SetResourceReference(Path.DataProperty, "Loading");
                 path.SetResourceReference(Shape.FillProperty, "MainColor");
-                var but = new Border() { Child = path };
+                var but = new Border { Child = path };
                 var da = new DoubleAnimation(0, 359, new Duration(TimeSpan.FromMilliseconds(600)));
                 var rt = new RotateTransform();
                 but.RenderTransform = rt;
                 but.RenderTransformOrigin = new Point(0.5, 0.5);
                 da.RepeatBehavior = RepeatBehavior.Forever;
-                (sender as Button).Content = but;
+                var button = sender as Button;
+                if (button != null) button.Content = but;
                 rt.BeginAnimation(RotateTransform.AngleProperty, da);
             }
             await Task.Run(() =>
@@ -208,11 +192,12 @@ namespace Client
             });
             if (sender != null)
             {
-                var path = new System.Windows.Shapes.Path() { };
-                path.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "Upload");
+                var path = new Path();
+                path.SetResourceReference(Path.DataProperty, "Upload");
                 path.SetResourceReference(Shape.FillProperty, "MainColor");
-                var but = new Border() { Child = path };
-                (sender as Button).Content = but;
+                var but = new Border { Child = path };
+                var button = sender as Button;
+                if (button != null) button.Content = but;
             }
         }
 
@@ -221,6 +206,7 @@ namespace Client
         {
             //case
             DGProp.ItemsSource = View.ModelToView();
+            
         }
 
         #region Editor
@@ -232,8 +218,8 @@ namespace Client
         Script ios;
         Object ioo;
         Model iom;
-        readonly Dictionary<string, TypeCode> types = new Dictionary<string, TypeCode>() { { "Boolean", TypeCode.Boolean }, { "String", TypeCode.String }, { "Double", TypeCode.Double }, { "Integer", TypeCode.Int32 } };
-        Dictionary<TypeCode, int> tid = new Dictionary<TypeCode, int>() { { TypeCode.Boolean, 0 }, { TypeCode.String, 1 }, { TypeCode.Double, 2 }, { TypeCode.Int32, 3 } };
+        readonly Dictionary<string, TypeCode> types = new Dictionary<string, TypeCode> { { "Boolean", TypeCode.Boolean }, { "String", TypeCode.String }, { "Double", TypeCode.Double }, { "Integer", TypeCode.Int32 } };
+        Dictionary<TypeCode, int> tid = new Dictionary<TypeCode, int> { { TypeCode.Boolean, 0 }, { TypeCode.String, 1 }, { TypeCode.Double, 2 }, { TypeCode.Int32, 3 } };
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
@@ -722,6 +708,130 @@ namespace Client
         #endregion
 
 
+        public SerialPort CurrentPort = SerialPort.GetPortNames().FirstOrDefault()!=null?new SerialPort(SerialPort.GetPortNames().FirstOrDefault(), 115200):null;
+        public volatile bool Checker = true;
+        public async void TryReadFromPortAsync()
+        {
+            await Task.Run(async () =>
+            {
+                Thread.Sleep(500);
+                Checker = true;
+                CurrentPort.DtrEnable = true;
+                //currentPort.ReadTimeout = 2500;
+                CurrentPort.Open();
+                while (Checker)
+                {
+                    try
+                    {
+                        string line = CurrentPort.ReadLine();
+                        string[] data = line.Split(',');
+
+                        await Dispatcher.BeginInvoke(new Action(delegate()
+                        {
+                            Platform.Current.Models.FirstOrDefault().Objects.FirstOrDefault().Properties[1].Value =
+                                data[0];
+                            Platform.Current.Models.FirstOrDefault().Objects.FirstOrDefault().Properties[2].Value =
+                                data[1];
+                        }));
+                        Thread.Sleep(500);
+                        SendVentState();
+
+                        Thread.Sleep(500);
+                    }
+                    catch (TimeoutException) { }
+                }
+                CurrentPort.Close();
+
+            });
+        }
+
+        private void SendVentState()
+        {
+            try {            
+            CurrentPort?.WriteLine(bool.Parse(Platform.Current.Models.FirstOrDefault()?.Objects.FirstOrDefault()?.Properties[0].Value) ? "ledon" : "ledoff");
+            }
+            catch { }
+        }
+
+        private void BReconnectClick(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (!(bool)Message.Show((string)Application.Current.Resources["Dialogid2"], (string)Application.Current.Resources["Dialogid4"], true)) return;
+            MainWindow.Instance.Show();
+            _instance = null;
+            Settings.Current = null;
+            Close();
+        }
+
+        private void BExitClick(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (!(bool)Message.Show((string)Application.Current.Resources["Dialogid2"], (string)Application.Current.Resources["Dialogid4"], true)) return;
+            Controller.Close();
+        }
+
+        #region ResizeWindows
+
+        private bool _resizeInProcess;
+        private void Resize_Init(object sender, MouseButtonEventArgs e)
+        {
+            var senderRect = sender as Rectangle;
+            if (senderRect == null) return;
+            _resizeInProcess = true;
+            senderRect.CaptureMouse();
+        }
+
+        private void Resize_End(object sender, MouseButtonEventArgs e)
+        {
+            var senderRect = sender as Rectangle;
+            if (senderRect == null) return;
+            _resizeInProcess = false; ;
+            senderRect.ReleaseMouseCapture();
+        }
+
+        private void Resizeing_Form(object sender, MouseEventArgs e)
+        {
+            if (!_resizeInProcess) return;
+            var senderRect = sender as Rectangle;
+            var mainWindow = senderRect?.Tag as Window;
+            if (mainWindow == null) return;
+            var width = e.GetPosition(mainWindow).X;
+            var height = e.GetPosition(mainWindow).Y;
+            senderRect.CaptureMouse();
+            if (senderRect.Name.ToLower().Contains("right"))
+            {
+                width += 1;
+                if (width > 0)
+                    mainWindow.Width = width;
+            }
+            if (senderRect.Name.ToLower().Contains("left"))
+            {
+                width -= 1;
+                mainWindow.Left += width;
+                width = mainWindow.Width - width;
+                if (width > 0)
+                {
+                    mainWindow.Width = width;
+                }
+            }
+            if (senderRect.Name.ToLower().Contains("bottom"))
+            {
+                height += 1;
+                if (height > 0)
+                    mainWindow.Height = height;
+            }
+            if (senderRect.Name.ToLower().Contains("top"))
+            {
+                height -= 1;
+                mainWindow.Top += height;
+                height = mainWindow.Height - height;
+                if (height > 0)
+                {
+                    mainWindow.Height = height;
+                }
+            }
+        }
+        #endregion
     }
 
 }

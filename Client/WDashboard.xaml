@@ -4,20 +4,47 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
-        mc:Ignorable="d" Height="900" Width="1366" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen" Topmost="True" Icon="Resources/wind-grasp-acid-3.png" WindowState="Maximized" >
-    <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
-        <Grid x:Name="GMain" Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
+        mc:Ignorable="d" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen" Topmost="True" Icon="Resources/wind-grasp-acid-3.png" WindowState="Normal"  MinHeight="300" MinWidth="600">
+    <Window.Resources>
+        <Style x:Key="RectBorderStyle" TargetType="Rectangle">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Fill" Value="{DynamicResource MainColor}" />
+            <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+            <EventSetter Event="MouseLeftButtonDown" Handler="Resize_Init"/>
+            <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
+            <EventSetter Event="MouseMove" Handler="Resizeing_Form"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Rectangle x:Name="leftSizeGrip" Width="7" HorizontalAlignment="Left" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="rightSizeGrip" Width="7" HorizontalAlignment="Right" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="topSizeGrip" Height="7" VerticalAlignment="Top" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="bottomSizeGrip" Height="7" VerticalAlignment="Bottom" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <!--  Corners  -->
+        <Rectangle Name="topLeftSizeGrip" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomRightSizeGrip" Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="topRightSizeGrip" Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomLeftSizeGrip" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Grid x:Name="GMain" Background="{DynamicResource BackgroundColor}" MouseDown="Drag" Margin="4">
             <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Margin="5">
                 <Border>
                     <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                 </Border>
             </Button>
-            <Button x:Name="BMinimize" Width="35" Style="{DynamicResource TranspButton}" VerticalAlignment="Top" Height="15" HorizontalAlignment="Right" Margin="5,15,45,5">
+            <Button x:Name="BMaximize" Width="35" Style="{DynamicResource TranspButton}" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Margin="5,5,45,5">
+                <Border>
+                    <Path Data="{StaticResource Maximize}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
+                </Border>
+            </Button>
+            <Button x:Name="BMinimize" Width="35" Style="{DynamicResource TranspButton}" VerticalAlignment="Top" Height="15" HorizontalAlignment="Right" Margin="5,15,85,5">
                 <Border>
                     <Path Data="{StaticResource Minimize}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                 </Border>
             </Button>
             <TextBlock x:Name="Title" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Height="42" Width="218" Foreground="{DynamicResource OnLightFontColor}" FontFamily="{DynamicResource FontFamilyHighlight}" FontSize="{DynamicResource FontSizeBig}" Margin="0,20,0,0"/>
+            <ScrollViewer Margin="10,67,10,10">
+                <StackPanel x:Name="ContentPane" />
+            </ScrollViewer>
         </Grid>
-    </Border>
+    </Grid>
 </Window>

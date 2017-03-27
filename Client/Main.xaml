@@ -9,24 +9,44 @@
     xmlns:oxy="http://oxyplot.org/wpf"
     x:Class="Client.Main"
         mc:Ignorable="d"
-            Title="Client" Height="540" Width="1066.599" ResizeMode="NoResize" Icon="Resources/wind-grasp-acid-3.png" Closed="Window_Closed" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None">
+            Title="Client" Height="542.214" Width="993.566" ResizeMode="NoResize" Icon="Resources/wind-grasp-acid-3.png" Closed="Window_Closed" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None" MinWidth="890" MinHeight="400">
     <Window.Background>
         <SolidColorBrush Color="White" Opacity="0"/>
     </Window.Background>
-    <Grid Margin="4" UseLayoutRounding="True">
+    <Window.Resources>
+        <Style x:Key="RectBorderStyle" TargetType="Rectangle">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Fill" Value="Transparent" />
+            <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+            <EventSetter Event="MouseLeftButtonDown" Handler="Resize_Init"/>
+            <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
+            <EventSetter Event="MouseMove" Handler="Resizeing_Form"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Rectangle x:Name="leftSizeGrip" Width="7" HorizontalAlignment="Left" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="rightSizeGrip" Width="7" HorizontalAlignment="Right" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="topSizeGrip" Height="7" VerticalAlignment="Top" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="bottomSizeGrip" Height="7" VerticalAlignment="Bottom" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <!--  Corners  -->
+        <Rectangle Name="topLeftSizeGrip" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomRightSizeGrip" Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="topRightSizeGrip" Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle Name="bottomLeftSizeGrip" Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Grid Margin="4" UseLayoutRounding="True">
         <Grid.Effect>
             <DropShadowEffect BlurRadius="{DynamicResource ShadowSize}" Color="{DynamicResource ShadowColor}" ShadowDepth="{DynamicResource ShadowSize}"/>
         </Grid.Effect>
         <Border BorderThickness="2" BorderBrush="{DynamicResource MainColor}">
-            <TabControl x:Name="MainTabC" TabStripPlacement="Left" SelectionChanged="MainTabC_SelectionChanged">
+            <TabControl x:Name="MainTabC" SelectionChanged="MainTabC_SelectionChanged" BorderThickness="0" MouseDown="Drag">
                 <TabItem>
                     <TabItem.Header>
                         <TextBlock Text="{DynamicResource Setid5}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
-                    <Grid x:Name="___Без_имени_" Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
+                    <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
                         <Grid x:Name="lmgrid" Margin="10,10,0,10" HorizontalAlignment="Left" Width="192">
                             <ComboBox x:Name="Lmodels" Margin="10,26,10,0" VerticalAlignment="Top" DataContext="{Binding}" BorderThickness="1" BorderBrush="{DynamicResource OnLightFontColor}"/>
-                            <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.Objects, ElementName=Lmodels}" BorderBrush="{DynamicResource MainColor}">
+                            <ListBox x:Name="Lobjects" Margin="0,75,0,0" ItemsSource="{Binding SelectedItem.(classes:Model.Objects), ElementName=Lmodels}" BorderBrush="{DynamicResource MainColor}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -60,7 +80,7 @@
                             <Label x:Name="label4" Content="{DynamicResource Editid5}" Margin="24,49,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                         </Grid>
                         <ScrollViewer x:Name="stackscroll" Margin="207,55,10,10" MouseDown="Drag"/>
-                        <Label x:Name="label" Content="{Binding SelectedItem.name, ElementName=Lmodels}" Margin="202,9,84,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
+                        <Label x:Name="label" Content="{Binding SelectedItem.Name, ElementName=Lmodels}" Margin="202,9,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Segoe UI Black" FontSize="20" Foreground="{DynamicResource OnLightFontColor}" Height="41"/>
                         <Label x:Name="label2" HorizontalAlignment="Left" Margin="353,40,0,0" VerticalAlignment="Top"/>
 
                     </Grid>
@@ -70,7 +90,7 @@
                         <TextBlock Text="{DynamicResource Setid6}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
                     <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag" UseLayoutRounding="True">
-                        <DataGrid x:Name="DGProp" Margin="10,43,10,10" DataContext="{Binding}" AutoGenerateColumns="False">
+                        <DataGrid x:Name="DGProp" Margin="10" DataContext="{Binding}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="{DynamicResource Viewid1}" Width="*"
                              Binding="{Binding ModelName}"/>
@@ -93,7 +113,17 @@
                         <TextBlock Text="{DynamicResource Setid7}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
                     <Grid x:Name="GMain" Background="{DynamicResource BackgroundColor}" MouseDown="Drag" Margin="0,0,-2,0" UseLayoutRounding="True">
-                        <Grid x:Name="editOptions" HorizontalAlignment="Right" Width="266" Background="{DynamicResource BackgroundColor}" Margin="0,0,-290,0" Panel.ZIndex="40"  UseLayoutRounding="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid x:Name="editOptions" HorizontalAlignment="Right" Width="266" Background="{DynamicResource BackgroundColor}" Margin="0,0,-290,0" Panel.ZIndex="40"  UseLayoutRounding="True" Column="3" Row="0">
                             <TextBox x:Name="TBName" Height="23" Margin="32,77,33,0" Text="" VerticalAlignment="Top"/>
                             <Label x:Name="labelName" Content="{DynamicResource Editid2}" Margin="60,46,60,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Label x:Name="labelScript" Content="{DynamicResource Editid8}" Margin="55,105,55,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}" Visibility="Hidden"/>
@@ -102,9 +132,9 @@
                             <Button x:Name="BSave" Content="{DynamicResource Editid9}" HorizontalAlignment="Stretch" Margin="55,334,55,0" VerticalAlignment="Top" Click="button1_Click"/>
                             <Label x:Name="labelValue" Content="{DynamicResource Viewid4}" Margin="87,158,86,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                             <TextBox x:Name="TBValue" Height="23" Margin="33,189,32,0" Text="" VerticalAlignment="Top"/>
-                            <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Name="TBScript" FontFamily="Consolas" SyntaxHighlighting="JavaScript" FontSize="10pt" Margin="10,131,10,132" Foreground="{DynamicResource OnLightFontColor}" Background="{DynamicResource BackgroundColor}" LineNumbersForeground="{DynamicResource ButtonOverColor}"/>
+                            <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Name="TBScript" FontFamily="Consolas" SyntaxHighlighting="JavaScript" FontSize="10pt" Margin="10,131,10,132" Foreground="{DynamicResource OnLightFontColor}" Background="{DynamicResource AlternativeBackgroundColor}" LineNumbersForeground="{DynamicResource ButtonOverColor}"/>
                         </Grid>
-                        <Grid Margin="10,52,0,10" HorizontalAlignment="Left" Width="201">
+                        <Grid Column="0" Row="0"  Margin="5,10,10,10">
                             <ListBox x:Name="ELmodels" Margin="0,26,0,25" ItemsSource="{Binding Models, Source={x:Static classes:Platform.Current}}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -138,7 +168,7 @@
                             <Label x:Name="label34" Content="{DynamicResource Editid4}" Margin="24,0,22,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Button x:Name="button1" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="13,0,12,0" VerticalAlignment="Bottom" Click="button1_Click_1" Height="20"/>
                         </Grid>
-                        <Grid Margin="0,52,439,10" HorizontalAlignment="Right" Width="229">
+                        <Grid  Column="1" Row="0"  Margin="5,10,10,10">
                             <ListBox x:Name="ELobjects" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Objects, ElementName=ELmodels}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -172,7 +202,7 @@
                             <Label x:Name="Elabel4" Content="{DynamicResource Editid5}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Button x:Name="button2" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button2_Click" Height="20"/>
                         </Grid>
-                        <Grid Margin="0,52,204,10" HorizontalAlignment="Right" Width="230">
+                        <Grid Column="2" Row="0"  Margin="5,10,10,10">
                             <ListBox x:Name="ELproperties" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Properties, ElementName=ELobjects}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -206,7 +236,7 @@
                             <Label x:Name="Label5" Content="{DynamicResource Editid6}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Button x:Name="Button3" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button3_Click" Height="20"/>
                         </Grid>
-                        <Grid Margin="0,52,8,10" HorizontalAlignment="Right" Width="191">
+                        <Grid Column="3" Row="0" Margin="5,10,10,10">
                             <ListBox x:Name="ELscripts" Margin="0,26,0,25" ItemsSource="{Binding SelectedItem.Scripts, ElementName=ELproperties}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -240,7 +270,7 @@
                             <Label x:Name="label6" Content="{DynamicResource Editid7}" Margin="10,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="{DynamicResource OnLightFontColor}"/>
                             <Button x:Name="button4" Content="{DynamicResource Editid1}" HorizontalAlignment="Stretch" Margin="12,0,13,0" VerticalAlignment="Bottom" Click="button4_Click"/>
                         </Grid>
-                        <Grid x:Name="GShade" Background="{DynamicResource DisabledColor}" Visibility="Hidden" Panel.ZIndex="20"/>
+                        <Grid x:Name="GShade" Background="{DynamicResource DisabledColor}" Panel.ZIndex="20" Grid.ColumnSpan="4" Visibility="Hidden"/>
                     </Grid>
                 </TabItem>
                 <TabItem>
@@ -248,12 +278,12 @@
                         <TextBlock Text="{DynamicResource Setid3}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
                     </TabItem.Header>
                     <Grid Background="{DynamicResource BackgroundColor}" MouseDown="Drag">
-                        <Button x:Name="BUpdate" Width="35" Style="{DynamicResource TranspButton}" Margin="382,276,0,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Left" Click="BUpdate_Click">
+                        <Button x:Name="BUpdate" Width="35" Style="{DynamicResource TranspButton}" Margin="0,276,80,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Center" Click="BUpdate_Click">
                             <Border>
                                 <Path Data="{StaticResource Update}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                             </Border>
                         </Button>
-                        <Button x:Name="BUpload" Width="35" Style="{DynamicResource TranspButton}" Margin="479,276,0,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Left" Click="BUpload_Click">
+                        <Button x:Name="BUpload" Width="35" Style="{DynamicResource TranspButton}" Margin="80,276,0,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Center" Click="BUpload_Click">
                             <Border>
                                 <Path Data="{StaticResource Upload}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
                             </Border>
@@ -267,20 +297,19 @@
                         <CheckBox x:Name="setcheckBox1" IsChecked="{Binding AutoUpdate, Mode=TwoWay, Source={x:Static classes:Settings.Current}}" Content="{DynamicResource Mainid3}" HorizontalAlignment="Center" Margin="382,241,368,0" VerticalAlignment="Top" Foreground="{DynamicResource OnLightFontColor}" />
                     </Grid>
                 </TabItem>
-
+                <TabItem PreviewMouseLeftButtonDown="BReconnectClick">
+                    <TabItem.Header>
+                        <TextBlock Text="{DynamicResource Wid11}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
+                    </TabItem.Header>
+                </TabItem>
+                <TabItem PreviewMouseLeftButtonDown="BExitClick">
+                    <TabItem.Header>
+                        <TextBlock Text="{DynamicResource Wid8}" FontSize="{DynamicResource FontSizeBig}" FontFamily="{DynamicResource FontFamilyHighlight}" />
+                    </TabItem.Header>
+                </TabItem>
             </TabControl>
-
         </Border>
-        <Button x:Name="BLogout" Width="40" Style="{DynamicResource TranspButton}" Margin="0,8,48,0" Height="35" HorizontalAlignment="Right" Click="BLogout_Click" Panel.ZIndex="10">
-            <Border>
-                <Path Data="{StaticResource Logout}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
-            </Border>
-        </Button>
-        <Button x:Name="BExit" Width="35" Style="{DynamicResource TranspButton}" Margin="0,8,8,0" VerticalAlignment="Top" Height="35" HorizontalAlignment="Right" Click="Exit_Click" Panel.ZIndex="10">
-            <Border>
-                <Path Data="{StaticResource Exit}" Fill="{DynamicResource MainColor}" Stretch="Uniform"/>
-            </Border>
-        </Button>
-        <Rectangle Fill="{DynamicResource MainColor}" Stroke="{DynamicResource MainColor}" Margin="0,0,10,0" Panel.ZIndex="-1" MouseDown="Drag"/>
+        <Rectangle Fill="{DynamicResource MainColor}" Stroke="{DynamicResource MainColor}" Panel.ZIndex="-1" MouseDown="Drag"/>
+    </Grid>
     </Grid>
 </Window>

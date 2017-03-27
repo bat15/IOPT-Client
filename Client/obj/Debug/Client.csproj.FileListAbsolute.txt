@@ -123,6 +123,6 @@ D:\Client\Client\bin\Debug\OxyPlot.pdb
 D:\Client\Client\bin\Debug\OxyPlot.xml
 D:\Client\Client\bin\Debug\OxyPlot.Wpf.pdb
 D:\Client\Client\bin\Debug\OxyPlot.Wpf.xml
-D:\Client\Client\obj\Debug\GeneratedInternalTypeHelper.g.cs
 D:\Client\Client\obj\Debug\WDashboard.g.cs
 D:\Client\Client\obj\Debug\WDashboard.baml
+D:\Client\Client\obj\Debug\GeneratedInternalTypeHelper.g.cs

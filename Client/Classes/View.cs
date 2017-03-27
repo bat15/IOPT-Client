@@ -121,7 +121,7 @@ namespace Client.Classes
                     {
                         if ((s as Button) != null)
                         {
-                            var patx = new Path();
+                            var patx = new Path { Stretch = Stretch.Uniform }; 
                             patx.SetResourceReference(Path.DataProperty, "Loading");
                             patx.SetResourceReference(Shape.FillProperty, "MainColor");
                             var but = new Border { Child = patx };
@@ -138,7 +138,7 @@ namespace Client.Classes
                         tmp.Activate();
                         if ((s as Button) != null)
                         {
-                            var pathx = new Path();
+                            var pathx = new Path { Stretch = Stretch.Uniform };
                             pathx.SetResourceReference(Path.DataProperty, "DashFull");
                             pathx.SetResourceReference(Shape.FillProperty, "MainColor");
                             var but = new Border() { Child = pathx };
@@ -208,7 +208,7 @@ namespace Client.Classes
                         IsIndeterminate = false
                     };
                     pb.SetBinding(System.Windows.Controls.Primitives.RangeBase.ValueProperty,
-                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay});
+                        new Binding {Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.OneWay});
                     pb.SetResourceReference(Control.ForegroundProperty, "MainColor");
                     l = new Label
                     {
@@ -253,15 +253,16 @@ namespace Client.Classes
                 case TypeCode.Boolean:
                     var tmp = new CheckBox { Margin=new Thickness(5)};
                     tmp.SetBinding(System.Windows.Controls.Primitives.ToggleButton.IsCheckedProperty, new Binding { Source = prop, Path = new PropertyPath("Value"), Mode = BindingMode.TwoWay });
-                    tmp.Checked += async (s,e) =>
-                    {
-                        await Task.Run(() =>
-                            { Network.IoTFactory.ModifyProperty(prop); });
-                    };
-                    tmp.Unchecked += async (s, e) => {
-                    await Task.Run(() =>
-                    { Network.IoTFactory.ModifyProperty(prop);});
-                    };
+                    //tmp.Checked += async (s,e) =>
+                    //{
+                   
+                    //    await Task.Run(() =>
+                    //        { Network.IoTFactory.ModifyProperty(prop); });
+                    //};
+                    //tmp.Unchecked += async (s, e) => {
+                    //await Task.Run(() =>
+                    //{ Network.IoTFactory.ModifyProperty(prop);});
+                    //};
                     child.Children.Add(tmp);
                     break;
                 case TypeCode.Int32:
@@ -315,7 +316,8 @@ namespace Client.Classes
                      * TODO 
                      * Придумать что-нибудь с уменьшением 
                      * трафика мб на моазу лив и ентер повесить,
-                     * завернуть все вызовы в другие потоки                   
+                     * замкнуть внешнюю переменную бул на изменение, поставить таймаут.
+                     * завернуть все вызовы в другие потоки                  
                    */
                     //tmp1.TextChanged += (s, e) => { Network.IoTFactory.ModifyProperty(prop); };
                     child.Children.Add(tmp1); 
@@ -341,5 +343,23 @@ namespace Client.Classes
 
         [DisplayName("Viewid5")]
         public string Listeners { get; set; }
+    }
+
+    public class TabSizeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            TabControl tabControl = values[0] as TabControl;
+            double width = tabControl.ActualWidth / tabControl.Items.Count;
+            //Subtract 1, otherwise we could overflow to two rows.
+            return (width <= 1) ? 0 : (width - 1);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

@@ -43,7 +43,8 @@ namespace Client.Classes
 
         private Platform() { }
 
-        public static Platform Current {
+        public static Platform Current
+        {
             get { return current ?? (current = new Platform()); }
             set { current = value; }
         }
@@ -160,10 +161,10 @@ namespace Client.Classes
         {
             if (Platform.Current.Models.Count == 0) return true;
             bool res = true;
-            var objects= (from m in Platform.Current.Models where m.Id == ModelId select m).FirstOrDefault()?.Objects;
-            if(objects!=null)
-            foreach (var o in objects)
-                if (o.PathUnit.Equals(val)) res = false;
+            var objects = (from m in Platform.Current.Models where m.Id == ModelId select m).FirstOrDefault()?.Objects;
+            if (objects != null)
+                foreach (var o in objects)
+                    if (o.PathUnit.Equals(val)) res = false;
             return res;
         }
     }
@@ -184,11 +185,13 @@ namespace Client.Classes
                     value = value.ToLower();
                     try
                     {
+                        //Changes.Add(new Series(DateTime.Now, bool.Parse(value) ? 0.0 : 1.0));
                         Changes.Add(new Series(DateTime.Now, bool.Parse(value) ? 1.0 : 0.0));
                     }
-                    catch { }             
+                    catch { }
                 }
-                if (Type >= 7 && Type <= 12) {
+                if (Type >= 7 && Type <= 12)
+                {
                     try
                     {
                         value = ((int)double.Parse(value.Replace('.', ','))).ToString();
@@ -202,8 +205,18 @@ namespace Client.Classes
                 if (Type >= 13 && Type <= 15)
                 {
                     value = value.Replace('.', ',');
-                    try { 
-                    Changes.Add(new Series(DateTime.Now, double.Parse(value)));
+                    try
+                    {
+                        Changes.Add(new Series(DateTime.Now, double.Parse(value)));
+                    }
+                    catch { }
+                }
+                if (Type == 18)
+                {
+                    try
+                    {
+                        Changes.Clear();
+                        Changes.Add(new Series(DateTime.Now, double.Parse(value)));
                     }
                     catch { }
                 }
@@ -212,20 +225,20 @@ namespace Client.Classes
             }
         }
 
-       public class Series
-       {
-           public DateTime Name { get; set; }
-           public double Value { get; set; }
+        public class Series
+        {
+            public DateTime Name { get; set; }
+            public double Value { get; set; }
 
-           public Series(DateTime dt, double val)
-           {
-               Name = dt;
-               Value = val;
-           }
-       }
+            public Series(DateTime dt, double val)
+            {
+                Name = dt;
+                Value = val;
+            }
+        }
 
         [JsonIgnore]
-        public ObservableCollection<Series> Changes { get; }=new ObservableCollection<Series>();
+        public ObservableCollection<Series> Changes { get; } = new ObservableCollection<Series>();
 
         [JsonProperty(PropertyName = "type")]
         public int Type { get; set; }
@@ -288,9 +301,9 @@ namespace Client.Classes
             if (Platform.Current.Models.Count == 0) return true;
             bool res = true;
             var props = (from o in Platform.Current.Models.SelectMany(x => x.Objects) where o.Id == ObjectId select o).FirstOrDefault()?.Properties;
-            if(props!=null)
-            foreach (var p in props)
-                if (p.PathUnit.Equals(val)) res = false;
+            if (props != null)
+                foreach (var p in props)
+                    if (p.PathUnit.Equals(val)) res = false;
             return res;
         }
     }
@@ -421,7 +434,7 @@ namespace Client.Classes
 
     }
 
-    internal static class MoreEnumerable
+    public static class MoreEnumerable
     {
 
         public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source,
@@ -456,6 +469,25 @@ namespace Client.Classes
                 }
                 return max;
             }
+        }
+
+        public static double GetMedian(this IEnumerable<double> source)
+        {
+            // Create a copy of the input, and sort the copy
+            var temp = source.ToArray();
+            Array.Sort(temp);
+
+            var count = temp.Length;
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Empty collection");
+            }
+            if (count % 2 != 0) return temp[count / 2];
+
+            var a = temp[count / 2 - 1];
+            var b = temp[count / 2];
+            return (a + b) / 2;
+
         }
     }
 }

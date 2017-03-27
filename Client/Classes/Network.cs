@@ -135,7 +135,8 @@ namespace Client.Classes
         {
             await Task.Run(() =>
             {
-                while (Settings.Current.AutoUpdate)
+                // TODO
+                while (false)//Settings.Current.AutoUpdate)
                 {
                     /*
                      * TODO Уменьшить нагрузку на сеть
@@ -150,7 +151,7 @@ namespace Client.Classes
                             var newp = IoTFactory.GetProperty(p);
                             if (newp != null)
                             {
-                                p.Value = newp;
+                                //p.Value = newp;
                                 //Main.GetMainWindow().Dispatcher.BeginInvoke(new Action(delegate () { Message.Show(p.value, ""); }));
                             }
                         }
@@ -204,49 +205,49 @@ namespace Client.Classes
             }
 
             // TODO s
-            public static Dashboard GetDashboard(Dashboard newDashboard)
-            {
-                try
-                {
-                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + newDashboard.PathUnit;
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    request.ContentType = "application/json";
-                    request.Method = "PUT";
-                    request.CookieContainer = _cookies;
-                    request.Timeout = 10000;
-                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                    {
-                        streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
-                    }
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
-                }
-                catch { return false; }
-            }
-            public static Dashboard.PropertyMap GetPropertyMap(Dashboard.PropertyMap newPropertyMap)
-            {
-                try
-                {
-                    var parent =
-                                (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
-                                .FirstOrDefault();
-                    if (parent == null) return false;
+            //public static Dashboard GetDashboard(Dashboard newDashboard)
+            //{
+            //    try
+            //    {
+            //        string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + newDashboard.PathUnit;
+            //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //        request.ContentType = "application/json";
+            //        request.Method = "PUT";
+            //        request.CookieContainer = _cookies;
+            //        request.Timeout = 10000;
+            //        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            //        {
+            //            streamWriter.Write(JsonConvert.SerializeObject(newDashboard));
+            //        }
+            //        var httpResponse = (HttpWebResponse)request.GetResponse();
+            //        return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+            //    }
+            //    catch { return false; }
+            //}
+            //public static Dashboard.PropertyMap GetPropertyMap(Dashboard.PropertyMap newPropertyMap)
+            //{
+            //    try
+            //    {
+            //        var parent =
+            //                    (from d in Client.Current.Dashboards where newPropertyMap.DashboardId == d.Id select d)
+            //                    .FirstOrDefault();
+            //        if (parent == null) return false;
 
-                    string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit + "/visio/" + newPropertyMap.PathUnit;
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    request.ContentType = "application/json";
-                    request.Method = "PUT";
-                    request.CookieContainer = _cookies;
-                    request.Timeout = 10000;
-                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                    {
-                        streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
-                    }
-                    var httpResponse = (HttpWebResponse)request.GetResponse();
-                    return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
-                }
-                catch { return false; }
-            }
+            //        string url = "http://" + Settings.Current.Server + "/clent/dashboards/" + parent.PathUnit + "/visio/" + newPropertyMap.PathUnit;
+            //        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //        request.ContentType = "application/json";
+            //        request.Method = "PUT";
+            //        request.CookieContainer = _cookies;
+            //        request.Timeout = 10000;
+            //        using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            //        {
+            //            streamWriter.Write(JsonConvert.SerializeObject(newPropertyMap));
+            //        }
+            //        var httpResponse = (HttpWebResponse)request.GetResponse();
+            //        return httpResponse.StatusCode == HttpStatusCode.OK || httpResponse.StatusCode == HttpStatusCode.Accepted;
+            //    }
+            //    catch { return false; }
+            //}
 
             private static IoT Get(string path)
             {
